@@ -7,18 +7,28 @@
   "entry": "main.lua",
   "version": "1.0.0",
   "taptap_publish": {
-    "title": "<game title, required>",
+    "title": "几何突围",
     "description": "<game description>",
-    "category": "<game category: rpg, casual, action, strategy, simulation, trivia, arcade, adventure, card, sports, racing, puzzle, educational, music, word, board>",
+    "category": "action",
     "screen_orientation": "landscape",
     "collection_type": "sce",
     "trial_note": "<developer's note>",
     "transparent": false,
-    "app_platforms": "1,2"
+    "app_platforms": "1,2",
+    "developer_id": 420559,
+    "app_id": 898539,
+    "miniapp_id": "tapmckuxwagygm65sy"
   },
   "assets": {
     "icon": "",
     "screenshots": [],
     "promotional_image": ""
+  },
+  "metadata": {
+    "updated_at": "2026-08-02T17:33:45.315Z"
+  },
+  "test_qrcode": {
+    "url": "https://tapcode-sce.spark.xd.com/qrcode/p_8x93_1785692025202.png",
+    "generated_at": "2026-08-02T17:33:45.315Z"
   }
 }
