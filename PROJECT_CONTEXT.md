@@ -51,29 +51,25 @@ The game must feel like an original geometric/synthetic IP, not a clone or reski
 
 ### Current implementation reality
 
-The project has moved beyond the placeholder click prototype into **Geometry Breakout Prototype 01**. The current implementation is still an early UI-driven combat prototype, but it now contains the first playable combat loop locally.
+The project now contains **Geometry Breakout Prototype 02**, a UI-driven playable progression loop built in the single-file local entry script.
 
 Current prototype behavior:
 
 - Choose English or 简体中文
-- Start Geometry Breakout / 几何突围
 - Move the geometric player with WASD or arrow keys
-- Spawn pursuing hostile forms
-- Automatically fire at the nearest hostile form
-- Destroy enemies with projectiles
-- Track Integrity, elapsed breakout time, and defeated count
-- Take contact damage
-- Enter a defeat screen and restart the run
+- Timed waves with between-wave calibration pauses
+- Regular pursuing enemies plus an elite core on every third wave
+- Automatic Trace Beam baseline attack
+- Data Fragment pickups with magnet attraction and collection
+- Pattern Shard experience, level-up thresholds, and a three-choice calibration overlay
+- Three distinct modules: Trace Beam, Orbit Seed, and Pulse Bloom
+- Track Integrity, time, score, wave, data fragments, pattern shards, level, and module level
+- Contact damage, defeat state, restart, and run summary showing wave/score/level/module
 
 ### Not implemented yet
 
-- Pickups and experience
-- Wave director and wave-end transitions
-- Level-up choices
-- Multiple modules and build crafting
-- Elite or boss encounters
+- Additional regular enemy behaviors beyond the pursuing form
 - Arena modifiers
-- Run summary beyond the basic defeat screen
 - Meta progression
 - Reliable Maker preview/build verification
 - Full GitHub synchronization of the local source tree
@@ -292,11 +288,12 @@ Do not assume GitHub has the newest local files. Confirm repository contents and
 
 ### Goal C — Roguelite loop
 
-- [ ] Pickups
-- [ ] XP/level-up
-- [ ] Three upgrade choices
-- [ ] Three modules
-- [ ] Timed waves
+- [x] Pickups
+- [x] XP/level-up
+- [x] Three upgrade choices
+- [x] Three modules
+- [x] Timed waves
+- [x] Elite encounter and run summary
 
 ### Goal D — Release readiness
 
@@ -324,6 +321,10 @@ The project will prioritize a small playable MVP before large content expansion.
 ### 2026-08-03 — Collaboration decision
 
 This local directory is the active TapTap Maker project. The project will also be shared through `Yunlong2601/SHENTECHSTUDIO` for collaboration across multiple agent platforms. Local Maker readiness and GitHub publication are separate checks.
+
+### 2026-08-03 — Prototype 02 progression loop
+
+Prototype 02 keeps the UI-only, single-file scope while adding the first roguelite loop: collectible Data Fragments and Pattern Shards, level-up choices, three module behaviors, timed waves with calibration pauses, elite encounters, and a bilingual run summary. The local entry remains `scripts/main.lua`; no build or remote synchronization is implied by this milestone.
 
 ## 13. Definition of “Ready for First Playtest”
 
