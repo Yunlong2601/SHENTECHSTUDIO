@@ -1,0 +1,195 @@
+{
+  "schema": "fracture-protocol/game-data/1",
+  "chassis": [
+    {
+      "id": "vector_triangle",
+      "name": "Vector Triangle",
+      "base_stats": {
+        "vector": 1.25,
+        "integrity": 0.85,
+        "shell_capacity": 0.75,
+        "resonance_gain": 1.0
+      },
+      "starting_modules": ["trace_beam"],
+      "passive": "directional_charge",
+      "drawback": "turn_penalty",
+      "tags": ["movement", "precision"]
+    }
+  ],
+  "modules": [
+    {
+      "id": "trace_beam",
+      "name": "Trace Beam",
+      "type": "beam",
+      "rarity": "common",
+      "activation": "auto",
+      "damage_type": "kinetic",
+      "tags": ["beam", "precision"],
+      "base": {
+        "damage": 14,
+        "cycle_time": 1.0,
+        "range": 420,
+        "beam_width": 6
+      },
+      "tradeoff": "low_swarm_damage"
+    },
+    {
+      "id": "orbit_seed",
+      "name": "Orbit Seed",
+      "type": "orbital",
+      "rarity": "common",
+      "activation": "auto",
+      "damage_type": "kinetic",
+      "tags": ["orbit"],
+      "base": {
+        "damage": 8,
+        "cycle_time": 1.6,
+        "radius": 54,
+        "node_count": 1
+      },
+      "tradeoff": "weak_without_density"
+    },
+    {
+      "id": "pulse_bloom",
+      "name": "Pulse Bloom",
+      "type": "pulse",
+      "rarity": "common",
+      "activation": "cycle",
+      "damage_type": "resonant",
+      "tags": ["pulse", "resonance"],
+      "base": {
+        "damage": 18,
+        "cycle_time": 2.2,
+        "radius": 72
+      },
+      "tradeoff": "short_range"
+    }
+  ],
+  "enemies": [
+    {
+      "id": "crawler_node",
+      "name": "Crawler Node",
+      "tier": "regular",
+      "health": 22,
+      "speed": 90,
+      "behavior": "pursuit",
+      "attack": "contact",
+      "damage": 7,
+      "tags": ["swarm"]
+    },
+    {
+      "id": "vector_lancer",
+      "name": "Vector Lancer",
+      "tier": "regular",
+      "health": 38,
+      "speed": 110,
+      "behavior": "align_dash",
+      "attack": "dash_line",
+      "damage": 12,
+      "tags": ["lance"]
+    },
+    {
+      "id": "relay_mite",
+      "name": "Relay Mite",
+      "tier": "regular",
+      "health": 26,
+      "speed": 80,
+      "behavior": "support_follow",
+      "attack": "buff_aura",
+      "damage": 4,
+      "tags": ["support"]
+    }
+  ],
+  "upgrades": [
+    {
+      "id": "harmonic_split",
+      "name": "Harmonic Split",
+      "type": "pattern",
+      "rarity": "rare",
+      "tags": ["resonance", "projectile"],
+      "effects": [
+        {
+          "kind": "add_fragment",
+          "amount": 1,
+          "power_multiplier": 0.55
+        }
+      ],
+      "tradeoffs": [
+        {
+          "stat": "cycle_rate",
+          "multiplier": 0.94
+        }
+      ]
+    },
+    {
+      "id": "flux_lens",
+      "name": "Flux Lens",
+      "type": "pattern",
+      "rarity": "common",
+      "tags": ["flux", "utility"],
+      "effects": [
+        {
+          "kind": "stat",
+          "stat": "flux",
+          "add": 1
+        }
+      ],
+      "tradeoffs": []
+    }
+  ],
+  "waves": [
+    {
+      "wave": 1,
+      "duration": 45,
+      "spawn": [
+        {
+          "enemy": "crawler_node",
+          "count": 8,
+          "interval": 3.0
+        }
+      ],
+      "elite": null,
+      "modifiers": []
+    },
+    {
+      "wave": 2,
+      "duration": 55,
+      "spawn": [
+        {
+          "enemy": "crawler_node",
+          "count": 12,
+          "interval": 2.6
+        },
+        {
+          "enemy": "vector_lancer",
+          "count": 3,
+          "interval": 6.0
+        }
+      ],
+      "elite": null,
+      "modifiers": ["shift_geometry"]
+    },
+    {
+      "wave": 3,
+      "duration": 60,
+      "spawn": [
+        {
+          "enemy": "crawler_node",
+          "count": 14,
+          "interval": 2.3
+        },
+        {
+          "enemy": "relay_mite",
+          "count": 2,
+          "interval": 8.0
+        }
+      ],
+      "elite": "tuning_fork",
+      "modifiers": ["objective_wave"]
+    }
+  ],
+  "meta": {
+    "locales": ["en", "zh_CN"],
+    "default_locale": "en"
+  }
+}
