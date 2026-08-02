@@ -22,6 +22,24 @@ local projectiles_ = {}
 local pickups_ = {}
 ---@type Widget|nil
 local orbitWidget_ = nil
+---@type Widget|nil
+local touchSurface_ = nil
+---@type Widget|nil
+local joystickBase_ = nil
+---@type Widget|nil
+local joystickKnob_ = nil
+local touchPointerId_ = nil
+local touchActive_ = false
+---@type number
+local touchStartX_ = 0
+---@type number
+local touchStartY_ = 0
+---@type number
+local touchX_ = 0
+---@type number
+local touchY_ = 0
+---@type number
+local touchRadius_ = 72
 ---@type number
 local worldWidth_ = 800
 ---@type number
@@ -96,7 +114,8 @@ local TEXT = {
         ["game.time"] = "突围时间：%ds", ["game.score"] = "击破：%d", ["game.wave"] = "波次：%d / %d",
         ["game.progress"] = "模式碎片：%d / %d", ["game.fragments"] = "数据碎片：%d",
         ["game.module"] = "模块：%s Lv.%d", ["game.none"] = "未装配", ["game.enemy"] = "敌对几何体",
-        ["game.elite"] = "精英核心", ["game.hint"] = "WASD / 方向键移动 · 自动模块锁定目标",
+        ["game.elite"] = "精英核心", ["game.hint"] = "WASD / 方向键移动 · 自动模块锁定目标", ["game.mobile_hint"] = "触摸左侧并拖动移动 · 自动攻击",
+
         ["game.wave_pause"] = "波次校准完成", ["game.wave_next"] = "下一波：%d", ["game.continue"] = "继续突围",
         ["game.level_up"] = "升级：选择一项校准", ["game.level"] = "等级 %d",
         ["module.trace"] = "Trace Beam · 轨迹光束", ["module.trace_desc"] = "更快、更强的窄束自动追踪光束",
@@ -117,7 +136,8 @@ local TEXT = {
         ["game.time"] = "Breakout time: %ds", ["game.score"] = "Defeated: %d", ["game.wave"] = "Wave: %d / %d",
         ["game.progress"] = "Pattern Shards: %d / %d", ["game.fragments"] = "Data Fragments: %d",
         ["game.module"] = "Module: %s Lv.%d", ["game.none"] = "Unassigned", ["game.enemy"] = "Hostile Form",
-        ["game.elite"] = "Elite Core", ["game.hint"] = "WASD / arrows to move · module auto-locks targets",
+        ["game.elite"] = "Elite Core", ["game.hint"] = "WASD / arrows to move · module auto-locks targets", ["game.mobile_hint"] = "Touch and drag on the left side to move · auto-attacks",
+
         ["game.wave_pause"] = "Wave calibrated", ["game.wave_next"] = "Next wave: %d", ["game.continue"] = "Continue Breakout",
         ["game.level_up"] = "Level up: choose a calibration", ["game.level"] = "Level %d",
         ["module.trace"] = "Trace Beam", ["module.trace_desc"] = "A faster, stronger narrow auto-tracking beam",
@@ -157,6 +177,55 @@ end
 
 local function SetWidgetPosition(widget, x, y, size)
     if widget then widget:SetStyle({ left = x - size * 0.5, top = y - size * 0.5 }) end
+end
+
+local function SetTouchJoystickVisible(visible)
+    if joystickBase_ then joystickBase_:SetVisible(visible) end
+    if joystickKnob_ then joystickKnob_:SetVisible(visible) end
+end
+
+local function ResetTouchControl()
+    touchPointerId_ = nil
+    touchActive_ = false
+    touchStartX_, touchStartY_, touchX_, touchY_ = 0, 0, 0, 0
+    SetTouchJoystickVisible(false)
+end
+
+local function UpdateTouchJoystickVisual()
+    if not touchActive_ or not joystickBase_ or not joystickKnob_ then return end
+    local dx, dy = touchX_ - touchStartX_, touchY_ - touchStartY_
+    local distance = math.sqrt(dx * dx + dy * dy)
+    if distance > touchRadius_ then
+        dx, dy = dx / distance * touchRadius_, dy / distance * touchRadius_
+    end
+    joystickBase_:SetStyle({ left = touchStartX_ - touchRadius_, top = touchStartY_ - touchRadius_ })
+    joystickKnob_:SetStyle({ left = touchStartX_ + dx - 26, top = touchStartY_ + dy - 26 })
+end
+
+local function HandleTouchDown(event)
+    if screen_ ~= "game" or event.pointerType ~= "touch" or touchActive_ then return end
+    -- Reserve the right side for future touch abilities; movement starts on the left.
+    if event.x > worldWidth_ * 0.58 then return end
+    touchPointerId_ = event.pointerId
+    touchActive_ = true
+    touchStartX_, touchStartY_ = event.x, event.y
+    touchX_, touchY_ = event.x, event.y
+    SetTouchJoystickVisible(true)
+    UpdateTouchJoystickVisual()
+    event:PreventDefault()
+end
+
+local function HandleTouchMove(event)
+    if not touchActive_ or event.pointerId ~= touchPointerId_ then return end
+    touchX_, touchY_ = event.x, event.y
+    UpdateTouchJoystickVisual()
+    event:PreventDefault()
+end
+
+local function HandleTouchUp(event)
+    if not touchActive_ or event.pointerId ~= touchPointerId_ then return end
+    ResetTouchControl()
+    event:PreventDefault()
 end
 
 local function DestroyEntityWidget(widget)
@@ -208,13 +277,24 @@ local function ModuleName(moduleId)
 end
 
 local function BuildGameScreen()
+    ResetTouchControl()
     gameWorld_ = UI.Panel { id = "gameWorld", position = "absolute", top = 0, left = 0, width = "100%", height = "100%", pointerEvents = "none", backgroundColor = { 9, 17, 37, 255 }, overflow = "hidden" }
     playerWidget_ = UI.Panel { id = "player", position = "absolute", width = 32, height = 32, backgroundColor = { 82, 214, 255, 255 }, borderColor = { 225, 250, 255, 255 }, borderWidth = 2, borderRadius = 5, rotate = 45 }
     gameWorld_:AddChild(playerWidget_)
     hudLabel_ = MakeLabel("", { fontSize = 13, fontWeight = "bold", fontColor = { 220, 235, 255, 255 }, lineHeight = 1.35 })
     waveLabel_ = MakeLabel("", { fontSize = 14, fontWeight = "bold", fontColor = { 255, 230, 137, 255 }, textAlign = "right" })
     local hud = UI.Panel { position = "absolute", top = 14, left = 16, right = 16, flexDirection = "row", justifyContent = "space-between", pointerEvents = "none", children = { hudLabel_, waveLabel_ } }
-    return UI.Panel { width = "100%", height = "100%", pointerEvents = "box-none", children = { gameWorld_, hud, MakeLabel(T("game.hint"), { position = "absolute", bottom = 12, left = 0, right = 0, textAlign = "center", fontSize = 11, fontColor = { 131, 151, 190, 220 } }) } }
+
+    joystickBase_ = UI.Panel { position = "absolute", width = touchRadius_ * 2, height = touchRadius_ * 2, backgroundColor = { 72, 133, 204, 90 }, borderColor = { 157, 220, 255, 170 }, borderWidth = 2, borderRadius = touchRadius_, pointerEvents = "none", visible = false }
+    joystickKnob_ = UI.Panel { position = "absolute", width = 52, height = 52, backgroundColor = { 108, 220, 255, 210 }, borderColor = { 230, 252, 255, 230 }, borderWidth = 2, borderRadius = 26, pointerEvents = "none", visible = false }
+    touchSurface_ = UI.Panel { position = "absolute", top = 0, left = 0, width = "100%", height = "100%", pointerEvents = "auto", onPointerDown = HandleTouchDown, onPointerMove = HandleTouchMove, onPointerUp = HandleTouchUp, onPointerCancel = HandleTouchUp, children = { joystickBase_, joystickKnob_ } }
+
+    return UI.Panel { width = "100%", height = "100%", pointerEvents = "box-none", children = {
+        gameWorld_, hud,
+        MakeLabel(T("game.hint"), { position = "absolute", bottom = 28, left = 0, right = 0, textAlign = "center", fontSize = 11, fontColor = { 131, 151, 190, 220 } }),
+        MakeLabel(T("game.mobile_hint"), { position = "absolute", bottom = 10, left = 0, right = 0, textAlign = "center", fontSize = 10, fontColor = { 122, 190, 218, 230 } }),
+        touchSurface_,
+    } }
 end
 
 local function BuildUpgradeScreen()
@@ -318,11 +398,23 @@ local function DamagePlayer()
 end
 
 local function UpdateMovement(timeStep)
-    local dx, dy = 0, 0
-    if keys_[KEY_A] or keys_[KEY_LEFT] then dx = dx - 1 end; if keys_[KEY_D] or keys_[KEY_RIGHT] then dx = dx + 1 end
-    if keys_[KEY_W] or keys_[KEY_UP] then dy = dy - 1 end; if keys_[KEY_S] or keys_[KEY_DOWN] then dy = dy + 1 end
-    local length = math.sqrt(dx * dx + dy * dy)
-    if length > 0 then player_.x = player_.x + dx / length * player_.speed * timeStep; player_.y = player_.y + dy / length * player_.speed * timeStep end
+    ---@type number
+    local dx = 0
+    ---@type number
+    local dy = 0
+    if touchActive_ then
+        dx, dy = touchX_ - touchStartX_, touchY_ - touchStartY_
+        local distance = math.sqrt(dx * dx + dy * dy)
+        if distance > 0 then
+            dx, dy = dx / math.max(distance, touchRadius_), dy / math.max(distance, touchRadius_)
+        end
+    else
+        if keys_[KEY_A] or keys_[KEY_LEFT] then dx = dx - 1 end; if keys_[KEY_D] or keys_[KEY_RIGHT] then dx = dx + 1 end
+        if keys_[KEY_W] or keys_[KEY_UP] then dy = dy - 1 end; if keys_[KEY_S] or keys_[KEY_DOWN] then dy = dy + 1 end
+        local length = math.sqrt(dx * dx + dy * dy)
+        if length > 0 then dx, dy = dx / length, dy / length end
+    end
+    if dx ~= 0 or dy ~= 0 then player_.x = player_.x + dx * player_.speed * timeStep; player_.y = player_.y + dy * player_.speed * timeStep end
     player_.x = math.max(player_.radius, math.min(worldWidth_ - player_.radius, player_.x)); player_.y = math.max(player_.radius, math.min(worldHeight_ - player_.radius, player_.y)); SetWidgetPosition(playerWidget_, player_.x, player_.y, 32)
 end
 

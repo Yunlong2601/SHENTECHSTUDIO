@@ -17,6 +17,7 @@
   "game.enemy": "敌对几何体",
   "game.elite": "精英核心",
   "game.hint": "WASD / 方向键移动 · 自动模块锁定目标",
+  "game.mobile_hint": "触摸左侧并拖动移动 · 自动攻击",
   "game.wave_pause": "波次校准完成",
   "game.wave_next": "下一波：%d",
   "game.continue": "继续突围",

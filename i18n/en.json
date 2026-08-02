@@ -17,6 +17,7 @@
   "game.enemy": "Hostile Form",
   "game.elite": "Elite Core",
   "game.hint": "WASD / arrows to move · module auto-locks targets",
+  "game.mobile_hint": "Touch and drag on the left side to move · auto-attacks",
   "game.wave_pause": "Wave calibrated",
   "game.wave_next": "Next wave: %d",
   "game.continue": "Continue Breakout",
