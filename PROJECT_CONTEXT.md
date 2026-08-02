@@ -51,31 +51,32 @@ The game must feel like an original geometric/synthetic IP, not a clone or reski
 
 ### Current implementation reality
 
-The current code is still a small prototype internally based on the old placeholder concept **Star Quest / 星星探险**. It is not yet the Geometry Breakout combat MVP.
+The project has moved beyond the placeholder click prototype into **Geometry Breakout Prototype 01**. The current implementation is still an early UI-driven combat prototype, but it now contains the first playable combat loop locally.
 
 Current prototype behavior:
 
 - Choose English or 简体中文
-- Enter a screen with a clickable star
-- Increase score by clicking
-- Reset score
-- Return to language selection
+- Start Geometry Breakout / 几何突围
+- Move the geometric player with WASD or arrow keys
+- Spawn pursuing hostile forms
+- Automatically fire at the nearest hostile form
+- Destroy enemies with projectiles
+- Track Integrity, elapsed breakout time, and defeated count
+- Take contact damage
+- Enter a defeat screen and restart the run
 
 ### Not implemented yet
 
-- Geometric player movement
-- Top-down combat
-- Enemy spawning and behaviors
-- Automatic attacks/modules
 - Pickups and experience
-- Wave director
+- Wave director and wave-end transitions
 - Level-up choices
+- Multiple modules and build crafting
 - Elite or boss encounters
 - Arena modifiers
-- Run summary
+- Run summary beyond the basic defeat screen
 - Meta progression
 - Reliable Maker preview/build verification
-- Formal GitHub synchronization
+- Full GitHub synchronization of the local source tree
 
 ## 4. MVP Target
 
@@ -341,6 +342,6 @@ The first playtest is ready when:
 
 ## 14. Immediate Next Action
 
-Implement **Geometry Breakout Prototype 01: movement, one enemy, one automatic attack, damage, death, and restart**.
+Validate Prototype 01 in the Maker runtime, then implement **Prototype 02: pickups, experience, wave timing, and a three-choice upgrade screen**.
 
 Do not begin with meta progression, twelve chassis, a full shop, or a large asset pass. The next meaningful proof is a fun five-minute combat loop.
