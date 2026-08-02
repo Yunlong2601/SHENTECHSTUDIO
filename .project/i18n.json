@@ -1,0 +1,12 @@
+{
+  "enabled": true,
+  "source_lang": "zh_CN",
+  "target_langs": ["en"],
+  "file_exts": [".lua", ".json", ".xml"],
+  "lang_to_display": {
+    "zh_CN": "简体中文",
+    "en": "English"
+  },
+  "function_excludes": ["require", "print", "GetResource"],
+  "content_excludes": ["^Fonts/", "^urhox%-libs/", "^KEY_", "^MOUSEB_"]
+}

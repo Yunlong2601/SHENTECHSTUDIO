@@ -1,0 +1,15 @@
+{
+  "menu.title": "几何突围",
+  "menu.subtitle": "选择语言开始游戏",
+  "language.english": "English",
+  "language.simplified_chinese": "简体中文",
+  "menu.ready": "你的突围已经准备好了！",
+  "menu.start": "开始突围",
+  "prototype.objective": "收集几何能量",
+  "prototype.hint": "点击核心，测试双语游戏流程。",
+  "prototype.core": "◆",
+  "prototype.score": "能量：%d",
+  "menu.change_language": "更换语言",
+  "menu.reset": "重新开始",
+  "menu.footer": "几何突围 · TapTap Maker 原型"
+}
