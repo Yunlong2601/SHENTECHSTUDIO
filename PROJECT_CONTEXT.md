@@ -11,7 +11,7 @@
 - **Chinese title:** 几何突围
 - **English title:** Geometry Breakout
 - **Genre:** Top-down arena roguelite / short-run survival action game
-- **Platform priority:** TapTap Maker browser/playable prototype first; GitHub is the collaboration and publishing repository
+- **Platform priority:** Mobile-first TapTap Maker prototype for Android phones/tablets and iPhone/iPad, with browser/PC keyboard support for development; GitHub is the collaboration and publishing repository
 - **Current local project:** This directory (`TAPTAPGAME`)
 - **GitHub target repository:** `Yunlong2601/SHENTECHSTUDIO`
 - **Primary code location:** `scripts/`
@@ -56,23 +56,22 @@ The project now contains **Geometry Breakout Prototype 02**, a UI-driven playabl
 Current prototype behavior:
 
 - Choose English or 简体中文
-- Move the geometric player with WASD or arrow keys
+- Move the geometric player with WASD/arrow keys on PC or a virtual touch joystick on phones and tablets
 - Timed waves with between-wave calibration pauses
-- Regular pursuing enemies plus an elite core on every third wave
-- Automatic Trace Beam baseline attack
+- Deterministic Chaser, Skimmer, and telegraphed Charger behaviors plus preserved elite core on every third wave
+- Deterministic Compression, Surge, and Overclock arena modifiers per wave
+- Automatic Trace Beam baseline attack with simultaneous Orbit Seed and Pulse Bloom combinations
 - Data Fragment pickups with magnet attraction and collection
 - Pattern Shard experience, level-up thresholds, and a three-choice calibration overlay
-- Three distinct modules: Trace Beam, Orbit Seed, and Pulse Bloom
-- Track Integrity, time, score, wave, data fragments, pattern shards, level, and module level
+- Three simultaneous modules: Trace Beam, Orbit Seed, and Pulse Bloom, with level-3/5 evolution effects
+- Track Integrity, time, score, wave, modifier, data fragments, pattern shards, level, and all active module levels
+- Session-safe Calibration Archive with starting Integrity and magnet upgrades; summary awards calibration currency once
 - Contact damage, defeat state, restart, and run summary showing wave/score/level/module
 
 ### Not implemented yet
 
-- Additional regular enemy behaviors beyond the pursuing form
-- Arena modifiers
-- Meta progression
-- Reliable Maker preview/build verification
-- Full GitHub synchronization of the local source tree
+- Persistent storage-backed meta progression (storage API remains unverified; Prototype 03 uses a session fallback)
+- Mobile phone/tablet/iPhone/iPad device pass beyond the current touch prototype
 
 ## 4. MVP Target
 
@@ -322,6 +321,10 @@ The project will prioritize a small playable MVP before large content expansion.
 
 This local directory is the active TapTap Maker project. The project will also be shared through `Yunlong2601/SHENTECHSTUDIO` for collaboration across multiple agent platforms. Local Maker readiness and GitHub publication are separate checks.
 
+### 2026-08-03 — Prototype 03 systems pass
+
+Prototype 03 keeps the single-file UI architecture and mobile touch controls while adding deterministic enemy roles, per-wave arena modifiers, simultaneous modules with level-3/5 evolution, readable telegraphs, and a small non-essential Calibration Archive. The profile is intentionally an in-memory session fallback because no supported persistence API was verified.
+
 ### 2026-08-03 — Prototype 02 progression loop
 
 Prototype 02 keeps the UI-only, single-file scope while adding the first roguelite loop: collectible Data Fragments and Pattern Shards, level-up choices, three module behaviors, timed waves with calibration pauses, elite encounters, and a bilingual run summary. The local entry remains `scripts/main.lua`; no build or remote synchronization is implied by this milestone.
@@ -343,6 +346,13 @@ The first playtest is ready when:
 
 ## 14. Immediate Next Action
 
-Validate Prototype 01 in the Maker runtime, then implement **Prototype 02: pickups, experience, wave timing, and a three-choice upgrade screen**.
+Prototype 02 has been built successfully in Maker and now includes a mobile virtual joystick. The next development focus is a mobile-first Prototype 03 systems pass:
 
-Do not begin with meta progression, twelve chassis, a full shop, or a large asset pass. The next meaningful proof is a fun five-minute combat loop.
+1. Add readable skimmer and charger enemy behaviors.
+2. Add deterministic arena modifiers per wave.
+3. Replace the single selected module with true simultaneous module combinations.
+4. Add level-based module evolution.
+5. Add a small permanent Calibration Archive for meta progression.
+6. Re-run Maker preview validation on Android phone/tablet and iPhone/iPad-sized layouts.
+
+Keep the first meta progression deliberately small and non-essential to winning a run. Do not begin with twelve chassis, a full shop, or a large asset pass.
