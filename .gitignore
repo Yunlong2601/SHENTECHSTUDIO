@@ -1,4 +1,4 @@
-# >>> TapTap Maker AI dev kit (local only) >>>
+# TapTap Maker AI dev kit and local-only files
 .DS_Store
 .claude/
 .cli/
@@ -9,9 +9,32 @@ AGENTS.md
 CLAUDE.md
 engine-docs/
 examples/
+lua-tools/
 schemas/
 skills/
 templates/
 tools/
 urhox-libs/
-# <<< TapTap Maker AI dev kit (local only) <<<
+
+# Build artifacts & runtime state
+.build/
+dist/
+logs/
+*.log
+logs/.nfs*
+.sce/logs/
+.sce/build/build_steps/__pycache__/
+
+# Temp & swap files
+.tmp/
+*.crswap
+
+# OSS util
+.ossutil_checkpoint/
+ossutil_output/
+
+# Editor / IDE / agent configs
+.vscode/
+.cursor/
+.codex/
+.gemini/
