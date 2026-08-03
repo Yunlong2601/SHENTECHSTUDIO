@@ -6,6 +6,8 @@ local state = require("state")
 local i18n = require("i18n")
 local player = require("player")
 local modules = require("modules")
+local waves = require("waves")
+local enemies = require("enemies")
 local player_ = state.player_
 
 state.T = function(key, ...)
@@ -15,13 +17,6 @@ end
 
 local function IsGameScreen()
     return state.screen_ == "game"
-end
-
-local function ModifierForWave(wave)
-    local cycle = (wave - 1) % 3
-    if cycle == 0 then return "compression" end
-    if cycle == 1 then return "surge" end
-    return "overclock"
 end
 
 local function GetWorldSize()
@@ -113,7 +108,7 @@ local function ResetRunState()
     state.runTime_, state.waveTime_, state.spawnTimer_, state.enemyId_, state.score_ = 0, 0, 0, 0, 0
     state.dataFragments_, state.patternShards_, state.level_, state.levelProgress_ = 0, 0, 1, 0
     state.levelGoal_, state.wave_, state.waveSpawned_, state.eliteCount_ = 5, 1, 0, 0
-    state.modifier_ = ModifierForWave(state.wave_)
+    waves.reset()
     state.waveSpawnTarget_, state.wavePauseTimer_ = 10, 0
     state.chosenModule_, state.moduleLevel_, state.defeatReason_ = "", 0, ""
     state.summaryAwarded_ = false
@@ -216,7 +211,7 @@ local function BuildWavePauseScreen()
         } },
         MakeLabel(state.T("game.modifier", state.T("modifier." .. state.modifier_)), { fontSize = 14, fontWeight = "bold", fontColor = { 255, 182, 105, 255 }, textAlign = "center" }),
         MakeLabel(state.T("game.modules", ActiveModuleText()), { fontSize = 13, fontColor = { 207, 220, 244, 255 }, textAlign = "center" }),
-        UI.Button { text = state.T("game.continue"), variant = "primary", width = "100%", height = 50, onClick = function() state.screen_ = "game"; state.modifier_ = ModifierForWave(state.wave_); state.surgeTimer_, state.waveTime_, state.waveSpawned_, state.spawnTimer_ = 2.5, 0, 0, 0; state.waveSpawnTarget_ = 8 + state.wave_ * 3; BuildUI() end },
+        UI.Button { text = state.T("game.continue"), variant = "primary", width = "100%", height = 50, onClick = function() waves.begin_wave(); BuildUI() end },
     } }
 end
 
@@ -640,7 +635,7 @@ end
 local function EndWave()
     ClearEntities()
     if state.wave_ >= state.maxWaves_ then state.defeatReason_ = state.T("game.reason_complete"); if not state.summaryAwarded_ then state.profile_.calibration = state.profile_.calibration + math.max(1, math.floor(state.dataFragments_ / 8)); state.summaryAwarded_ = true end; state.screen_ = "summary"; BuildUI(); return end
-    state.wave_ = state.wave_ + 1; state.screen_ = "wave_pause"; state.wavePauseTimer_ = 0; BuildUI()
+    waves.advance(); BuildUI()
 end
 
 function HandleUpdate(_eventType, eventData)
@@ -649,14 +644,14 @@ function HandleUpdate(_eventType, eventData)
     player.update_timers(timeStep); state.spawnTimer_ = state.spawnTimer_ - timeStep; state.surgeFlash_ = math.max(0, state.surgeFlash_ - timeStep)
     if state.modifier_ == "surge" then state.surgeTimer_ = state.surgeTimer_ - timeStep; if state.surgeTimer_ <= 0 then state.surgeTimer_ = 4.0; state.surgeFlash_ = 0.55; for _, enemy in ipairs(state.enemies_) do if not enemy.dead then DamageEnemy(enemy, 1); end end end end
     player.update_movement(timeStep)
-    if state.waveSpawned_ == 0 and state.wave_ % 3 == 0 then SpawnEnemy(true) end
-    if state.spawnTimer_ <= 0 and state.waveSpawned_ < state.waveSpawnTarget_ and state.waveTime_ < state.waveDuration_ then SpawnEnemy(false); state.spawnTimer_ = math.max(0.35, 0.9 - state.wave_ * 0.05) end
+    if state.waveSpawned_ == 0 and state.wave_ % 3 == 0 then enemies.spawn(true) end
+    if state.spawnTimer_ <= 0 and state.waveSpawned_ < state.waveSpawnTarget_ and state.waveTime_ < state.waveDuration_ then enemies.spawn(false); state.spawnTimer_ = math.max(0.35, 0.9 - state.wave_ * 0.05) end
     if IsModuleActive("trace") and player_.fireTimer <= 0 then modules.fire_trace_beam(); player_.fireTimer = math.max(0.18, 0.42 - state.moduleLevels_.trace * 0.04) end
     if IsModuleActive("pulse") and player_.pulseTimer <= 0 then modules.pulse_bloom(); player_.pulseTimer = math.max(1.4, 3.0 - state.moduleLevels_.pulse * 0.25) end
     modules.update_shell(timeStep)
-    UpdateEnemies(timeStep)
+    enemies.update(timeStep)
     if not IsGameScreen() then return end
-    UpdateProjectiles(timeStep); UpdatePickups(timeStep)
+    enemies.update_projectiles(timeStep); UpdatePickups(timeStep)
     if not IsGameScreen() then return end
     modules.update_orbit(timeStep)
     modules.update_shell_visual()
@@ -675,7 +670,8 @@ function HandleKeyUp(_eventType, eventData)
 end
 
 function Start()
-    modules.configure({ findNearestEnemy = FindNearestEnemy, damageEnemy = DamageEnemy, setWidgetPosition = SetWidgetPosition, destroyWidget = DestroyEntityWidget })
+    modules.configure({ findNearestEnemy = enemies.find_nearest, damageEnemy = enemies.damage, setWidgetPosition = SetWidgetPosition, destroyWidget = DestroyEntityWidget })
+    enemies.configure({ spawnPickup = SpawnPickup, damagePlayer = DamagePlayer, setWidgetPosition = SetWidgetPosition, destroyWidget = DestroyEntityWidget })
     graphics.windowTitle = "Geometry Breakout / 几何突围"; UI.Init({ theme = "default-dark", fonts = { { family = "sans", weights = { normal = "Fonts/MiSans-Regular.ttf" } } }, scale = UI.Scale.DEFAULT })
     input.mouseMode = MM_ABSOLUTE; input.mouseVisible = true
     SubscribeToEvent("Update", "HandleUpdate"); SubscribeToEvent("KeyDown", "HandleKeyDown"); SubscribeToEvent("KeyUp", "HandleKeyUp"); BuildUI()
