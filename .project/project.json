@@ -24,10 +24,14 @@
     "screenshots": [],
     "promotional_image": "./game_material/promotional.png",
     "icon_url": "https://tapcode-sce.spark.xd.com/assets/game_material/几何突围/ICON_2026-08-03T16-37-18_01.png",
-    "promotional_image_url": "https://tapcode-sce.spark.xd.com/assets/game_material/p_8x93/promotional.png"
+    "promotional_image_url": "https://tapcode-sce.spark.xd.com/assets/game_material/p_8x93/promotional.png",
+    "cover_horizontal": "./game_material/COVER_HORIZONTAL_2026-08-03T16-52-13_01.png",
+    "cover_horizontal_url": "https://tapcode-sce.spark.xd.com/assets/game_material/几何突围/COVER_HORIZONTAL_2026-08-03T16-52-13_01.png",
+    "cover_vertical": "./game_material/COVER_VERTICAL_2026-08-03T16-53-00_01.png",
+    "cover_vertical_url": "https://tapcode-sce.spark.xd.com/assets/game_material/几何突围/COVER_VERTICAL_2026-08-03T16-53-00_01.png"
   },
   "metadata": {
-    "updated_at": "2026-08-03T16:50:29.734Z"
+    "updated_at": "2026-08-03T16:53:01.652Z"
   },
   "test_qrcode": {
     "url": "https://tapcode-sce.spark.xd.com/qrcode/p_8x93_1785775261816.png",
