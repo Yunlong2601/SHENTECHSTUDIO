@@ -24,6 +24,12 @@ Geometry Breakout is an original geometric survival game. The player controls a 
 
 The game must feel like an original geometric/synthetic IP, not a clone or reskin of any existing survivor-like game.
 
+### Art style baseline
+
+The canonical art style is **Neon Vector Geometry**. Future assets, prompts, UI polish, enemy silhouettes, boss designs, VFX, and placeholder art should follow `project-source/ART_STYLE.md`.
+
+The style is geometry-first: triangles, hexagons, rings, shards, orbit lines, angular circuits, radial hazard marks, and polygon armor form the player, enemies, arena, and combat effects. The target is premium mobile survivor readability with a distinct sci-fi geometric identity.
+
 ### Core fantasy
 
 > Engineer a powerful geometric combat build while the arena collapses around you.
@@ -325,6 +331,18 @@ The formal product name changed from the placeholder Star Quest concept to:
 
 The game should focus on geometric survival, combat construction, and breakout from hostile arena conditions.
 
+### 2026-08-03 — Art style baseline selected
+
+The project selected **Neon Vector Geometry** as the canonical art direction. The style uses deep navy synthetic arenas, electric cyan player energy, magenta/red enemy pressure, teal alternate threats, orange-gold elites and bosses, restrained gold upgrades, violet sci-fi VFX, and crisp geometric silhouettes. `project-source/ART_STYLE.md` is now the durable source for future visual decisions and asset prompts.
+
+### 2026-08-03 — M1-M10 milestone ladder established
+
+The roadmap was expanded from a broad M1-M5 outline into a gated M1-M10 ladder: M1 combat feel, M2 content density, M3 buildcraft, M4 mobile/accessibility, M5 small meta progression, M6 visual/audio identity, M7 bosses/chapter structure, M8 retention/challenges, M9 technical publishing readiness, and M10 launch candidate. M1 remains active; later milestones are direction, not permission to skip playtest gates.
+
+### 2026-08-03 — Demo-first milestone policy
+
+Structured playtesting is no longer an early M1 blocker. The project will build a complete, monetizable TapTap demo prototype first, then use playtesting after the demo is ready for test launch. M1 is now demo foundation buildout, and TapTap commercial readiness is a required pillar before public test launch.
+
 ### 2026-08-03 — Scope decision
 
 The project will prioritize a small playable MVP before large content expansion. One chassis, one arena, three modules, a few waves, and one elite/boss are sufficient for the first proof of fun.
@@ -354,29 +372,31 @@ In the same pass, the upgrade overlay switched from "show all available modules"
 
 Prototype 02 keeps the UI-only, single-file scope while adding the first roguelite loop: collectible Data Fragments and Pattern Shards, level-up choices, three module behaviors, timed waves with calibration pauses, elite encounters, and a bilingual run summary. The local entry remains `scripts/main.lua`; no build or remote synchronization is implied by this milestone.
 
-## 13. Definition of “Ready for First Playtest”
+## 13. Definition of “Ready for Test-Launch Prototype”
 
-The first playtest is ready when:
+The project is not ready for structured playtesting or public test launch until the demo feels like a real TapTap product, not only a systems prototype. Test-launch readiness requires:
 
 - The title says Geometry Breakout / 几何突围.
 - The player can select English or Simplified Chinese.
-- The player controls a geometric chassis.
-- At least one enemy can damage the player.
-- At least one module can defeat enemies.
-- The player can collect a resource.
-- The player can make one upgrade choice.
+- The player controls a polished geometric chassis using the Neon Vector Geometry art baseline.
+- At least three enemy roles, one elite, and one boss/proto-boss exist.
+- The player can complete a full run path: start, fight, collect, upgrade, face an elite/boss, die or finish, see summary, restart.
+- The demo includes readable VFX, damage feedback, module evolution feedback, and a coherent arena background.
+- The demo includes session rewards and a clear progression surface.
+- The demo has a documented TapTap monetization path, even if payment or reward APIs are not wired yet.
+- Paid/cosmetic surfaces must not break core progression or create pay-to-win pressure.
 - The player can die and restart.
 - No known blocking Lua errors remain.
 - The build or preview has been tested in the intended Maker runtime.
 
 ## 14. Immediate Next Action
 
-Prototype 03 (systems pass) and Prototype 04 (Defense & Counter) are both complete. The §7 six-module roster is fully implemented and the §11 three-choice upgrade spec is now correctly enforced via 3-random shuffle. With the module layer finished, the next development focus is **a gameplay-feel and content-density pass**:
+The active milestone is **M1 — Demo foundation buildout** in `project-source/ROADMAP.md`. Prototype 03 (systems pass) and Prototype 04 (Defense & Counter) are both complete, and feedback instrumentation is already implemented. The remaining M1 work is now demo construction, not structured playtesting:
 
-1. Playtest the new module combos — especially Mine + Hook stacking on the elite Charger waves — and tune blast radius, arm time, and trail spacing if they feel too soft or too punishing.
-2. Add per-module evolution visuals at Lv3/Lv5 (e.g. larger mine blast, hook trail that arcs or splits) so the evolution feel matches the +0.4/s shell rate and other Lv3 bumps already shipped.
-3. Begin a small content pass on the **wave / modifier layer**: a fourth modifier type (suggestion: Glitch — brief player phase-shifts) and a wave 7 / 8 cadence to give the upgraded builds somewhere to breathe.
-4. Re-run Maker preview validation on Android phone/tablet and iPhone/iPad-sized layouts (Prototype 04 added a second HUD bar; verify the new shell widget does not crowd the touch joystick on small screens).
-5. Optional housekeeping: re-check that the new HUD shell widget and the trace trail (up to ~40 widgets) still hit 60fps on the lowest target phone, and consider splitting `scripts/main.lua` if the next module pass pushes it past the 1500-line threshold.
+1. Build the complete demo loop: start, language, run, upgrades, waves, elite/boss, summary, restart, and session rewards.
+2. Add or refine Neon Vector Geometry placeholders for Vector Triangle, core enemy roles, boss silhouette, module effects, and arena floor.
+3. Add a first monetization-design placeholder surface, such as locked cosmetics/chassis skins or a support panel, without wiring payment APIs yet.
+4. Verify damage numbers, hit flash, screen shake, shell bar, module effects, touch joystick, and upgrade overlay do not crowd small phone layouts.
+5. Keep structured playtesting for the later test-launch prototype stage after the demo is complete enough to judge.
 
-Keep the first meta progression deliberately small and non-essential to winning a run. Do not begin with twelve chassis, a full shop, or a large asset pass.
+The project now has a demo-first M1-M10 milestone ladder. Keep the first meta progression and monetization surfaces deliberately small. Do not begin with twelve chassis, a giant shop, or platform payment/reward API work before the demo loop and TapTap requirements are clear.

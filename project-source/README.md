@@ -9,6 +9,7 @@ All agents and platforms must read these files before making product, architectu
 - `ARCHITECTURE.md` — the current code architecture and approved refactor direction.
 - `TERMINOLOGY.md` — canonical bilingual vocabulary.
 - `UI_LAYOUT.md` — canonical layout and responsive rules.
+- `ART_STYLE.md` — canonical Neon Vector Geometry art direction for future assets, UI polish, VFX, and prompts.
 - `PERPLEXITY_CONTEXT.md` — copy-paste research context and output contract for external research assistants.
 - `ASSET_BRIEF_M1.md` — canonical icon, banner, sprite, and VFX generation brief.
 
