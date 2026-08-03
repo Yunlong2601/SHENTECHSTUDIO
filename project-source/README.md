@@ -10,6 +10,7 @@ All agents and platforms must read these files before making product, architectu
 - `TERMINOLOGY.md` — canonical bilingual vocabulary.
 - `UI_LAYOUT.md` — canonical layout and responsive rules.
 - `PERPLEXITY_CONTEXT.md` — copy-paste research context and output contract for external research assistants.
+- `ASSET_BRIEF_M1.md` — canonical icon, banner, sprite, and VFX generation brief.
 
 The two `*_ARCHIVE_*.md` files are historical references only. They must not override the active roadmap or current state.
 
