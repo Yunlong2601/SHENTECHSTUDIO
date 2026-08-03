@@ -79,7 +79,7 @@ Current prototype behavior:
 - Persistent storage-backed meta progression (storage API remains unverified; Prototype 03 uses a session fallback)
 - Mobile phone/tablet/iPhone/iPad device pass beyond the current touch prototype
 - Visual polish pass for the new modules (mine detonation vfx, hook trail fade curves)
-- UI builders still need extraction from `scripts/main.lua` into `scripts/ui.lua`
+- UI builders and HUD updates are extracted into `scripts/ui.lua`; `main.lua` is now orchestration-focused
 
 ## 4. MVP Target
 

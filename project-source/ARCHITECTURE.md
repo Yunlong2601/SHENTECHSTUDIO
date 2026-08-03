@@ -12,11 +12,12 @@ The game is a UI-driven UrhoX Lua game. `scripts/main.lua` owns engine lifecycle
 - `modules.lua` — six combat modules and their widget/effect updates.
 - `enemies.lua` — enemy spawn, movement, collision, damage, and projectiles.
 - `waves.lua` — wave modifier selection, wave start, and wave advancement.
-- `main.lua` — UI lifecycle, input event binding, remaining screen builders, pickups, summary flow, and frame orchestration.
+- `ui.lua` — all screen builders, HUD construction, touch surface, and HUD refresh.
+- `main.lua` — UI lifecycle, input event binding, pickups, summary flow, and frame orchestration.
 
 ## Approved next refactor
 
-Extract the remaining UI builders and HUD updates into `ui.lua`. `main.lua` should then only coordinate lifecycle, callbacks, and the ordered update pipeline. Do not introduce a framework rewrite or ECS abstraction until the content prototype proves that the current module boundaries are insufficient.
+The UI extraction is complete. `main.lua` now coordinates lifecycle, callbacks, pickups, and the ordered update pipeline. Do not introduce a framework rewrite or ECS abstraction until the content prototype proves that the current module boundaries are insufficient.
 
 ## Update pipeline
 

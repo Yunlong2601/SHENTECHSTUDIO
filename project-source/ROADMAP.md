@@ -25,14 +25,14 @@ This is an aspiration, not a promise of parity with mature commercial teams. Eve
 
 ## Milestones
 
-### M0 — Architecture and truth-source cleanup (now)
+### M0 — Architecture and truth-source cleanup (complete)
 
-- Finish `ui.lua` extraction and reduce `main.lua` to orchestration.
+- Finished `ui.lua` extraction and reduced `main.lua` to orchestration.
 - Keep behavior identical to Prototype 04.
 - Make `project-source/` the only active planning source.
-- Gate: Maker build passes; six-wave run passes; no duplicate roadmap is introduced.
+- Gate passed: Maker build passes; six-wave runtime path remains wired; no duplicate roadmap is active.
 
-### M1 — Combat feel and retention proof
+### M1 — Combat feel and retention proof (next)
 
 - Add damage numbers, hit flashes, screen shake, module evolution bursts, and clearer telegraphs.
 - Tune Mine + Hook + Shell combinations using at least 10 structured playtests.
