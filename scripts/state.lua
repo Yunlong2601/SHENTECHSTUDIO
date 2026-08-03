@@ -193,6 +193,18 @@ M.bossLabel_ = nil
 ---@type Widget|nil
 M.bossCard_ = nil
 
+-- ── Glitch corruption overlay (R-03) ────────────────────────────────────
+---@type boolean
+M.glitchWave_ = false
+---@type number
+M.corruption_ = 0
+---@type number
+M.glitchTickTimer_ = 0
+
+-- ── Dynamic enemy cap (R-06) ────────────────────────────────────────────
+---@type number
+M.maxEnemies_ = 24
+
 -- ─── Profile (session-only — no verified storage API) ───────────────────
 ---@class MetaProfile
 ---@field calibration number

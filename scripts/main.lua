@@ -142,6 +142,8 @@ local function ResetRunState()
     state.damageNumbers_, state.hitFlash_, state.shakeTime_, state.evolutionFlash_ = {}, 0, 0, 0
     state.runStats_ = { damageTaken = 0, deaths = 0, maxWave = 1, upgrades = {} }
     state.boss_ = nil; state.bossFlash_ = 0
+    state.glitchWave_ = false; state.corruption_ = 0; state.glitchTickTimer_ = 0
+    state.maxEnemies_ = 24
 end
 
 function BuildUI()

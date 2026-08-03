@@ -10,22 +10,37 @@ local function pos(widget, x, y, size) if callbacks.setWidgetPosition then callb
 local function destroy(widget) if callbacks.destroyWidget then callbacks.destroyWidget(widget) end end
 
 function M.kind_for_id(enemyId, wave)
-    if wave >= 5 then
-        local cycle = (enemyId + wave) % 5
-        if cycle == 0 then return "chaser" end
-        if cycle == 1 then return "skimmer" end
-        if cycle == 2 then return "charger" end
-        if cycle == 3 then return "splitter" end
-        return "shooter"
+    local r = math.random()
+    if wave >= 7 then
+        -- Wave 7-8: chaser 15%, skimmer 10%, charger 10%, shooter 30%, splitter 35%
+        if r < 0.15 then return "chaser"
+        elseif r < 0.25 then return "skimmer"
+        elseif r < 0.35 then return "charger"
+        elseif r < 0.65 then return "shooter"
+        else return "splitter" end
+    elseif wave >= 5 then
+        -- Wave 5-6: chaser 20%, skimmer 15%, charger 15%, shooter 25%, splitter 25%
+        if r < 0.20 then return "chaser"
+        elseif r < 0.35 then return "skimmer"
+        elseif r < 0.50 then return "charger"
+        elseif r < 0.75 then return "shooter"
+        else return "splitter" end
+    elseif wave >= 3 then
+        -- Wave 3-4: chaser 35%, skimmer 25%, charger 20%, shooter 20%
+        if r < 0.35 then return "chaser"
+        elseif r < 0.60 then return "skimmer"
+        elseif r < 0.80 then return "charger"
+        else return "shooter" end
+    else
+        -- Wave 1-2: chaser 55%, skimmer 30%, charger 15%
+        if r < 0.55 then return "chaser"
+        elseif r < 0.85 then return "skimmer"
+        else return "charger" end
     end
-    local cycle = (enemyId + wave) % 3
-    if cycle == 0 then return "chaser" end
-    if cycle == 1 then return "skimmer" end
-    return "charger"
 end
 
 function M.spawn(elite)
-    if not state.gameWorld_ or #state.enemies_ >= 24 or state.waveSpawned_ >= state.waveSpawnTarget_ then return end
+    if not state.gameWorld_ or #state.enemies_ >= state.maxEnemies_ or state.waveSpawned_ >= state.waveSpawnTarget_ then return end
     state.enemyId_, state.waveSpawned_ = state.enemyId_ + 1, state.waveSpawned_ + 1
     local side = (state.enemyId_ - 1) % 4; local x, y = 0, 0
     if side == 0 then x, y = -30, math.random(30, math.max(31, math.floor(state.worldHeight_ - 30)))
@@ -72,7 +87,12 @@ function M.spawn_boss()
 end
 
 function M.spawn_fragment(x, y)
-    if not state.gameWorld_ or #state.enemies_ >= 24 then return end
+    if not state.gameWorld_ or #state.enemies_ >= state.maxEnemies_ then return end
+    local fragmentCount = 0
+    for _, e in ipairs(state.enemies_) do
+        if e.isFragment then fragmentCount = fragmentCount + 1 end
+    end
+    if fragmentCount >= 10 then return end
     local size = 16
     local widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 120, 230, 120, 255 }, to = { 60, 170, 60, 200 } }, borderColor = { 180, 255, 150, 220 }, borderWidth = 1, borderRadius = 4, pointerEvents = "none" }
     state.gameWorld_:AddChild(widget)
@@ -140,7 +160,21 @@ end
 
 function M.update(timeStep)
     local bound = state.modifier_ == "compression" and 70 or 0; local player = p()
-    local isGlitch = state.modifier_ == "glitch"
+    -- R-03: Corruption overlay — frame-rate-independent Poisson tick (~1.5s mean)
+    local isGlitchWave = state.glitchWave_
+    if isGlitchWave then
+        state.glitchTickTimer_ = state.glitchTickTimer_ + timeStep
+        if state.glitchTickTimer_ >= 1.5 then
+            state.glitchTickTimer_ = state.glitchTickTimer_ - 1.5
+            state.corruption_ = math.min(100, state.corruption_ + 1)
+            for _, e in ipairs(state.enemies_) do
+                if not e.dead then
+                    e.x = e.x + math.random(-12, 12)
+                    e.y = e.y + math.random(-12, 12)
+                end
+            end
+        end
+    end
     for _, enemy in ipairs(state.enemies_) do
         if not enemy.dead then
             local dx, dy = player.x - enemy.x, player.y - enemy.y; local distance = math.sqrt(dx * dx + dy * dy)
@@ -169,10 +203,6 @@ function M.update(timeStep)
                         M.spawn_enemy_projectile(enemy.x, enemy.y, player.x, player.y)
                     end
                 end
-            end
-            if isGlitch and math.random() < 0.02 then
-                enemy.x = enemy.x + math.random(-12, 12)
-                enemy.y = enemy.y + math.random(-12, 12)
             end
             if distance > 0 and (enemy.kind ~= "charger" or enemy.telegraph <= 0) then local mult = state.modifier_ == "overclock" and 1.25 or 1; enemy.x = enemy.x + dx / math.max(distance, 1) * enemy.speed * mult * timeStep; enemy.y = enemy.y + dy / math.max(distance, 1) * enemy.speed * mult * timeStep end
             if bound > 0 then enemy.x = math.max(bound, math.min(state.worldWidth_ - bound, enemy.x)); enemy.y = math.max(bound, math.min(state.worldHeight_ - bound, enemy.y)) end
