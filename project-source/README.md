@@ -1,0 +1,20 @@
+# Geometry Breakout Project Source
+
+This directory is the only canonical planning and product source for Geometry Breakout / 几何突围.
+
+All agents and platforms must read these files before making product, architecture, UI, terminology, or roadmap decisions:
+
+- `PROJECT_CONTEXT.md` — current product identity, implementation state, constraints, and durable decisions.
+- `ROADMAP.md` — the active roadmap, milestones, measurable gates, and next actions.
+- `ARCHITECTURE.md` — the current code architecture and approved refactor direction.
+- `TERMINOLOGY.md` — canonical bilingual vocabulary.
+- `UI_LAYOUT.md` — canonical layout and responsive rules.
+
+The two `*_ARCHIVE_*.md` files are historical references only. They must not override the active roadmap or current state.
+
+Rules:
+
+1. Update the canonical file here when a durable decision changes.
+2. Do not create parallel roadmaps or competing project-context files elsewhere.
+3. Record completed milestones in `PROJECT_CONTEXT.md` and plan future work in `ROADMAP.md`.
+4. Keep code in `scripts/`; keep generated assets in the Maker asset workflow.
