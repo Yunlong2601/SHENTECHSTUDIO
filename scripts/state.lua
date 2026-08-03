@@ -70,6 +70,35 @@ M.joystickKnob_ = nil
 ---@type table<number, boolean>
 M.keys_ = {}
 
+---@class PlayerState
+---@field x number
+---@field y number
+---@field radius number
+---@field speed number
+---@field integrity number
+---@field maxIntegrity number
+---@field invulnerable number
+---@field fireTimer number
+---@field pulseTimer number
+---@field orbitAngle number
+---@field magnetRadius number
+---@field damage number
+---@field shell number
+---@field maxShell number
+---@field shellRechargeTimer number
+---@field shellFlash number
+---@field mineCooldown number
+---@field trailTimer number
+---@type PlayerState
+M.player_ = {
+    x = 0, y = 0, radius = 16, speed = 220,
+    integrity = 5, maxIntegrity = 5, invulnerable = 0,
+    fireTimer = 0, pulseTimer = 0, orbitAngle = 0,
+    magnetRadius = 110, damage = 1,
+    shell = 0, maxShell = 0, shellRechargeTimer = 0, shellFlash = 0,
+    mineCooldown = 0, trailTimer = 0,
+}
+
 -- ─── Entity lists (flat per plan §4 — Component) ─────────────────────────
 ---@type table
 M.enemies_ = {}
