@@ -16,6 +16,7 @@ M.SCREEN_UPGRADE   = "upgrade"
 M.SCREEN_WAVE_PAUSE = "wave_pause"
 M.SCREEN_ARCHIVE   = "archive"
 M.SCREEN_SUMMARY   = "summary"
+M.SCREEN_COSMETICS = "cosmetics"
 
 -- ─── Language & current screen ───────────────────────────────────────────
 ---@type string
@@ -176,6 +177,18 @@ M.moduleLevel_ = 0
 M.upgradeCards_ = {}
 M.summaryAwarded_ = false
 M.runStats_ = { damageTaken = 0, deaths = 0, maxWave = 1, upgrades = {} }
+
+-- ─── Boss state ──────────────────────────────────────────────────────────
+---@type table|nil
+M.boss_ = nil
+---@type number
+M.bossFlash_ = 0
+---@type Widget|nil
+M.bossBarFill_ = nil
+---@type Label|nil
+M.bossLabel_ = nil
+---@type Widget|nil
+M.bossCard_ = nil
 
 -- ─── Profile (session-only — no verified storage API) ───────────────────
 ---@class MetaProfile

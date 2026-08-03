@@ -1,5 +1,5 @@
 -- Geometry Breakout / 几何突围
--- Prototype 03: pickups, progression, wave pacing, modules, elite, and run summary.
+-- Demo Build: Neon Vector Geometry visual pass, boss encounter, monetization placeholder.
 
 local UI = require("urhox-libs/UI")
 local state = require("state")
@@ -83,7 +83,6 @@ end
 
 local function HandleTouchDown(event)
     if state.screen_ ~= "game" or event.pointerType ~= "touch" or state.touchActive_ then return end
-    -- Reserve the right side for future touch abilities; movement starts on the left.
     if event.x > state.worldWidth_ * 0.58 then return end
     state.touchPointerId_ = event.pointerId
     state.touchActive_ = true
@@ -121,6 +120,7 @@ local function ClearEntities()
     if state.orbitWidget_ then state.orbitWidget_:Destroy(); state.orbitWidget_ = nil end
     if state.orbitWidget2_ then state.orbitWidget2_:Destroy(); state.orbitWidget2_ = nil end
     if state.shellRing_ then state.shellRing_:Destroy(); state.shellRing_ = nil end
+    enemies.clear_boss()
     state.enemies_, state.projectiles_, state.pickups_, state.mines_, state.trail_, state.damageNumbers_ = {}, {}, {}, {}, {}, {}
 end
 
@@ -138,6 +138,7 @@ local function ResetRunState()
     state.summaryAwarded_ = false
     state.damageNumbers_, state.hitFlash_, state.shakeTime_, state.evolutionFlash_ = {}, 0, 0, 0
     state.runStats_ = { damageTaken = 0, deaths = 0, maxWave = 1, upgrades = {} }
+    state.boss_ = nil; state.bossFlash_ = 0
 end
 
 function BuildUI()
@@ -152,17 +153,21 @@ function BuildUI()
     UI.SetRoot(state.uiRoot_, true)
     if state.screen_ == "game" then
         SetWidgetPosition(state.playerWidget_, state.player_.x, state.player_.y, 32)
-        -- Populate the HUD immediately; do not wait for the first Update event.
         ui.update_hud()
     end
 end
 
 local function SpawnPickup(x, y, kind, amount)
     if not state.gameWorld_ then return end
-    local color = kind == "data" and { 255, 214, 92, 255 } or { 175, 128, 255, 255 }
-    local widget = UI.Panel { position = "absolute", width = kind == "data" and 10 or 13, height = kind == "data" and 10 or 13, backgroundColor = color, borderColor = { 255, 255, 255, 220 }, borderWidth = 1, borderRadius = 6, pointerEvents = "none" }
-    state.gameWorld_:AddChild(widget)
-    table.insert(state.pickups_, { x = x, y = y, kind = kind, amount = amount, radius = kind == "data" and 5 or 7, widget = widget })
+    if kind == "data" then
+        local widget = UI.Panel { position = "absolute", width = 10, height = 10, backgroundGradient = { type = "radial", from = { 255, 214, 92, 255 }, to = { 200, 160, 50, 200 } }, borderColor = { 255, 240, 180, 220 }, borderWidth = 1, borderRadius = 5, pointerEvents = "none" }
+        state.gameWorld_:AddChild(widget)
+        table.insert(state.pickups_, { x = x, y = y, kind = kind, amount = amount, radius = 5, widget = widget })
+    else
+        local widget = UI.Panel { position = "absolute", width = 13, height = 13, backgroundGradient = { type = "radial", from = { 175, 128, 255, 255 }, to = { 120, 80, 200, 200 } }, borderColor = { 210, 180, 255, 220 }, borderWidth = 1, borderRadius = 6, pointerEvents = "none" }
+        state.gameWorld_:AddChild(widget)
+        table.insert(state.pickups_, { x = x, y = y, kind = kind, amount = amount, radius = 7, widget = widget })
+    end
 end
 
 local function DamagePlayer()
@@ -181,7 +186,12 @@ local function DamagePlayer()
     player_.integrity = player_.integrity - 1; player_.invulnerable = 0.65
     state.runStats_.damageTaken = state.runStats_.damageTaken + 1
     ui.show_damage_number(player_.x, player_.y, 1, { 255, 111, 126, 255 }); ui.trigger_hit_flash({ 255, 111, 126, 255 }, 0.42, 0.2); ui.trigger_shake(0.24, 0.14)
-    if player_.integrity <= 0 then state.runStats_.deaths = state.runStats_.deaths + 1; state.defeatReason_ = state.T("game.reason_contact"); if not state.summaryAwarded_ then state.profile_.calibration = state.profile_.calibration + math.max(1, math.floor(state.dataFragments_ / 8)); state.summaryAwarded_ = true end; state.screen_ = "summary"; ClearEntities(); BuildUI() end
+    if player_.integrity <= 0 then
+        state.runStats_.deaths = state.runStats_.deaths + 1
+        if state.boss_ then state.defeatReason_ = state.T("game.reason_boss") else state.defeatReason_ = state.T("game.reason_contact") end
+        if not state.summaryAwarded_ then state.profile_.calibration = state.profile_.calibration + math.max(1, math.floor(state.dataFragments_ / 8)); state.summaryAwarded_ = true end
+        state.screen_ = "summary"; ClearEntities(); BuildUI()
+    end
 end
 
 local function UpdatePickups(timeStep)
@@ -246,7 +256,12 @@ local function EndWave()
     ClearEntities()
     state.runStats_.maxWave = math.max(state.runStats_.maxWave, state.wave_)
     ui.trigger_shake(0.18, 0.18)
-    if state.wave_ >= state.maxWaves_ then state.defeatReason_ = state.T("game.reason_complete"); if not state.summaryAwarded_ then state.profile_.calibration = state.profile_.calibration + math.max(1, math.floor(state.dataFragments_ / 8)); state.summaryAwarded_ = true end; state.screen_ = "summary"; BuildUI(); return end
+
+    if state.wave_ >= state.maxWaves_ then
+        state.defeatReason_ = state.T("game.reason_complete")
+        if not state.summaryAwarded_ then state.profile_.calibration = state.profile_.calibration + math.max(1, math.floor(state.dataFragments_ / 8)); state.summaryAwarded_ = true end
+        state.screen_ = "summary"; BuildUI(); return
+    end
     waves.advance(); BuildUI()
 end
 
@@ -256,12 +271,26 @@ function HandleUpdate(_eventType, eventData)
     player.update_timers(timeStep); state.spawnTimer_ = state.spawnTimer_ - timeStep; state.surgeFlash_ = math.max(0, state.surgeFlash_ - timeStep)
     if state.modifier_ == "surge" then state.surgeTimer_ = state.surgeTimer_ - timeStep; if state.surgeTimer_ <= 0 then state.surgeTimer_ = 4.0; state.surgeFlash_ = 0.55; for _, enemy in ipairs(state.enemies_) do if not enemy.dead then enemies.damage(enemy, 1); end end end end
     player.update_movement(timeStep)
-    if state.waveSpawned_ == 0 and state.wave_ % 3 == 0 then enemies.spawn(true) end
-    if state.spawnTimer_ <= 0 and state.waveSpawned_ < state.waveSpawnTarget_ and state.waveTime_ < state.waveDuration_ then enemies.spawn(false); state.spawnTimer_ = math.max(0.35, 0.9 - state.wave_ * 0.05) end
+
+    if waves.is_boss_wave(state.wave_) then
+        if not enemies.boss_exists() and state.waveTime_ > 1.0 and state.waveSpawned_ == 0 then
+            enemies.spawn_boss()
+            state.waveSpawned_ = 1
+        end
+        if state.spawnTimer_ <= 0 and state.waveSpawned_ < state.waveSpawnTarget_ and state.waveTime_ < state.waveDuration_ then
+            enemies.spawn(false); state.spawnTimer_ = math.max(0.8, 1.5 - state.wave_ * 0.05)
+        end
+    else
+        if state.waveSpawned_ == 0 and state.wave_ % 3 == 0 then enemies.spawn(true) end
+        if state.spawnTimer_ <= 0 and state.waveSpawned_ < state.waveSpawnTarget_ and state.waveTime_ < state.waveDuration_ then enemies.spawn(false); state.spawnTimer_ = math.max(0.35, 0.9 - state.wave_ * 0.05) end
+    end
+
     if IsModuleActive("trace") and player_.fireTimer <= 0 then modules.fire_trace_beam(); player_.fireTimer = math.max(0.18, 0.42 - state.moduleLevels_.trace * 0.04) end
     if IsModuleActive("pulse") and player_.pulseTimer <= 0 then modules.pulse_bloom(); player_.pulseTimer = math.max(1.4, 3.0 - state.moduleLevels_.pulse * 0.25) end
     modules.update_shell(timeStep)
     enemies.update(timeStep)
+    if not IsGameScreen() then return end
+    enemies.update_boss(timeStep)
     if not IsGameScreen() then return end
     enemies.update_projectiles(timeStep); UpdatePickups(timeStep)
     if not IsGameScreen() then return end
@@ -269,7 +298,12 @@ function HandleUpdate(_eventType, eventData)
     modules.update_shell_visual()
     modules.update_mines(timeStep)
     modules.update_trail(timeStep)
-    if state.waveTime_ >= state.waveDuration_ and state.waveSpawned_ >= state.waveSpawnTarget_ and #state.enemies_ == 0 then EndWave() else ui.update_hud(); ui.update_feedback(timeStep) end
+
+    local waveDone = state.waveTime_ >= state.waveDuration_ and state.waveSpawned_ >= state.waveSpawnTarget_ and #state.enemies_ == 0
+    if waves.is_boss_wave(state.wave_) then
+        waveDone = state.waveTime_ >= state.waveDuration_ and not enemies.boss_exists() and #state.enemies_ == 0
+    end
+    if waveDone then EndWave() else ui.update_hud(); ui.update_feedback(timeStep) end
 end
 
 function HandleKeyDown(_eventType, eventData)
@@ -295,17 +329,32 @@ function Start()
         beginWave = waves.begin_wave,
         rebuild = BuildUI,
     })
-    modules.configure({ findNearestEnemy = enemies.find_nearest, damageEnemy = enemies.damage, setWidgetPosition = SetWidgetPosition, destroyWidget = DestroyEntityWidget })
-    enemies.configure({ spawnPickup = SpawnPickup, damagePlayer = DamagePlayer, setWidgetPosition = SetWidgetPosition, destroyWidget = DestroyEntityWidget, onDamage = function(x, y, amount, elite) ui.show_damage_number(x, y, amount, elite and { 255, 213, 83, 255 } or { 255, 255, 255, 255 }); ui.trigger_hit_flash(elite and { 255, 213, 83, 255 } or { 255, 255, 255, 255 }, elite and 0.22 or 0.12, 0.1); ui.trigger_shake(elite and 0.12 or 0.05, 0.06) end })
-    graphics.windowTitle = "Geometry Breakout / 几何突围"; UI.Init({ theme = "default-dark", fonts = { { family = "sans", weights = { normal = "Fonts/MiSans-Regular.ttf" } } }, scale = UI.Scale.DEFAULT })
+    modules.configure({
+        findNearestEnemy = enemies.find_nearest,
+        damageEnemy = enemies.damage,
+        damageArea = enemies.damage_area,
+        damageBoss = enemies.damage_boss,
+        setWidgetPosition = SetWidgetPosition,
+        destroyWidget = DestroyEntityWidget,
+    })
+    enemies.configure({
+        spawnPickup = SpawnPickup,
+        damagePlayer = DamagePlayer,
+        setWidgetPosition = SetWidgetPosition,
+        destroyWidget = DestroyEntityWidget,
+        onDamage = function(x, y, amount, elite)
+            ui.show_damage_number(x, y, amount, elite and { 255, 213, 83, 255 } or { 255, 255, 255, 255 })
+            ui.trigger_hit_flash(elite and { 255, 213, 83, 255 } or { 255, 255, 255, 255 }, elite and 0.22 or 0.12, 0.1)
+            ui.trigger_shake(elite and 0.12 or 0.05, 0.06)
+        end,
+    })
+    graphics.windowTitle = "Geometry Breakout / 几何突围"
+    UI.Init({ theme = "default-dark", fonts = { { family = "sans", weights = { normal = "Fonts/MiSans-Regular.ttf" } } }, scale = UI.Scale.DEFAULT })
     input.mouseMode = MM_ABSOLUTE; input.mouseVisible = true
     SubscribeToEvent("Update", "HandleUpdate"); SubscribeToEvent("KeyDown", "HandleKeyDown"); SubscribeToEvent("KeyUp", "HandleKeyUp"); BuildUI()
-    print("=== Geometry Breakout Prototype 03 started ===")
+    print("=== Geometry Breakout Demo Build started ===")
 end
 
 function Stop()
     ClearEntities(); UI.Shutdown()
 end
-
-
-

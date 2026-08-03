@@ -26,10 +26,35 @@ function M.spawn(elite)
     else x, y = math.random(30, math.max(31, math.floor(state.worldWidth_ - 30))), state.worldHeight_ + 30 end
     local kind = elite and "elite" or M.kind_for_id(state.enemyId_, state.wave_)
     local size = elite and 38 or (kind == "charger" and 28 or 24)
-    local color = elite and { 255, 126, 63, 255 } or (kind == "skimmer" and { 84, 216, 194, 255 } or kind == "charger" and { 255, 168, 76, 255 } or { 244, 93, 133, 255 })
-    local widget = UI.Panel { position = "absolute", width = size, height = size, backgroundColor = color, borderColor = elite and { 255, 239, 164, 255 } or { 255, 220, 150, 255 }, borderWidth = elite and 3 or 2, borderRadius = kind == "skimmer" and size * 0.5 or (elite and 18 or 8), pointerEvents = "none" }
+    local widget
+    if elite then
+        widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 255, 126, 63, 255 }, to = { 200, 80, 30, 255 } }, borderColor = { 255, 239, 164, 255 }, borderWidth = 3, borderRadius = 18, rotate = 0, pointerEvents = "none" }
+    elseif kind == "skimmer" then
+        widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 84, 216, 194, 255 }, to = { 40, 160, 140, 255 } }, borderColor = { 150, 255, 230, 255 }, borderWidth = 2, borderRadius = size * 0.5, pointerEvents = "none" }
+    elseif kind == "charger" then
+        widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 255, 168, 76, 255 }, to = { 200, 110, 30, 255 } }, borderColor = { 255, 220, 150, 255 }, borderWidth = 2, borderRadius = 3, rotate = 45, pointerEvents = "none" }
+    else
+        widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 244, 93, 133, 255 }, to = { 180, 50, 90, 255 } }, borderColor = { 255, 180, 200, 255 }, borderWidth = 2, borderRadius = 2, pointerEvents = "none" }
+    end
     state.gameWorld_:AddChild(widget)
     table.insert(state.enemies_, { x = x, y = y, radius = size * 0.5, speed = (elite and 38 or kind == "skimmer" and 46 or kind == "charger" and 40 or 52) + state.wave_ * 3, integrity = (elite and 12 or 2) + state.wave_, widget = widget, elite = elite, kind = kind, phase = 0, charge = 0, telegraph = 0, dead = false })
+end
+
+function M.spawn_boss()
+    if not state.gameWorld_ then return end
+    local bx, by = state.worldWidth_ * 0.5, -60
+    local size = 72
+    local widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "radial", from = { 255, 180, 60, 255 }, to = { 180, 60, 20, 255 } }, borderColor = { 255, 239, 100, 255 }, borderWidth = 4, borderRadius = 24, pointerEvents = "none" }
+    state.gameWorld_:AddChild(widget)
+    local coreWidget = UI.Panel { position = "absolute", width = 28, height = 28, backgroundColor = { 255, 80, 80, 255 }, borderColor = { 255, 200, 100, 255 }, borderWidth = 2, borderRadius = 14, pointerEvents = "none" }
+    state.gameWorld_:AddChild(coreWidget)
+    local maxIntegrity = 40 + state.wave_ * 3
+    state.boss_ = { x = bx, y = by, radius = 36, speed = 30, integrity = maxIntegrity, maxIntegrity = maxIntegrity, widget = widget, coreWidget = coreWidget, phase = 0, pulseTimer = 3.5, spawnTimer = 6.0, telegraph = 0, dead = false, entering = true, targetX = state.worldWidth_ * 0.5, targetY = state.worldHeight_ * 0.3 }
+    state.bossFlash_ = 0.6
+    if state.feedbackLabel_ then
+        state.feedbackLabel_:SetText("◆  " .. state.T("boss.spawn") .. "  ◆")
+        state.feedbackLabel_:SetStyle({ fontColor = { 255, 180, 60, 255 }, opacity = 1 })
+    end
 end
 
 function M.find_nearest()
@@ -53,6 +78,28 @@ function M.damage(enemy, amount)
     destroy(enemy.widget)
 end
 
+function M.damage_boss(amount)
+    if not state.boss_ or state.boss_.dead then return end
+    state.boss_.integrity = state.boss_.integrity - amount
+    state.bossFlash_ = 0.15
+    if callbacks.onDamage then callbacks.onDamage(state.boss_.x, state.boss_.y, amount, true) end
+    if state.boss_.integrity > 0 then return end
+    state.boss_.dead = true
+    state.score_ = state.score_ + 50
+    state.bossFlash_ = 0.8
+    if callbacks.spawnPickup then
+        for _ = 1, 6 do callbacks.spawnPickup(state.boss_.x + math.random(-30, 30), state.boss_.y + math.random(-30, 30), "data", 3) end
+        for _ = 1, 4 do callbacks.spawnPickup(state.boss_.x + math.random(-20, 20), state.boss_.y + math.random(-20, 20), "shard", 2) end
+    end
+    destroy(state.boss_.widget)
+    destroy(state.boss_.coreWidget)
+    state.boss_ = nil
+    if state.feedbackLabel_ then
+        state.feedbackLabel_:SetText("◆  " .. state.T("boss.defeated") .. "  ◆")
+        state.feedbackLabel_:SetStyle({ fontColor = { 146, 225, 191, 255 }, opacity = 1 })
+    end
+end
+
 function M.update(timeStep)
     local bound = state.modifier_ == "compression" and 70 or 0; local player = p()
     for _, enemy in ipairs(state.enemies_) do
@@ -71,6 +118,75 @@ function M.update(timeStep)
     for index = #state.enemies_, 1, -1 do if state.enemies_[index].dead then table.remove(state.enemies_, index) end end
 end
 
+function M.update_boss(timeStep)
+    local boss = state.boss_
+    if not boss or boss.dead then return end
+    local player = p()
+    boss.phase = boss.phase + timeStep
+    state.bossFlash_ = math.max(0, state.bossFlash_ - timeStep)
+    if boss.entering then
+        boss.y = boss.y + 80 * timeStep
+        if boss.y >= boss.targetY then boss.y = boss.targetY; boss.entering = false end
+    else
+        local dx, dy = player.x - boss.x, player.y - boss.y; local distance = math.sqrt(dx * dx + dy * dy)
+        if distance > 180 then boss.x = boss.x + dx / math.max(distance, 1) * boss.speed * timeStep; boss.y = boss.y + dy / math.max(distance, 1) * boss.speed * timeStep end
+        boss.x = boss.x + math.cos(boss.phase * 0.8) * 40 * timeStep
+        boss.y = boss.y + math.sin(boss.phase * 0.6) * 25 * timeStep
+        boss.x = math.max(60, math.min(state.worldWidth_ - 60, boss.x))
+        boss.y = math.max(60, math.min(state.worldHeight_ - 60, boss.y))
+
+        boss.pulseTimer = boss.pulseTimer - timeStep
+        if boss.pulseTimer <= 0 then
+            boss.pulseTimer = 3.5
+            boss.telegraph = 1.0
+        end
+        if boss.telegraph > 0 then
+            boss.telegraph = boss.telegraph - timeStep
+            boss.widget:SetStyle({ borderColor = { 255, 80, 80, 255 }, borderWidth = 5, scale = 1.08 + 0.04 * math.sin(boss.phase * 20) })
+            if boss.telegraph <= 0 then
+                boss.widget:SetStyle({ borderColor = { 255, 239, 100, 255 }, borderWidth = 4, scale = 1.0 })
+                local pulseRadius = 140
+                for _, enemy in ipairs(state.enemies_) do
+                    if not enemy.dead then
+                        local ex, ey = enemy.x - boss.x, enemy.y - boss.y
+                        local ed = math.sqrt(ex * ex + ey * ey)
+                        if ed < pulseRadius and ed > 0 then
+                            enemy.x = enemy.x + ex / ed * 60; enemy.y = enemy.y + ey / ed * 60
+                        end
+                    end
+                end
+                local pdx, pdy = player.x - boss.x, player.y - boss.y; local pd = math.sqrt(pdx * pdx + pdy * pdy)
+                if pd < pulseRadius and pd > 0 and callbacks.damagePlayer then callbacks.damagePlayer() end
+                state.surgeFlash_ = 0.4
+            end
+        end
+
+        boss.spawnTimer = boss.spawnTimer - timeStep
+        if boss.spawnTimer <= 0 and #state.enemies_ < 12 then
+            boss.spawnTimer = 5.0
+            state.enemyId_ = state.enemyId_ + 1
+            local kind = M.kind_for_id(state.enemyId_, state.wave_)
+            local size = 24; local sx, sy = boss.x + math.random(-30, 30), boss.y + math.random(-30, 30)
+            local widget
+            if kind == "skimmer" then
+                widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 84, 216, 194, 255 }, to = { 40, 160, 140, 255 } }, borderColor = { 150, 255, 230, 255 }, borderWidth = 2, borderRadius = size * 0.5, pointerEvents = "none" }
+            elseif kind == "charger" then
+                widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 255, 168, 76, 255 }, to = { 200, 110, 30, 255 } }, borderColor = { 255, 220, 150, 255 }, borderWidth = 2, borderRadius = 3, rotate = 45, pointerEvents = "none" }
+            else
+                widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 244, 93, 133, 255 }, to = { 180, 50, 90, 255 } }, borderColor = { 255, 180, 200, 255 }, borderWidth = 2, borderRadius = 2, pointerEvents = "none" }
+            end
+            state.gameWorld_:AddChild(widget)
+            table.insert(state.enemies_, { x = sx, y = sy, radius = 12, speed = 52 + state.wave_ * 3, integrity = 2 + state.wave_, widget = widget, elite = false, kind = kind, phase = 0, charge = 0, telegraph = 0, dead = false })
+        end
+    end
+
+    pos(boss.widget, boss.x, boss.y, 72)
+    pos(boss.coreWidget, boss.x, boss.y, 28)
+    local corePulse = 0.7 + 0.3 * math.sin(boss.phase * 3)
+    local flashBoost = state.bossFlash_ > 0 and math.min(60, math.floor(state.bossFlash_ * 200)) or 0
+    boss.coreWidget:SetStyle({ backgroundColor = { 255, math.floor(80 + flashBoost * 0.5), math.floor(80 + flashBoost * 0.3), 255 }, scale = corePulse })
+end
+
 function M.update_projectiles(timeStep)
     for projectileIndex = #state.projectiles_, 1, -1 do
         local projectile = state.projectiles_[projectileIndex]; projectile.x = projectile.x + projectile.vx * timeStep; projectile.y = projectile.y + projectile.vy * timeStep; projectile.life = projectile.life - timeStep; local remove = projectile.life <= 0
@@ -79,7 +195,37 @@ function M.update_projectiles(timeStep)
             local dx, dy = enemy.x - projectile.x, enemy.y - projectile.y
             if dx * dx + dy * dy < (enemy.radius + projectile.radius) ^ 2 then M.damage(enemy, projectile.damage); projectile.pierce = projectile.pierce - 1; remove = projectile.pierce <= 0; if remove then break end end
         end
+        if not remove and state.boss_ and not state.boss_.dead then
+            local dx, dy = state.boss_.x - projectile.x, state.boss_.y - projectile.y
+            if dx * dx + dy * dy < (state.boss_.radius + projectile.radius) ^ 2 then M.damage_boss(projectile.damage); projectile.pierce = projectile.pierce - 1; remove = projectile.pierce <= 0 end
+        end
         if remove then destroy(projectile.widget); table.remove(state.projectiles_, projectileIndex) else pos(projectile.widget, projectile.x, projectile.y, 10) end
+    end
+end
+
+function M.boss_exists()
+    return state.boss_ ~= nil and not state.boss_.dead
+end
+
+function M.clear_boss()
+    if state.boss_ then
+        destroy(state.boss_.widget)
+        destroy(state.boss_.coreWidget)
+        state.boss_ = nil
+    end
+end
+
+-- Called by pulse/mine/hook modules to also damage the boss
+function M.damage_area(x, y, radius, amount)
+    for _, enemy in ipairs(state.enemies_) do
+        if not enemy.dead then
+            local dx, dy = enemy.x - x, enemy.y - y
+            if dx * dx + dy * dy < (enemy.radius + radius) ^ 2 then M.damage(enemy, amount) end
+        end
+    end
+    if state.boss_ and not state.boss_.dead then
+        local dx, dy = state.boss_.x - x, state.boss_.y - y
+        if dx * dx + dy * dy < (state.boss_.radius + radius) ^ 2 then M.damage_boss(amount) end
     end
 end
 
