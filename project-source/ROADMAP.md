@@ -12,7 +12,7 @@ This is an aspiration, not a promise of parity with mature commercial teams. Eve
 - Six modules are implemented: Trace Beam, Orbit Seed, Pulse Bloom, Shell Lantern, Anchor Mine, Vector Hook.
 - Chaser, Skimmer, Charger, elite encounters, pickups, level-ups, three-choice upgrades, six waves, run summary, bilingual UI, and touch joystick are implemented.
 - `scripts/state.lua`, `scripts/i18n.lua`, `scripts/player.lua`, `scripts/modules.lua`, `scripts/enemies.lua`, and `scripts/waves.lua` now hold the core runtime layers.
-- UI builders are still partly in `scripts/main.lua`; the UI extraction is the next architecture cleanup.
+- UI builders and HUD updates are extracted into `scripts/ui.lua`; `main.lua` is orchestration-focused.
 - Persistence is not verified, device-matrix testing is incomplete, and combat feedback/content depth are below the long-term target.
 
 ## Product pillars
