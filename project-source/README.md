@@ -9,6 +9,7 @@ All agents and platforms must read these files before making product, architectu
 - `ARCHITECTURE.md` — the current code architecture and approved refactor direction.
 - `TERMINOLOGY.md` — canonical bilingual vocabulary.
 - `UI_LAYOUT.md` — canonical layout and responsive rules.
+- `PERPLEXITY_CONTEXT.md` — copy-paste research context and output contract for external research assistants.
 
 The two `*_ARCHIVE_*.md` files are historical references only. They must not override the active roadmap or current state.
 
