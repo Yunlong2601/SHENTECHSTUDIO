@@ -128,7 +128,11 @@ function BuildUI()
     end
     state.uiRoot_ = UI.Panel(rootProps)
     UI.SetRoot(state.uiRoot_, true)
-    if state.screen_ == "game" then SetWidgetPosition(state.playerWidget_, state.player_.x, state.player_.y, 32) end
+    if state.screen_ == "game" then
+        SetWidgetPosition(state.playerWidget_, state.player_.x, state.player_.y, 32)
+        -- Populate the HUD immediately; do not wait for the first Update event.
+        ui.update_hud()
+    end
 end
 
 local function SpawnPickup(x, y, kind, amount)
