@@ -5,14 +5,14 @@
     "id": "1092991871"
   },
   "entry": "main.lua",
-  "version": "1.0.2",
+  "version": "1.0.7",
   "taptap_publish": {
     "title": "几何突围",
-    "description": "<game description>",
+    "description": "你不是英雄，你是一颗觉醒的几何体。\n\n在不断收缩的霓虹模拟竞技场里，操控向量三角底盘突围。六种空间模块自动作战——追踪光束锁定目标、旋转核心绕身攻击、脉冲光波推开敌潮、护壳吸收伤害、地雷近炸、矢量钩尾在身后留下死亡轨迹。每次升级三选一，专精一路或六模块全开，构筑属于你的突围配方。\n\n八波敌潮轮番施压：磁红追猎者死咬不放、青色掠袭者侧翼骚扰、橙色冲锋者蓄力冲撞、绿色分裂体死后增殖、紫色射击体远程压制。场地规则每波切换——压缩边界、脉冲冲击、超频加速、故障位移。最终迎战橙金六核心 Boss「核心破除者」，一场对 DPS 与构筑的终极考验。\n\n不用瞄准，只需走位。五到十五分钟一局，随时来一把突围。\n\n---",
     "category": "action",
     "screen_orientation": "landscape",
     "collection_type": "sce",
-    "trial_note": "<developer's note>",
+    "trial_note": "嗨，我是这款游戏的开发者。\n\n做几何突围的初衷很简单：我想做一款\"看起来冷冰冰、玩起来停不下来\"的几何生存游戏。市面上 survivor 类游戏很多，但大多数都在堆角色、堆皮肤、堆养成线。我想反着来——把角色砍到一个三角形，把美术收窄到霓虹几何，把所有精力投到\"构筑\"和\"走位\"这两件事上。\n\n你们在游戏里看到的每一个形状都不是装饰：青色三角是你，磁红的是敌人，橙金的是 Boss，金色碎片是战利品。颜色就是信息，形状就是角色。我希望你在手机小屏幕上也能一眼看懂战场——谁在追你、哪里安全、该往哪走。\n\n几个玩法小建议：\n\n1. 前期别贪输出，先把 Shell Lantern（护壳）升到 2 级，能多扛好几下\n2. Anchor Mine（地雷）+ Vector Hook（钩尾）是\"边跑边炸\"流派，走位风骚的话清场极快\n3. Boss 战别慌着贴脸，先绕外圈用地雷和脉冲磨血，Boss 召唤的小怪用地雷范围伤害一起清\n4. Overclock（超频）波次敌人更快但掉落更肥，值得冒险贪资源\n\n这是你现在能玩到的 Demo Build：8 波、6 模块、1 个 Boss、双语 UI、触屏和键鼠都能玩。后续计划已经在路上了——Workshop 外观工坊、更多底盘形态、新章节、新 Boss、更深的构筑组合。玩家的反馈会直接影响优先级，所以尽情吐槽吧。\n\n如果你喜欢这种\"几何即世界\"的感觉，欢迎把游戏分享给同样喜欢短局爽快的朋友。\n\n我们竞技场见。",
     "transparent": false,
     "app_platforms": "1,2",
     "developer_id": 420559,
@@ -20,15 +20,31 @@
     "miniapp_id": "tapmckuxwagygm65sy"
   },
   "assets": {
-    "icon": "",
-    "screenshots": [],
-    "promotional_image": ""
+    "icon": "./game_material/ICON_2026-08-03T16-37-18_01.png",
+    "screenshots": [
+      "./game_material/screenshot_1.png",
+      "./game_material/screenshot_1.png",
+      "./game_material/screenshot_1.png"
+    ],
+    "promotional_image": "./game_material/promotional.png",
+    "icon_url": "https://tapcode-sce.spark.xd.com/assets/game_material/几何突围/ICON_2026-08-03T16-37-18_01.png",
+    "promotional_image_url": "https://tapcode-sce.spark.xd.com/assets/game_material/p_8x93/promotional.png",
+    "cover_horizontal": "./game_material/COVER_HORIZONTAL_2026-08-03T16-52-13_01.png",
+    "cover_horizontal_url": "https://tapcode-sce.spark.xd.com/assets/game_material/几何突围/COVER_HORIZONTAL_2026-08-03T16-52-13_01.png",
+    "cover_vertical": "./game_material/COVER_VERTICAL_2026-08-03T16-53-00_01.png",
+    "cover_vertical_url": "https://tapcode-sce.spark.xd.com/assets/game_material/几何突围/COVER_VERTICAL_2026-08-03T16-53-00_01.png",
+    "screenshot_urls": [
+      "https://tapcode-sce.spark.xd.com/assets/game_material/p_8x93/screenshot_1.png",
+      "https://tapcode-sce.spark.xd.com/assets/game_material/p_8x93/screenshot_1.png",
+      "https://tapcode-sce.spark.xd.com/assets/game_material/p_8x93/screenshot_1.png"
+    ]
   },
   "metadata": {
-    "updated_at": "2026-08-02T17:55:14.819Z"
+    "updated_at": "2026-08-03T17:23:03.455Z",
+    "promo_dependent_hash": "9c8793bf994c0e383fa79de81e48ecda"
   },
   "test_qrcode": {
-    "url": "https://tapcode-sce.spark.xd.com/qrcode/p_8x93_1785693314669.png",
-    "generated_at": "2026-08-02T17:55:14.819Z"
+    "url": "https://tapcode-sce.spark.xd.com/qrcode/p_8x93_1785777783299.png",
+    "generated_at": "2026-08-03T17:23:03.455Z"
   }
 }
