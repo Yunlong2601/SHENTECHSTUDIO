@@ -1,0 +1,482 @@
+{
+  "i18n.lua": {
+    "mtime": 1785723082,
+    "results": [
+      {
+        "text": "几何突围",
+        "line": 13,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "选择语言开始游戏",
+        "line": 13,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "简体中文",
+        "line": 14,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "校准台已上线，准备开始突围。",
+        "line": 15,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "开始突围",
+        "line": 15,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "几何突围 · Prototype 03",
+        "line": 16,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "完整度：%d / %d",
+        "line": 16,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "突围时间：%ds",
+        "line": 17,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "击破：%d",
+        "line": 17,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "波次：%d / %d",
+        "line": 17,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "模式碎片：%d / %d",
+        "line": 18,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "数据碎片：%d",
+        "line": 18,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "距离下一次升级：%d 个模式碎片",
+        "line": 18,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "当前状态",
+        "line": 18,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "模块：%s Lv.%d",
+        "line": 19,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "未装配",
+        "line": 19,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "敌对几何体",
+        "line": 19,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "精英核心",
+        "line": 20,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "WASD / 方向键移动 · 自动模块锁定目标",
+        "line": 20,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "触摸左侧并拖动移动 · 自动攻击",
+        "line": 20,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "波次校准完成",
+        "line": 22,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "下一波：%d",
+        "line": 22,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "继续突围",
+        "line": 22,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "升级：选择一项校准",
+        "line": 23,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "等级 %d",
+        "line": 23,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Trace Beam · 轨迹光束",
+        "line": 24,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "更快、更强的窄束自动追踪光束",
+        "line": 24,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Orbit Seed · 环轨种子",
+        "line": 25,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "旋转种子持续撞击附近敌人",
+        "line": 25,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Pulse Bloom · 脉冲绽放",
+        "line": 26,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "周期性释放圆形脉冲，击退并伤害敌人",
+        "line": 26,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Shell Lantern · 护壳灯",
+        "line": 27,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "可再生护盾壳体，优先承受完整度伤害",
+        "line": 27,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Anchor Mine · 锚雷",
+        "line": 28,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "周期性部署地雷，敌人靠近时引爆并造成范围伤害",
+        "line": 28,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Vector Hook · 矢量钩",
+        "line": 29,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "留下持续伤害的移动轨迹",
+        "line": 29,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "强化轨迹光束",
+        "line": 30,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "强化环轨种子",
+        "line": 30,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "强化脉冲绽放",
+        "line": 30,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "强化护壳灯",
+        "line": 30,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "强化锚雷",
+        "line": 31,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "强化矢量钩",
+        "line": 31,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "加固完整度",
+        "line": 32,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "扩大磁吸范围",
+        "line": 32,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "获得一项永久运行强化",
+        "line": 32,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "突围失败",
+        "line": 33,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "运行总结",
+        "line": 33,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "原因：%s",
+        "line": 33,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "最终击破：%d",
+        "line": 34,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "抵达波次：%d",
+        "line": 34,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "最终等级：%d",
+        "line": 34,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "装配模块：%s Lv.%d",
+        "line": 35,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "数据碎片：%d",
+        "line": 35,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "重新开始",
+        "line": 36,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "返回语言选择",
+        "line": 36,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "与敌对几何体发生碰撞",
+        "line": 36,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "完成全部波次",
+        "line": 36,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "场域：%s",
+        "line": 37,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "压缩：内圈移动边界",
+        "line": 37,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "涌潮：周期性场域脉冲",
+        "line": 37,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "超频：敌人更快，奖励更高",
+        "line": 37,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "追猎体",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "掠行体",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "蓄能体",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "活动模块：%s",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "警告：场域脉冲",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "校准档案",
+        "line": 39,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "校准档案（本次会话）",
+        "line": 39,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "校准片：%d",
+        "line": 39,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "起始完整度 +1",
+        "line": 39,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "磁吸范围 +35",
+        "line": 39,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "校准",
+        "line": 39,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "未验证持久化：仅在本次会话有效",
+        "line": 39,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "返回",
+        "line": 39,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "简体中文",
+        "line": 43,
+        "rule": "chinese_double_quote",
+        "args": null
+      }
+    ]
+  },
+  "main.lua": {
+    "mtime": 1785723082,
+    "results": [
+      {
+        "text": "Geometry Breakout / 几何突围",
+        "line": 731,
+        "rule": "chinese_double_quote",
+        "args": null
+      }
+    ]
+  },
+  "state.lua": {
+    "mtime": 1785723082,
+    "results": []
+  },
+  "settings.json": {
+    "mtime": 1785691672,
+    "results": []
+  }
+}

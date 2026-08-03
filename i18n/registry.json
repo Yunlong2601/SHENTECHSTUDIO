@@ -1,0 +1,454 @@
+{
+  "几何突围": {
+    "key": "t_u2ySL1UatblwnRRU",
+    "locations": [
+      "i18n.lua:13"
+    ]
+  },
+  "选择语言开始游戏": {
+    "key": "t_CAk3WoseCIOnD4wu",
+    "locations": [
+      "i18n.lua:13"
+    ]
+  },
+  "简体中文": {
+    "key": "t_GzlJOBm9HSodOcm5",
+    "locations": [
+      "i18n.lua:14",
+      "i18n.lua:43"
+    ]
+  },
+  "校准台已上线，准备开始突围。": {
+    "key": "t_2Fz6JgMB24aQLu4N",
+    "locations": [
+      "i18n.lua:15"
+    ]
+  },
+  "开始突围": {
+    "key": "t_kxJDm6aMlRuqd8Na",
+    "locations": [
+      "i18n.lua:15"
+    ]
+  },
+  "几何突围 · Prototype 03": {
+    "key": "t_p1dZNBIdosAT4yi7",
+    "locations": [
+      "i18n.lua:16"
+    ]
+  },
+  "完整度：%d / %d": {
+    "key": "t_15vxmjt1D15RvVVAHv",
+    "locations": [
+      "i18n.lua:16"
+    ]
+  },
+  "突围时间：%ds": {
+    "key": "t_3vIPO4R044jA2sJ0",
+    "locations": [
+      "i18n.lua:17"
+    ]
+  },
+  "击破：%d": {
+    "key": "t_VHH9n84JVkWDJFKF",
+    "locations": [
+      "i18n.lua:17"
+    ]
+  },
+  "波次：%d / %d": {
+    "key": "t_13BSCcGIrMsC8RO",
+    "locations": [
+      "i18n.lua:17"
+    ]
+  },
+  "模式碎片：%d / %d": {
+    "key": "t_1A304mAfF1AEaambO9",
+    "locations": [
+      "i18n.lua:18"
+    ]
+  },
+  "数据碎片：%d": {
+    "key": "t_pCzNJ1FFphkNDyIH",
+    "locations": [
+      "i18n.lua:18",
+      "i18n.lua:35"
+    ]
+  },
+  "距离下一次升级：%d 个模式碎片": {
+    "key": "t_elLhiAo9ev30Vb2z",
+    "locations": [
+      "i18n.lua:18"
+    ]
+  },
+  "当前状态": {
+    "key": "t_gRG1ITnUfyXbw5wu",
+    "locations": [
+      "i18n.lua:18"
+    ]
+  },
+  "模块：%s Lv.%d": {
+    "key": "t_7s4mZXsz7hOU0oBZ",
+    "locations": [
+      "i18n.lua:19"
+    ]
+  },
+  "未装配": {
+    "key": "t_5UwrlOUe4zveAlzQ",
+    "locations": [
+      "i18n.lua:19"
+    ]
+  },
+  "敌对几何体": {
+    "key": "t_y0vjJZ6PySfAKj0b",
+    "locations": [
+      "i18n.lua:19"
+    ]
+  },
+  "精英核心": {
+    "key": "t_n8sv8CYUn0cpUa26",
+    "locations": [
+      "i18n.lua:20"
+    ]
+  },
+  "WASD / 方向键移动 · 自动模块锁定目标": {
+    "key": "t_UmWgOonaUv0q26ZW",
+    "locations": [
+      "i18n.lua:20"
+    ]
+  },
+  "触摸左侧并拖动移动 · 自动攻击": {
+    "key": "t_qsJ5uLyqqgwbMGPR",
+    "locations": [
+      "i18n.lua:20"
+    ]
+  },
+  "波次校准完成": {
+    "key": "t_10G83MssC107Peg9fF",
+    "locations": [
+      "i18n.lua:22"
+    ]
+  },
+  "下一波：%d": {
+    "key": "t_jGtytDFfj9VepA9G",
+    "locations": [
+      "i18n.lua:22"
+    ]
+  },
+  "继续突围": {
+    "key": "t_9fGWrSx49oAbwNJf",
+    "locations": [
+      "i18n.lua:22"
+    ]
+  },
+  "升级：选择一项校准": {
+    "key": "t_Rs4KAQxVRjzxTf9E",
+    "locations": [
+      "i18n.lua:23"
+    ]
+  },
+  "等级 %d": {
+    "key": "t_KtwWDUCsL3DvXicR",
+    "locations": [
+      "i18n.lua:23"
+    ]
+  },
+  "Trace Beam · 轨迹光束": {
+    "key": "t_HTya35MXGycDt6Ge",
+    "locations": [
+      "i18n.lua:24"
+    ]
+  },
+  "更快、更强的窄束自动追踪光束": {
+    "key": "t_1AAYn4Yf31A2BUNCNM",
+    "locations": [
+      "i18n.lua:24"
+    ]
+  },
+  "Orbit Seed · 环轨种子": {
+    "key": "t_kwoRPmMllNYmQ9pq",
+    "locations": [
+      "i18n.lua:25"
+    ]
+  },
+  "旋转种子持续撞击附近敌人": {
+    "key": "t_QdPALWGfQTmgijhA",
+    "locations": [
+      "i18n.lua:25"
+    ]
+  },
+  "Pulse Bloom · 脉冲绽放": {
+    "key": "t_oEZT7TA9oPomaWBU",
+    "locations": [
+      "i18n.lua:26"
+    ]
+  },
+  "周期性释放圆形脉冲，击退并伤害敌人": {
+    "key": "t_gC0Uwn0pg45MV1yw",
+    "locations": [
+      "i18n.lua:26"
+    ]
+  },
+  "Shell Lantern · 护壳灯": {
+    "key": "t_18BA1Kg1k18M8tDYMf",
+    "locations": [
+      "i18n.lua:27"
+    ]
+  },
+  "可再生护盾壳体，优先承受完整度伤害": {
+    "key": "t_8qXnbSAH9IcK2dg4",
+    "locations": [
+      "i18n.lua:27"
+    ]
+  },
+  "Anchor Mine · 锚雷": {
+    "key": "t_ooHjmdf8ovpQckJf",
+    "locations": [
+      "i18n.lua:28"
+    ]
+  },
+  "周期性部署地雷，敌人靠近时引爆并造成范围伤害": {
+    "key": "t_toBbpooru0EI5AyG",
+    "locations": [
+      "i18n.lua:28"
+    ]
+  },
+  "Vector Hook · 矢量钩": {
+    "key": "t_iCRVRKAJhj7m6W7i",
+    "locations": [
+      "i18n.lua:29"
+    ]
+  },
+  "留下持续伤害的移动轨迹": {
+    "key": "t_19qW3C9hn1AHNbGrQs",
+    "locations": [
+      "i18n.lua:29"
+    ]
+  },
+  "强化轨迹光束": {
+    "key": "t_mSTWzV2EmHwe0fWJ",
+    "locations": [
+      "i18n.lua:30"
+    ]
+  },
+  "强化环轨种子": {
+    "key": "t_3hkBVgKZ3CX5tDsI",
+    "locations": [
+      "i18n.lua:30"
+    ]
+  },
+  "强化脉冲绽放": {
+    "key": "t_9kGSlH7x9ZT8CMBk",
+    "locations": [
+      "i18n.lua:30"
+    ]
+  },
+  "强化护壳灯": {
+    "key": "t_OnjzwE57Oe0UL7Lo",
+    "locations": [
+      "i18n.lua:30"
+    ]
+  },
+  "强化锚雷": {
+    "key": "t_13yCCQkPZ13p6Lp7Wy",
+    "locations": [
+      "i18n.lua:31"
+    ]
+  },
+  "强化矢量钩": {
+    "key": "t_1H9gxkxOs1GhxXJPb9",
+    "locations": [
+      "i18n.lua:31"
+    ]
+  },
+  "加固完整度": {
+    "key": "t_hOx2vbqvhHBHEvpM",
+    "locations": [
+      "i18n.lua:32"
+    ]
+  },
+  "扩大磁吸范围": {
+    "key": "t_1Ed1w8c3k1ETPQWvtJ",
+    "locations": [
+      "i18n.lua:32"
+    ]
+  },
+  "获得一项永久运行强化": {
+    "key": "t_hzaD1UQaiAUXIlth",
+    "locations": [
+      "i18n.lua:32"
+    ]
+  },
+  "突围失败": {
+    "key": "t_pw54CjbrqNjfl11S",
+    "locations": [
+      "i18n.lua:33"
+    ]
+  },
+  "运行总结": {
+    "key": "t_od0eFglzp77cQDxO",
+    "locations": [
+      "i18n.lua:33"
+    ]
+  },
+  "原因：%s": {
+    "key": "t_58SSWg4E5awleBJn",
+    "locations": [
+      "i18n.lua:33"
+    ]
+  },
+  "最终击破：%d": {
+    "key": "t_14Qkcx5X414bxh3N4B",
+    "locations": [
+      "i18n.lua:34"
+    ]
+  },
+  "抵达波次：%d": {
+    "key": "t_NNPL5UyKNZUKhn2j",
+    "locations": [
+      "i18n.lua:34"
+    ]
+  },
+  "最终等级：%d": {
+    "key": "t_11zZ5FPSD128HIKXs0",
+    "locations": [
+      "i18n.lua:34"
+    ]
+  },
+  "装配模块：%s Lv.%d": {
+    "key": "t_12fBwyeO212TZFI8gF",
+    "locations": [
+      "i18n.lua:35"
+    ]
+  },
+  "重新开始": {
+    "key": "t_QXobhWlRQPhkaDF6",
+    "locations": [
+      "i18n.lua:36"
+    ]
+  },
+  "返回语言选择": {
+    "key": "t_17t6C3TuZ17Ol9rdAs",
+    "locations": [
+      "i18n.lua:36"
+    ]
+  },
+  "与敌对几何体发生碰撞": {
+    "key": "t_DmlP7otiEGzPJlF1",
+    "locations": [
+      "i18n.lua:36"
+    ]
+  },
+  "完成全部波次": {
+    "key": "t_bogeFpMobhPMl6d1",
+    "locations": [
+      "i18n.lua:36"
+    ]
+  },
+  "场域：%s": {
+    "key": "t_1C7Avm6Hg1BzYeWPP7",
+    "locations": [
+      "i18n.lua:37"
+    ]
+  },
+  "压缩：内圈移动边界": {
+    "key": "t_oAIUd25CoKPTXpoh",
+    "locations": [
+      "i18n.lua:37"
+    ]
+  },
+  "涌潮：周期性场域脉冲": {
+    "key": "t_1HkuuN6ZY1HagtSWyT",
+    "locations": [
+      "i18n.lua:37"
+    ]
+  },
+  "超频：敌人更快，奖励更高": {
+    "key": "t_zxVDadQy10Q1v9YhZ",
+    "locations": [
+      "i18n.lua:37"
+    ]
+  },
+  "追猎体": {
+    "key": "t_xYyj6IHZxk057HeK",
+    "locations": [
+      "i18n.lua:38"
+    ]
+  },
+  "掠行体": {
+    "key": "t_1DQFbmXS81Cwopb6xZ",
+    "locations": [
+      "i18n.lua:38"
+    ]
+  },
+  "蓄能体": {
+    "key": "t_nZNXg8DZnkk1Nd7Q",
+    "locations": [
+      "i18n.lua:38"
+    ]
+  },
+  "活动模块：%s": {
+    "key": "t_19VG4iJsD19NDrj7gq",
+    "locations": [
+      "i18n.lua:38"
+    ]
+  },
+  "警告：场域脉冲": {
+    "key": "t_u8kbzxextfenIXXq",
+    "locations": [
+      "i18n.lua:38"
+    ]
+  },
+  "校准档案": {
+    "key": "t_1Hv4zRRWw1HQViC527",
+    "locations": [
+      "i18n.lua:39"
+    ]
+  },
+  "校准档案（本次会话）": {
+    "key": "t_1A2vPFVvw1AEfBlfwj",
+    "locations": [
+      "i18n.lua:39"
+    ]
+  },
+  "校准片：%d": {
+    "key": "t_5QW6ocFS5Itiktcl",
+    "locations": [
+      "i18n.lua:39"
+    ]
+  },
+  "起始完整度 +1": {
+    "key": "t_mGNGgLbimPCf6yFT",
+    "locations": [
+      "i18n.lua:39"
+    ]
+  },
+  "磁吸范围 +35": {
+    "key": "t_17Mas2A9p17qRbwMBk",
+    "locations": [
+      "i18n.lua:39"
+    ]
+  },
+  "校准": {
+    "key": "t_1FJPoKCyy1EsmLxFj3",
+    "locations": [
+      "i18n.lua:39"
+    ]
+  },
+  "未验证持久化：仅在本次会话有效": {
+    "key": "t_1C0TsdY1J1BrjHhA7s",
+    "locations": [
+      "i18n.lua:39"
+    ]
+  },
+  "返回": {
+    "key": "t_vKCzcTCiupNLbfGL",
+    "locations": [
+      "i18n.lua:39"
+    ]
+  },
+  "Geometry Breakout / 几何突围": {
+    "key": "t_ycjvROF0z6HuPaWh",
+    "locations": [
+      "main.lua:731"
+    ]
+  }
+}
