@@ -10,13 +10,16 @@
 local M = {}
 
 -- ─── Screen state machine constants (FSM) ───────────────────────────────
-M.SCREEN_LANGUAGE  = "language"
-M.SCREEN_GAME      = "game"
-M.SCREEN_UPGRADE   = "upgrade"
-M.SCREEN_WAVE_PAUSE = "wave_pause"
-M.SCREEN_ARCHIVE   = "archive"
-M.SCREEN_SUMMARY   = "summary"
-M.SCREEN_COSMETICS = "cosmetics"
+M.SCREEN_LANGUAGE     = "language"
+M.SCREEN_STAGE_SELECT = "stage_select"
+M.SCREEN_GAME         = "game"
+M.SCREEN_UPGRADE      = "upgrade"
+M.SCREEN_WAVE_PAUSE   = "wave_pause"
+M.SCREEN_STAGE_PAUSE  = "stage_pause"   -- between levels within a stage
+M.SCREEN_STAGE_SUMMARY= "stage_summary" -- stage complete → results
+M.SCREEN_ARCHIVE      = "archive"
+M.SCREEN_SUMMARY      = "summary"
+M.SCREEN_COSMETICS    = "cosmetics"
 
 -- ─── Language & current screen ───────────────────────────────────────────
 ---@type string
@@ -127,9 +130,21 @@ M.trail_ = {}
 
 -- ─── Module state ───────────────────────────────────────────────────────
 ---@type table<string, number>
-M.moduleLevels_ = { trace = 1, orbit = 0, pulse = 0, shell = 0, mine = 0, hook = 0 }
+M.moduleLevels_ = { trace = 1, orbit = 0, pulse = 0, shell = 0, mine = 0, hook = 0, laser = 0, poison = 0 }
 ---@type table<string, boolean>
-M.activeModules_ = { trace = true, orbit = false, pulse = false, shell = false, mine = false, hook = false }
+M.activeModules_ = { trace = true, orbit = false, pulse = false, shell = false, mine = false, hook = false, laser = false, poison = false }
+
+-- ─── Stage → Level → Wave progression (like Survivor.io / Brotato) ──────
+---@type number  current stage index (1-based)
+M.stage_ = 1
+---@type number  current level within the stage (1-based)
+M.stageLevel_ = 1
+---@type number  total stages that exist
+M.totalStages_ = 2
+---@type number  stages the player has unlocked (starts at 1)
+M.stagesUnlocked_ = 1
+---@type number  countdown for "Stage X · Level Y" intro overlay
+M.stageIntroTimer_ = 0
 
 -- ─── Wave / modifier / run scalars ──────────────────────────────────────
 M.modifier_ = "compression"
@@ -151,7 +166,7 @@ M.score_ = 0
 M.dataFragments_ = 0
 ---@type number
 M.patternShards_ = 0
----@type number
+---@type number  player upgrade level (NOT game level — see stageLevel_)
 M.level_ = 1
 ---@type number
 M.levelProgress_ = 0
@@ -159,8 +174,8 @@ M.levelProgress_ = 0
 M.levelGoal_ = 5
 ---@type number
 M.wave_ = 1
----@type number
-M.maxWaves_ = 8
+---@type number  number of waves in the CURRENT level (set from stages config)
+M.maxWaves_ = 4
 ---@type number
 M.waveDuration_ = 18
 ---@type number
@@ -179,7 +194,7 @@ M.moduleLevel_ = 0
 M.upgradeCards_ = {}
 M.summaryAwarded_ = false
 M.isVictory_ = false
-M.runStats_ = { damageTaken = 0, deaths = 0, maxWave = 1, upgrades = {} }
+M.runStats_ = { damageTaken = 0, deaths = 0, maxWave = 1, maxStageLevel = 1, upgrades = {} }
 
 -- ─── Boss state ──────────────────────────────────────────────────────────
 ---@type table|nil
@@ -193,17 +208,21 @@ M.bossLabel_ = nil
 ---@type Widget|nil
 M.bossCard_ = nil
 
--- ── Glitch corruption overlay (R-03) ────────────────────────────────────
----@type boolean
-M.glitchWave_ = false
+-- ─── Mid-boss state (R-01) ─────────────────────────────────────────────
+---@type table|nil
+M.midBoss_ = nil
 ---@type number
-M.corruption_ = 0
----@type number
-M.glitchTickTimer_ = 0
+M.midBossFlash_ = 0
+---@type Widget|nil
+M.midBossBarFill_ = nil
+---@type Label|nil
+M.midBossLabel_ = nil
+---@type Widget|nil
+M.midBossCard_ = nil
 
 -- ── Dynamic enemy cap (R-06) ────────────────────────────────────────────
----@type number
-M.maxEnemies_ = 24
+---@type number   -- max concurrent enemies on screen
+M.maxEnemies_ = 30
 
 -- ─── Profile (session-only — no verified storage API) ───────────────────
 ---@class MetaProfile

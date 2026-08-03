@@ -8,6 +8,7 @@ local player = require("player")
 local modules = require("modules")
 local waves = require("waves")
 local enemies = require("enemies")
+local stages = require("stages")
 local ui = require("ui")
 local player_ = state.player_
 
@@ -27,6 +28,11 @@ local function GetWorldSize()
     return graphics:GetWidth() / dpr, graphics:GetHeight() / dpr
 end
 
+-- Get the current stage's theme for arena visuals
+local function ArenaTheme()
+    return stages.theme(state.stage_) or stages.theme(1)
+end
+
 local function MakeLabel(text, props)
     props = props or {}; props.text = text; props.fontFamily = "sans"
     return UI.Label(props)
@@ -43,6 +49,8 @@ local function ModuleName(moduleId)
     if moduleId == "shell" then return state.T("module.shell") end
     if moduleId == "mine" then return state.T("module.mine") end
     if moduleId == "hook" then return state.T("module.hook") end
+    if moduleId == "laser" then return state.T("module.laser") end
+    if moduleId == "poison" then return state.T("module.poison") end
     return state.T("game.none")
 end
 
@@ -52,7 +60,7 @@ end
 
 local function ActiveModuleText()
     local list = {}
-    for _, id in ipairs({ "trace", "orbit", "pulse", "shell", "mine", "hook" }) do
+    for _, id in ipairs({ "trace", "orbit", "pulse", "shell", "mine", "hook", "laser", "poison" }) do
         if IsModuleActive(id) then table.insert(list, ModuleName(id) .. " Lv." .. state.moduleLevels_[id]) end
     end
     return #list > 0 and table.concat(list, " · ") or state.T("game.none")
@@ -118,10 +126,13 @@ local function ClearEntities()
     for _, m in ipairs(state.mines_) do DestroyEntityWidget(m.widget) end
     for _, p in ipairs(state.trail_) do DestroyEntityWidget(p.widget) end
     for _, n in ipairs(state.damageNumbers_) do DestroyEntityWidget(n.widget) end
+    for _, c in ipairs(state.poisonClouds_ or {}) do DestroyEntityWidget(c.widget) end
+    for _, b in ipairs(state.laserBeams_ or {}) do DestroyEntityWidget(b.widget) end
     if state.orbitWidget_ then state.orbitWidget_:Destroy(); state.orbitWidget_ = nil end
     if state.orbitWidget2_ then state.orbitWidget2_:Destroy(); state.orbitWidget2_ = nil end
     if state.shellRing_ then state.shellRing_:Destroy(); state.shellRing_ = nil end
     enemies.clear_boss()
+    enemies.clear_midboss()
     enemies.clear_enemy_projectiles()
     state.enemies_, state.projectiles_, state.enemyProjectiles_, state.pickups_, state.mines_, state.trail_, state.damageNumbers_ = {}, {}, {}, {}, {}, {}, {}
 end
@@ -129,33 +140,51 @@ end
 local function ResetRunState()
     ClearEntities(); state.worldWidth_, state.worldHeight_ = GetWorldSize()
     player.reset(state.worldWidth_, state.worldHeight_)
-    state.moduleLevels_ = { trace = 1, orbit = 0, pulse = 0, shell = 0, mine = 0, hook = 0 }; state.activeModules_ = { trace = true, orbit = false, pulse = false, shell = false, mine = false, hook = false }
+    state.moduleLevels_ = { trace = 1, orbit = 0, pulse = 0, shell = 0, mine = 0, hook = 0, laser = 0, poison = 0 }; state.activeModules_ = { trace = true, orbit = false, pulse = false, shell = false, mine = false, hook = false, laser = false, poison = false }
     state.surgeTimer_, state.surgeFlash_ = 2.5, 0
     state.runTime_, state.waveTime_, state.spawnTimer_, state.enemyId_, state.score_ = 0, 0, 0, 0, 0
     state.dataFragments_, state.patternShards_, state.level_, state.levelProgress_ = 0, 0, 1, 0
     state.levelGoal_, state.wave_, state.waveSpawned_, state.eliteCount_ = 5, 1, 0, 0
+    -- stage_ is preserved (set by stage select); reset level to 1
+    state.stageLevel_ = 1
+    state.stageIntroTimer_ = 2.0  -- show level intro on first level
     waves.reset()
     state.waveSpawnTarget_, state.wavePauseTimer_ = 10, 0
     state.chosenModule_, state.moduleLevel_, state.defeatReason_ = "", 0, ""
     state.summaryAwarded_ = false
     state.isVictory_ = false
-    state.damageNumbers_, state.hitFlash_, state.shakeTime_, state.evolutionFlash_ = {}, 0, 0, 0
-    state.runStats_ = { damageTaken = 0, deaths = 0, maxWave = 1, upgrades = {} }
+    state.poisonClouds_, state.laserBeams_, state.damageNumbers_, state.hitFlash_, state.shakeTime_, state.evolutionFlash_ = {}, {}, {}, 0, 0, 0
+    state.runStats_ = { damageTaken = 0, deaths = 0, maxWave = 1, maxStageLevel = 1, upgrades = {} }
     state.boss_ = nil; state.bossFlash_ = 0
-    state.glitchWave_ = false; state.corruption_ = 0; state.glitchTickTimer_ = 0
-    state.maxEnemies_ = 24
+    state.midBoss_ = nil; state.midBossFlash_ = 0
+    state.maxEnemies_ = 30
 end
 
 function BuildUI()
+    local t = ArenaTheme()
     local content = ui.build(state.screen_)
-    local rootProps = { width = "100%", height = "100%", backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 8, 18, 42, 255 }, to = { 35, 20, 68, 255 } }, pointerEvents = "box-none", children = { content } }
-    if state.screen_ ~= "game" then
+    local rootProps = {
+        width = "100%", height = "100%",
+        backgroundGradient = { type = "linear", direction = "to-bottom-right",
+            from = t.bgGradient, to = { t.bgGradient[1] * 1.4, t.bgGradient[2] * 0.8, t.bgGradient[3] * 1.6, 255 } },
+        pointerEvents = "box-none", children = { content }
+    }
+    local nonGame = state.screen_ ~= "game"
+    if nonGame then
         rootProps.justifyContent = "center"
         rootProps.alignItems = "center"
         rootProps.padding = 16
     end
     state.uiRoot_ = UI.Panel(rootProps)
     UI.SetRoot(state.uiRoot_, true)
+    -- Reset HUD change-detection caches so new screen's first frame updates correctly
+    state._hudCache, state._xpCache, state._xpBarCache = nil, nil, nil
+    state._waveTextCache, state._waveTimeCache, state._waveModCache = nil, nil, nil
+    state._modCache, state._fbCache, state._shellCache, state._shellBarCache = nil, nil, nil, nil
+    state._bossAliveCache, state._bossBarCache, state._bossTextCache = nil, nil, nil
+    state._midAliveCache, state._midBarCache, state._midTextCache = nil, nil, nil
+    state._dockAlphaCache, state._dockShowCache, state._dockModCache = nil, nil, nil
+    state._gTick, state._gShowCache, state._introShowCache = nil, nil, nil
     if state.screen_ == "game" then
         SetWidgetPosition(state.playerWidget_, state.player_.x, state.player_.y, 32)
         ui.update_hud()
@@ -221,7 +250,7 @@ local function UpdatePickups(timeStep)
 end
 
 function ApplyUpgrade(id)
-    if id == "trace" or id == "orbit" or id == "pulse" or id == "shell" or id == "mine" or id == "hook" then
+    if id == "trace" or id == "orbit" or id == "pulse" or id == "shell" or id == "mine" or id == "hook" or id == "laser" or id == "poison" then
         state.activeModules_[id] = true; state.moduleLevels_[id] = math.min(5, state.moduleLevels_[id] + 1); state.chosenModule_ = id; state.moduleLevel_ = state.moduleLevels_[id]
         table.insert(state.runStats_.upgrades, id .. "@" .. tostring(state.moduleLevels_[id]))
         if state.moduleLevels_[id] == 3 or state.moduleLevels_[id] == 5 then ui.trigger_evolution(id, state.moduleLevels_[id]) end
@@ -235,7 +264,7 @@ function ApplyUpgrade(id)
 end
 
 function PrepareUpgradeChoices()
-    local options = { "trace", "orbit", "pulse", "shell", "mine", "hook", "integrity", "magnet" }
+    local options = { "trace", "orbit", "pulse", "shell", "mine", "hook", "laser", "poison", "integrity", "magnet" }
     for index = #options, 2, -1 do
         local j = math.random(1, index)
         options[index], options[j] = options[j], options[index]
@@ -251,6 +280,8 @@ function PrepareUpgradeChoices()
         elseif id == "shell" then title, description = state.T("upgrade.shell"), state.T("module.shell_desc")
         elseif id == "mine" then title, description = state.T("upgrade.mine"), state.T("module.mine_desc")
         elseif id == "hook" then title, description = state.T("upgrade.hook"), state.T("module.hook_desc")
+        elseif id == "laser" then title, description = state.T("upgrade.laser"), state.T("module.laser_desc")
+        elseif id == "poison" then title, description = state.T("upgrade.poison"), state.T("module.poison_desc")
         elseif id == "integrity" then title, description = state.T("upgrade.integrity"), state.T("upgrade.desc")
         else title, description = state.T("upgrade.magnet"), state.T("upgrade.desc") end
         table.insert(state.upgradeCards_, { id = id, title = title, description = description })
@@ -260,25 +291,80 @@ end
 local function EndWave()
     ClearEntities()
     state.runStats_.maxWave = math.max(state.runStats_.maxWave, state.wave_)
+    state.runStats_.maxStageLevel = math.max(state.runStats_.maxStageLevel or 1, state.stageLevel_)
     ui.trigger_shake(0.18, 0.18)
 
-    if state.wave_ >= state.maxWaves_ then
-        state.defeatReason_ = state.T("game.reason_complete")
-        state.isVictory_ = true
-        if not state.summaryAwarded_ then state.profile_.calibration = state.profile_.calibration + math.max(1, math.floor(state.dataFragments_ / 8)); state.summaryAwarded_ = true end
-        state.screen_ = "summary"; BuildUI(); return
+    -- Check if this level is fully complete
+    local lvl = stages.level(state.stage_, state.stageLevel_)
+    local maxW = lvl and lvl.totalWaves or state.maxWaves_
+
+    if state.wave_ >= maxW then
+        local totalLevels = stages.totalLevels(state.stage_)
+        if state.stageLevel_ < totalLevels then
+            -- Advance to next level within the stage
+            waves.advance_level()
+        else
+            -- Stage fully cleared
+            state.defeatReason_ = state.T("game.reason_complete")
+            state.isVictory_ = true
+            if not state.summaryAwarded_ then
+                state.profile_.calibration = state.profile_.calibration + math.max(1, math.floor(state.dataFragments_ / 8))
+                state.summaryAwarded_ = true
+            end
+            state.screen_ = state.SCREEN_STAGE_SUMMARY
+        end
+    else
+        waves.advance()
     end
-    waves.advance(); BuildUI()
+    state._needsRebuild = true
 end
 
 function HandleUpdate(_eventType, eventData)
+    local timeStep = math.min(eventData["TimeStep"]:GetFloat(), 0.05)
+
+    -- ── Deferred UI rebuild (from EndWave / screen changes) ────────────
+    if state._needsRebuild then
+        state._needsRebuild = false
+        BuildUI()
+        return
+    end
+
+    -- ── Timer-based screen transitions ────────────────────────────────
+    if state.screen_ == state.SCREEN_WAVE_PAUSE then
+        state.wavePauseTimer_ = state.wavePauseTimer_ + timeStep
+        if state.wavePauseTimer_ >= 1.2 then
+            waves.begin_wave()
+            BuildUI()
+        end
+        return
+    end
+
+    if state.screen_ == state.SCREEN_STAGE_PAUSE then
+        state.wavePauseTimer_ = state.wavePauseTimer_ + timeStep
+        state.stageIntroTimer_ = math.max(0, state.stageIntroTimer_ - timeStep)
+        if state.wavePauseTimer_ >= 2.5 then
+            waves.begin_wave()
+            BuildUI()
+        end
+        return
+    end
+
     if state.screen_ ~= "game" then return end
-    local timeStep = math.min(eventData["TimeStep"]:GetFloat(), 0.05); state.runTime_ = state.runTime_ + timeStep; state.waveTime_ = state.waveTime_ + timeStep
+    state.runTime_ = state.runTime_ + timeStep; state.waveTime_ = state.waveTime_ + timeStep
+    state.stageIntroTimer_ = math.max(0, (state.stageIntroTimer_ or 0) - timeStep)
     player.update_timers(timeStep); state.spawnTimer_ = state.spawnTimer_ - timeStep; state.surgeFlash_ = math.max(0, state.surgeFlash_ - timeStep)
     if state.modifier_ == "surge" then state.surgeTimer_ = state.surgeTimer_ - timeStep; if state.surgeTimer_ <= 0 then state.surgeTimer_ = 4.0; state.surgeFlash_ = 0.55; for _, enemy in ipairs(state.enemies_) do if not enemy.dead then enemies.damage(enemy, 1); end end end end
     player.update_movement(timeStep)
 
-    if waves.is_boss_wave(state.wave_) then
+    if waves.is_midboss_wave(state.wave_) then
+        if not enemies.midboss_exists() and state.waveTime_ > 0.8 and state.waveSpawned_ == 0 then
+            enemies.spawn_midboss()
+            state.waveSpawned_ = 1
+        end
+        if state.spawnTimer_ <= 0 and state.waveSpawned_ < state.waveSpawnTarget_ and state.waveTime_ < state.waveDuration_ then
+            enemies.spawn(false); state.spawnTimer_ = math.max(0.8, 1.4 - state.wave_ * 0.03)
+        end
+    elseif waves.is_boss_wave(state.wave_) then
         if not enemies.boss_exists() and state.waveTime_ > 1.0 and state.waveSpawned_ == 0 then
             enemies.spawn_boss()
             state.waveSpawned_ = 1
@@ -288,15 +374,26 @@ function HandleUpdate(_eventType, eventData)
         end
     else
         if state.waveSpawned_ == 0 and state.wave_ % 3 == 0 then enemies.spawn(true) end
-        if state.spawnTimer_ <= 0 and state.waveSpawned_ < state.waveSpawnTarget_ and state.waveTime_ < state.waveDuration_ then enemies.spawn(false); state.spawnTimer_ = math.max(0.2, 0.7 - state.wave_ * 0.04) end
+        local interval = math.max(0.2, 0.7 - state.wave_ * 0.04)
+        if state.spawnTimer_ <= 0 and state.waveSpawned_ < state.waveSpawnTarget_ and state.waveTime_ < state.waveDuration_ then enemies.spawn(false); state.spawnTimer_ = interval end
     end
 
     if IsModuleActive("trace") and player_.fireTimer <= 0 then modules.fire_trace_beam(); player_.fireTimer = math.max(0.18, 0.42 - state.moduleLevels_.trace * 0.04) end
     if IsModuleActive("pulse") and player_.pulseTimer <= 0 then modules.pulse_bloom(); player_.pulseTimer = math.max(1.4, 3.0 - state.moduleLevels_.pulse * 0.25) end
+    if IsModuleActive("laser") and (player_.laserTimer or 0) <= 0 then
+        modules.fire_laser_gun()
+        player_.laserTimer = math.max(1.0, 2.4 - state.moduleLevels_.laser * 0.22)
+    end
+    if IsModuleActive("poison") and (player_.poisonTimer or 0) <= 0 then
+        modules.deploy_poison_bomb(player_.x, player_.y)
+        player_.poisonTimer = math.max(1.6, 3.5 - state.moduleLevels_.poison * 0.3)
+    end
     modules.update_shell(timeStep)
     enemies.update(timeStep)
     if not IsGameScreen() then return end
     enemies.update_boss(timeStep)
+    if not IsGameScreen() then return end
+    enemies.update_midboss(timeStep)
     if not IsGameScreen() then return end
     enemies.update_projectiles(timeStep); enemies.update_enemy_projectiles(timeStep); UpdatePickups(timeStep)
     if not IsGameScreen() then return end
@@ -304,9 +401,13 @@ function HandleUpdate(_eventType, eventData)
     modules.update_shell_visual()
     modules.update_mines(timeStep)
     modules.update_trail(timeStep)
+    modules.update_laser(timeStep)
+    modules.update_poison(timeStep)
 
     local waveDone = state.waveTime_ >= state.waveDuration_ and state.waveSpawned_ >= state.waveSpawnTarget_ and #state.enemies_ == 0
-    if waves.is_boss_wave(state.wave_) then
+    if waves.is_midboss_wave(state.wave_) then
+        waveDone = state.waveTime_ >= state.waveDuration_ and not enemies.midboss_exists() and #state.enemies_ == 0
+    elseif waves.is_boss_wave(state.wave_) then
         waveDone = state.waveTime_ >= state.waveDuration_ and not enemies.boss_exists() and #state.enemies_ == 0
     end
     if waveDone then EndWave() else ui.update_hud(); ui.update_feedback(timeStep) end
@@ -334,12 +435,26 @@ function Start()
         handleTouchUp = HandleTouchUp,
         beginWave = waves.begin_wave,
         rebuild = BuildUI,
+        -- Stage select callback: set stage then start run
+        selectStage = function(stageIdx)
+            state.stage_ = stageIdx
+            state.stageLevel_ = 1
+            ResetRunState()
+            waves.begin_wave()
+            BuildUI()
+        end,
+        -- Return to stage select from summary
+        goStageSelect = function()
+            state.screen_ = state.SCREEN_STAGE_SELECT
+            BuildUI()
+        end,
     })
     modules.configure({
         findNearestEnemy = enemies.find_nearest,
         damageEnemy = enemies.damage,
         damageArea = enemies.damage_area,
         damageBoss = enemies.damage_boss,
+        damageMidboss = enemies.damage_midboss,
         setWidgetPosition = SetWidgetPosition,
         destroyWidget = DestroyEntityWidget,
     })
@@ -348,6 +463,14 @@ function Start()
         damagePlayer = DamagePlayer,
         setWidgetPosition = SetWidgetPosition,
         destroyWidget = DestroyEntityWidget,
+        spawnMidBossDrop = function()
+            -- R-01: Guaranteed module drop on mid-boss defeat
+            for _, id in ipairs({ "orbit", "pulse", "shell", "mine", "hook" }) do
+                if not IsModuleActive(id) then
+                    state.activeModules_[id] = true; state.moduleLevels_[id] = 1; break
+                end
+            end
+        end,
         onDamage = function(x, y, amount, elite)
             ui.show_damage_number(x, y, amount, elite and { 255, 213, 83, 255 } or { 255, 255, 255, 255 })
             ui.trigger_hit_flash(elite and { 255, 213, 83, 255 } or { 255, 255, 255, 255 }, elite and 0.22 or 0.12, 0.1)

@@ -160,4 +160,170 @@ function M.update_trail(timeStep)
     end
 end
 
+-- ── Laser Gun ─────────────────────────────────────────────────────────────
+-- Fires a high-damage targeted beam at the nearest enemy.
+-- Higher levels: faster fire rate, more damage, beam pierces.
+
+function M.fire_laser_gun()
+    if not state.gameWorld_ then return end
+    local p = player()
+    local target = callbacks.findNearestEnemy and callbacks.findNearestEnemy()
+    if not target then return end
+    local level = state.moduleLevels_.laser
+    local dx, dy = target.x - p.x, target.y - p.y
+    local length = math.sqrt(dx * dx + dy * dy)
+    if length <= 0 then return end
+    local dirX, dirY = dx / length, dy / length
+
+    -- Beam visual (thin rectangle from player to target area)
+    local beamLen = length + 80  -- overshoot slightly
+    local beam = UI.Panel {
+        position = "absolute",
+        width = beamLen,
+        height = 4 + level,
+        backgroundGradient = { type = "linear", direction = "to-right",
+            from = { 255, 40, 30, 200 }, to = { 255, 120, 20, 100 } },
+        borderColor = { 255, 220, 100, 200 },
+        borderWidth = 1,
+        pointerEvents = "none",
+    }
+    state.gameWorld_:AddChild(beam)
+    position(beam, p.x + dirX * beamLen * 0.5, p.y + dirY * beamLen * 0.5, beamLen)
+
+    -- Damage to target and enemies near the beam path
+    local damageAmount = 3 + level * 1.5
+    local pierce = level >= 3 and 3 or 1
+    local hitCount = 0
+    for _, enemy in ipairs(state.enemies_) do
+        if not enemy.dead and hitCount < pierce then
+            -- Check if enemy is near the beam line segment
+            local ex, ey = enemy.x - p.x, enemy.y - p.y
+            local dot = ex * dirX + ey * dirY
+            if dot > 0 and dot < length + enemy.radius then
+                local projX, projY = p.x + dirX * dot, p.y + dirY * dot
+                local distX, distY = enemy.x - projX, enemy.y - projY
+                if distX * distX + distY * distY < (enemy.radius + 18) ^ 2 then
+                    damage(enemy, damageAmount)
+                    hitCount = hitCount + 1
+                end
+            end
+        end
+    end
+    -- Also hit boss/mid-boss along beam
+    if state.boss_ and not state.boss_.dead then
+        local bx, by = state.boss_.x - p.x, state.boss_.y - p.y
+        local bdot = bx * dirX + by * dirY
+        if bdot > 0 and bdot < length + state.boss_.radius then
+            local projX, projY = p.x + dirX * bdot, p.y + dirY * bdot
+            local bdx, bdy = state.boss_.x - projX, state.boss_.y - projY
+            if bdx * bdx + bdy * bdy < (state.boss_.radius + 18) ^ 2 then
+                if callbacks.damageBoss then callbacks.damageBoss(damageAmount) end
+            end
+        end
+    end
+    if state.midBoss_ and not state.midBoss_.dead then
+        local mx, my = state.midBoss_.x - p.x, state.midBoss_.y - p.y
+        local mdot = mx * dirX + my * dirY
+        if mdot > 0 and mdot < length + state.midBoss_.radius then
+            local projX, projY = p.x + dirX * mdot, p.y + dirY * mdot
+            local mdx, mdy = state.midBoss_.x - projX, state.midBoss_.y - projY
+            if mdx * mdx + mdy * mdy < (state.midBoss_.radius + 18) ^ 2 then
+                if callbacks.damageMidBoss then callbacks.damageMidBoss(damageAmount) end
+            end
+        end
+    end
+
+    table.insert(state.laserBeams_, { widget = beam, life = 0.25 })
+    p.laserTimer = math.max(1.0, 2.4 - level * 0.22)
+end
+
+function M.update_laser(timeStep)
+    for index = #(state.laserBeams_ or {}), 1, -1 do
+        local beam = state.laserBeams_[index]
+        beam.life = beam.life - timeStep
+        if beam.life <= 0 then
+            if callbacks.destroyWidget then callbacks.destroyWidget(beam.widget) end
+            table.remove(state.laserBeams_, index)
+        else
+            local fade = beam.life / 0.25
+            beam.widget:SetStyle({ opacity = fade })
+        end
+    end
+end
+
+-- ── Poison Bomb ────────────────────────────────────────────────────────────
+-- Deploys a poison cloud that deals damage-over-time in an area.
+-- Higher levels: larger radius, more damage, longer duration.
+
+function M.deploy_poison_bomb(x, y)
+    if not state.gameWorld_ then return end
+    local level = state.moduleLevels_.poison
+    local radius = 40 + level * 8
+    local size = radius * 2
+
+    -- Cloud visual
+    local cloud = UI.Panel {
+        position = "absolute",
+        width = size,
+        height = size,
+        backgroundGradient = { type = "radial",
+            from = { 80, 200, 40, 90 }, to = { 20, 80, 10, 0 } },
+        borderColor = { 100, 230, 50, 80 },
+        borderWidth = 2,
+        borderRadius = size * 0.5,
+        pointerEvents = "none",
+    }
+    state.gameWorld_:AddChild(cloud)
+
+    local cloudData = {
+        x = x, y = y, radius = radius, size = size,
+        widget = cloud,
+        life = 3.0 + level * 0.6,
+        damagePerSec = 1.5 + level * 0.8,
+        tickTimer = 0,
+    }
+    if not state.poisonClouds_ then state.poisonClouds_ = {} end
+    table.insert(state.poisonClouds_, cloudData)
+    position(cloud, x, y, size)
+    local pl = player()
+    pl.poisonTimer = math.max(1.6, 3.5 - level * 0.3)
+end
+
+function M.update_poison(timeStep)
+    for index = #(state.poisonClouds_ or {}), 1, -1 do
+        local cloud = state.poisonClouds_[index]
+        cloud.life = cloud.life - timeStep
+        if cloud.life <= 0 then
+            if callbacks.destroyWidget then callbacks.destroyWidget(cloud.widget) end
+            table.remove(state.poisonClouds_, index)
+        else
+            -- Fade over time
+            local fade = math.min(1, cloud.life / 1.5)
+            local pulse = 0.7 + 0.3 * math.sin(cloud.life * 5)
+            cloud.widget:SetStyle({ opacity = fade * pulse })
+
+            -- Damage tick
+            cloud.tickTimer = cloud.tickTimer + timeStep
+            if cloud.tickTimer >= 0.25 then
+                cloud.tickTimer = 0
+                damage_area(cloud.x, cloud.y, cloud.radius, cloud.damagePerSec * 0.25)
+                -- Also damage boss/midboss in radius
+                if state.boss_ and not state.boss_.dead then
+                    local dx, dy = state.boss_.x - cloud.x, state.boss_.y - cloud.y
+                    if dx * dx + dy * dy < (cloud.radius + state.boss_.radius) ^ 2 then
+                        if callbacks.damageBoss then callbacks.damageBoss(cloud.damagePerSec * 0.25) end
+                    end
+                end
+                if state.midBoss_ and not state.midBoss_.dead then
+                    local dx, dy = state.midBoss_.x - cloud.x, state.midBoss_.y - cloud.y
+                    if dx * dx + dy * dy < (cloud.radius + state.midBoss_.radius) ^ 2 then
+                        if callbacks.damageMidBoss then callbacks.damageMidBoss(cloud.damagePerSec * 0.25) end
+                    end
+                end
+            end
+            position(cloud.widget, cloud.x, cloud.y, cloud.size)
+        end
+    end
+end
+
 return M
