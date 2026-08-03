@@ -43,6 +43,7 @@ end
 
 function M.damage(enemy, amount)
     if not enemy or enemy.dead then return end
+    if callbacks.onDamage then callbacks.onDamage(enemy.x, enemy.y, amount, enemy.elite) end
     enemy.integrity = enemy.integrity - amount
     if enemy.integrity > 0 then return end
     enemy.dead = true

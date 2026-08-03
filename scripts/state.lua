@@ -57,6 +57,17 @@ M.shellBarFill_ = nil
 M.moduleLabel_ = nil
 ---@type Label|nil
 M.feedbackLabel_ = nil
+---@type Widget|nil
+M.hitFlashWidget_ = nil
+M.damageNumbers_ = {}
+M.hitFlash_ = 0
+M.hitFlashDuration_ = 0
+M.hitFlashColor_ = { 255, 255, 255, 255 }
+M.shakeTime_ = 0
+M.shakeDuration_ = 0
+M.shakeIntensity_ = 0
+M.evolutionFlash_ = 0
+M.evolutionColor_ = { 255, 213, 83, 255 }
 
 -- ─── Touch / joystick widgets ────────────────────────────────────────────
 ---@type Widget|nil
@@ -164,6 +175,7 @@ M.chosenModule_ = ""
 M.moduleLevel_ = 0
 M.upgradeCards_ = {}
 M.summaryAwarded_ = false
+M.runStats_ = { damageTaken = 0, deaths = 0, maxWave = 1, upgrades = {} }
 
 -- ─── Profile (session-only — no verified storage API) ───────────────────
 ---@class MetaProfile

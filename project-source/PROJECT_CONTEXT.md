@@ -80,6 +80,7 @@ Current prototype behavior:
 - Mobile phone/tablet/iPhone/iPad device pass beyond the current touch prototype
 - Visual polish pass for the new modules (mine detonation vfx, hook trail fade curves)
 - UI builders and HUD updates are extracted into `scripts/ui.lua`; `main.lua` is now orchestration-focused
+- M1 combat feedback is implemented: damage numbers, hit flash, screen shake, Lv3/Lv5 evolution flash, and lightweight run telemetry (`state.runStats_`). Ten Mine + Hook + Shell playtests are recorded in `project-source/PLAYTEST_M1.md` and remain pending.
 
 ## 4. MVP Target
 

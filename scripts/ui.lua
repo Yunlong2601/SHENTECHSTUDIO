@@ -10,6 +10,39 @@ local function rebuild() if callbacks.rebuild then callbacks.rebuild() end end
 local function module_name(id) return callbacks.moduleName(id) end
 local function modules_text() return callbacks.activeModuleText() end
 
+function M.show_damage_number(x, y, value, color)
+    if not state.gameWorld_ then return end
+    if #state.damageNumbers_ >= 28 then
+        local oldest = table.remove(state.damageNumbers_, 1)
+        if oldest.widget then oldest.widget:Destroy() end
+    end
+    local widget = UI.Label { position = "absolute", fontSize = 14, fontWeight = "bold", fontColor = color or { 255, 239, 164, 255 }, text = tostring(math.floor(value)), pointerEvents = "none" }
+    state.gameWorld_:AddChild(widget)
+    table.insert(state.damageNumbers_, { widget = widget, x = x, y = y, age = 0, lifetime = 0.72 })
+end
+
+function M.trigger_hit_flash(color, intensity, duration)
+    state.hitFlashColor_ = color or { 255, 255, 255, 255 }
+    state.hitFlash_ = math.max(state.hitFlash_, (intensity or 0.35))
+    state.hitFlashDuration_ = math.max(state.hitFlashDuration_, (duration or 0.18))
+end
+
+function M.trigger_shake(intensity, duration)
+    state.shakeIntensity_ = math.max(state.shakeIntensity_, intensity or 0.18)
+    state.shakeDuration_ = math.max(state.shakeDuration_, duration or 0.12)
+    state.shakeTime_ = state.shakeDuration_
+end
+
+function M.trigger_evolution(moduleId, level)
+    state.evolutionFlash_ = 0.5
+    state.evolutionColor_ = level >= 5 and { 255, 117, 218, 255 } or { 255, 213, 83, 255 }
+    M.trigger_shake(level >= 5 and 0.28 or 0.2, 0.22)
+    if state.feedbackLabel_ then
+        state.feedbackLabel_:SetText("◆  " .. module_name(moduleId) .. "  Lv" .. tostring(level) .. "  ◆")
+        state.feedbackLabel_:SetStyle({ fontColor = state.evolutionColor_, opacity = 1 })
+    end
+end
+
 local function language_button(code, text)
     return UI.Button { text = state.language_ == code and ("✓  " .. text) or text, variant = state.language_ == code and "success" or "secondary", width = "100%", height = 48, marginBottom = 10, onClick = function() state.language_ = code; rebuild() end }
 end
@@ -45,12 +78,13 @@ local function game_screen()
     state.waveLabel_ = label("", { fontSize = 14, fontWeight = "bold", fontColor = { 255, 230, 137, 255 }, textAlign = "right" })
     state.moduleLabel_ = label("", { fontSize = 11, fontColor = { 207, 220, 244, 255 }, textAlign = "right", marginTop = 5 })
     state.feedbackLabel_ = label("", { position = "absolute", top = 112, left = 0, right = 0, textAlign = "center", fontSize = 13, fontWeight = "bold", fontColor = { 255, 111, 126, 0 }, pointerEvents = "none" })
+    state.hitFlashWidget_ = UI.Panel { position = "absolute", top = 0, left = 0, width = "100%", height = "100%", backgroundColor = { 255, 255, 255, 255 }, opacity = 0, pointerEvents = "none" }
     local waveCard = UI.Panel { width = "38%", maxWidth = 360, padding = 12, alignItems = "flex-end", backgroundColor = { 8, 20, 45, 215 }, borderColor = { 146, 225, 191, 150 }, borderWidth = 1, borderRadius = 14, children = { state.waveLabel_, state.moduleLabel_ } }
     local hud = UI.Panel { position = "absolute", top = 14, left = 16, right = 16, flexDirection = "row", justifyContent = "space-between", pointerEvents = "none", children = { statusCard, waveCard } }
     state.joystickBase_ = UI.Panel { position = "absolute", width = state.touchRadius_ * 2, height = state.touchRadius_ * 2, backgroundColor = { 72, 133, 204, 90 }, borderColor = { 157, 220, 255, 170 }, borderWidth = 2, borderRadius = state.touchRadius_, pointerEvents = "none", visible = false }
     state.joystickKnob_ = UI.Panel { position = "absolute", width = 52, height = 52, backgroundColor = { 108, 220, 255, 210 }, borderColor = { 230, 252, 255, 230 }, borderWidth = 2, borderRadius = 26, pointerEvents = "none", visible = false }
     state.touchSurface_ = UI.Panel { position = "absolute", top = 0, left = 0, width = "100%", height = "100%", pointerEvents = "auto", onPointerDown = callbacks.handleTouchDown, onPointerMove = callbacks.handleTouchMove, onPointerUp = callbacks.handleTouchUp, onPointerCancel = callbacks.handleTouchUp, children = { state.joystickBase_, state.joystickKnob_ } }
-    return UI.Panel { width = "100%", height = "100%", pointerEvents = "box-none", children = { state.gameWorld_, hud, state.feedbackLabel_, label(state.T("game.hint"), { position = "absolute", bottom = 28, left = 0, right = 0, textAlign = "center", fontSize = 11, fontColor = { 131, 151, 190, 220 } }), label(state.T("game.mobile_hint"), { position = "absolute", bottom = 10, left = 0, right = 0, textAlign = "center", fontSize = 10, fontColor = { 122, 190, 218, 230 } }), state.touchSurface_ } }
+    return UI.Panel { width = "100%", height = "100%", pointerEvents = "box-none", children = { state.gameWorld_, hud, state.feedbackLabel_, label(state.T("game.hint"), { position = "absolute", bottom = 28, left = 0, right = 0, textAlign = "center", fontSize = 11, fontColor = { 131, 151, 190, 220 } }), label(state.T("game.mobile_hint"), { position = "absolute", bottom = 10, left = 0, right = 0, textAlign = "center", fontSize = 10, fontColor = { 122, 190, 218, 230 } }), state.touchSurface_, state.hitFlashWidget_ } }
 end
 
 local function upgrade_screen()
@@ -95,6 +129,36 @@ function M.update_hud()
         if shellActive then state.shellLabel_:SetText(state.T("game.shell", math.ceil(player.shell), player.maxShell)); state.shellLabel_:SetStyle({ opacity = 1 }) else state.shellLabel_:SetText(""); state.shellLabel_:SetStyle({ opacity = 0 }) end
     end
     if state.shellBarFill_ then local ratio = player.maxShell > 0 and math.min(1, player.shell / player.maxShell) or 0; state.shellBarFill_:SetStyle({ width = tostring(math.floor(ratio * 100)) .. "%" }) end
+end
+
+function M.update_feedback(timeStep)
+    if not state.gameWorld_ then return end
+    for index = #state.damageNumbers_, 1, -1 do
+        local item = state.damageNumbers_[index]
+        item.age = item.age + timeStep
+        if item.age >= item.lifetime then item.widget:Destroy(); table.remove(state.damageNumbers_, index)
+        else
+            local progress = item.age / item.lifetime
+            item.widget:SetStyle({ left = item.x - 12, top = item.y - 18 - progress * 30, opacity = 1 - progress })
+        end
+    end
+    state.hitFlashDuration_ = math.max(0, state.hitFlashDuration_ - timeStep)
+    state.hitFlash_ = math.max(0, state.hitFlash_ - timeStep * 2.8)
+    state.evolutionFlash_ = math.max(0, state.evolutionFlash_ - timeStep)
+    if state.hitFlashWidget_ then
+        local alpha = math.max(state.hitFlash_, state.evolutionFlash_ * 0.7)
+        local color = state.evolutionFlash_ > state.hitFlash_ and state.evolutionColor_ or state.hitFlashColor_
+        state.hitFlashWidget_:SetStyle({ backgroundColor = color, opacity = alpha })
+    end
+    if state.shakeTime_ > 0 then
+        state.shakeTime_ = math.max(0, state.shakeTime_ - timeStep)
+        local fade = state.shakeDuration_ > 0 and state.shakeTime_ / state.shakeDuration_ or 0
+        local phase = state.runTime_ * 70
+        state.gameWorld_:SetStyle({ left = math.sin(phase) * state.shakeIntensity_ * 12 * fade, top = math.cos(phase * 1.3) * state.shakeIntensity_ * 12 * fade })
+    else
+        state.gameWorld_:SetStyle({ left = 0, top = 0 })
+        state.shakeIntensity_ = 0
+    end
 end
 
 return M

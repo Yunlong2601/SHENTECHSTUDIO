@@ -95,10 +95,11 @@ local function ClearEntities()
     for _, e in ipairs(state.pickups_) do DestroyEntityWidget(e.widget) end
     for _, m in ipairs(state.mines_) do DestroyEntityWidget(m.widget) end
     for _, p in ipairs(state.trail_) do DestroyEntityWidget(p.widget) end
+    for _, n in ipairs(state.damageNumbers_) do DestroyEntityWidget(n.widget) end
     if state.orbitWidget_ then state.orbitWidget_:Destroy(); state.orbitWidget_ = nil end
     if state.orbitWidget2_ then state.orbitWidget2_:Destroy(); state.orbitWidget2_ = nil end
     if state.shellRing_ then state.shellRing_:Destroy(); state.shellRing_ = nil end
-    state.enemies_, state.projectiles_, state.pickups_, state.mines_, state.trail_ = {}, {}, {}, {}, {}
+    state.enemies_, state.projectiles_, state.pickups_, state.mines_, state.trail_, state.damageNumbers_ = {}, {}, {}, {}, {}, {}
 end
 
 local function ResetRunState()
@@ -113,6 +114,8 @@ local function ResetRunState()
     state.waveSpawnTarget_, state.wavePauseTimer_ = 10, 0
     state.chosenModule_, state.moduleLevel_, state.defeatReason_ = "", 0, ""
     state.summaryAwarded_ = false
+    state.damageNumbers_, state.hitFlash_, state.shakeTime_, state.evolutionFlash_ = {}, 0, 0, 0
+    state.runStats_ = { damageTaken = 0, deaths = 0, maxWave = 1, upgrades = {} }
 end
 
 function BuildUI()
@@ -144,11 +147,15 @@ local function DamagePlayer()
         player_.shellRechargeTimer = 0
         player_.shellFlash = 0.22
         player_.invulnerable = 0.35
+        state.runStats_.damageTaken = state.runStats_.damageTaken + 1
+        ui.show_damage_number(player_.x, player_.y, 1, { 255, 213, 83, 255 }); ui.trigger_hit_flash({ 255, 213, 83, 255 }, 0.3, 0.16); ui.trigger_shake(0.16, 0.1)
         return
     end
     player_.shellRechargeTimer = 0
     player_.integrity = player_.integrity - 1; player_.invulnerable = 0.65
-    if player_.integrity <= 0 then state.defeatReason_ = state.T("game.reason_contact"); if not state.summaryAwarded_ then state.profile_.calibration = state.profile_.calibration + math.max(1, math.floor(state.dataFragments_ / 8)); state.summaryAwarded_ = true end; state.screen_ = "summary"; ClearEntities(); BuildUI() end
+    state.runStats_.damageTaken = state.runStats_.damageTaken + 1
+    ui.show_damage_number(player_.x, player_.y, 1, { 255, 111, 126, 255 }); ui.trigger_hit_flash({ 255, 111, 126, 255 }, 0.42, 0.2); ui.trigger_shake(0.24, 0.14)
+    if player_.integrity <= 0 then state.runStats_.deaths = state.runStats_.deaths + 1; state.defeatReason_ = state.T("game.reason_contact"); if not state.summaryAwarded_ then state.profile_.calibration = state.profile_.calibration + math.max(1, math.floor(state.dataFragments_ / 8)); state.summaryAwarded_ = true end; state.screen_ = "summary"; ClearEntities(); BuildUI() end
 end
 
 local function UpdatePickups(timeStep)
@@ -175,6 +182,8 @@ end
 function ApplyUpgrade(id)
     if id == "trace" or id == "orbit" or id == "pulse" or id == "shell" or id == "mine" or id == "hook" then
         state.activeModules_[id] = true; state.moduleLevels_[id] = math.min(5, state.moduleLevels_[id] + 1); state.chosenModule_ = id; state.moduleLevel_ = state.moduleLevels_[id]
+        table.insert(state.runStats_.upgrades, id .. "@" .. tostring(state.moduleLevels_[id]))
+        if state.moduleLevels_[id] == 3 or state.moduleLevels_[id] == 5 then ui.trigger_evolution(id, state.moduleLevels_[id]) end
         if id == "shell" then
             local newMax = 2 + state.moduleLevels_.shell
             if newMax > player_.maxShell then player_.maxShell = newMax end
@@ -209,6 +218,8 @@ end
 
 local function EndWave()
     ClearEntities()
+    state.runStats_.maxWave = math.max(state.runStats_.maxWave, state.wave_)
+    ui.trigger_shake(0.18, 0.18)
     if state.wave_ >= state.maxWaves_ then state.defeatReason_ = state.T("game.reason_complete"); if not state.summaryAwarded_ then state.profile_.calibration = state.profile_.calibration + math.max(1, math.floor(state.dataFragments_ / 8)); state.summaryAwarded_ = true end; state.screen_ = "summary"; BuildUI(); return end
     waves.advance(); BuildUI()
 end
@@ -216,7 +227,7 @@ end
 function HandleUpdate(_eventType, eventData)
     if state.screen_ ~= "game" then return end
     local timeStep = math.min(eventData["TimeStep"]:GetFloat(), 0.05); state.runTime_ = state.runTime_ + timeStep; state.waveTime_ = state.waveTime_ + timeStep
-    player.update_timers(timeStep); state.spawnTimer_ = state.spawnTimer_ - timeStep; state.surgeFlash_ = math.max(0, state.surgeFlash_ - timeStep)
+    player.update_timers(timeStep); state.spawnTimer_ = state.spawnTimer_ - timeStep; state.surgeFlash_ = math.max(0, state.surgeFlash_ - timeStep); ui.update_feedback(timeStep)
     if state.modifier_ == "surge" then state.surgeTimer_ = state.surgeTimer_ - timeStep; if state.surgeTimer_ <= 0 then state.surgeTimer_ = 4.0; state.surgeFlash_ = 0.55; for _, enemy in ipairs(state.enemies_) do if not enemy.dead then enemies.damage(enemy, 1); end end end end
     player.update_movement(timeStep)
     if state.waveSpawned_ == 0 and state.wave_ % 3 == 0 then enemies.spawn(true) end
@@ -259,7 +270,7 @@ function Start()
         rebuild = BuildUI,
     })
     modules.configure({ findNearestEnemy = enemies.find_nearest, damageEnemy = enemies.damage, setWidgetPosition = SetWidgetPosition, destroyWidget = DestroyEntityWidget })
-    enemies.configure({ spawnPickup = SpawnPickup, damagePlayer = DamagePlayer, setWidgetPosition = SetWidgetPosition, destroyWidget = DestroyEntityWidget })
+    enemies.configure({ spawnPickup = SpawnPickup, damagePlayer = DamagePlayer, setWidgetPosition = SetWidgetPosition, destroyWidget = DestroyEntityWidget, onDamage = function(x, y, amount, elite) ui.show_damage_number(x, y, amount, elite and { 255, 213, 83, 255 } or { 255, 255, 255, 255 }); ui.trigger_hit_flash(elite and { 255, 213, 83, 255 } or { 255, 255, 255, 255 }, elite and 0.22 or 0.12, 0.1); ui.trigger_shake(elite and 0.12 or 0.05, 0.06) end })
     graphics.windowTitle = "Geometry Breakout / 几何突围"; UI.Init({ theme = "default-dark", fonts = { { family = "sans", weights = { normal = "Fonts/MiSans-Regular.ttf" } } }, scale = UI.Scale.DEFAULT })
     input.mouseMode = MM_ABSOLUTE; input.mouseVisible = true
     SubscribeToEvent("Update", "HandleUpdate"); SubscribeToEvent("KeyDown", "HandleKeyDown"); SubscribeToEvent("KeyUp", "HandleKeyUp"); BuildUI()

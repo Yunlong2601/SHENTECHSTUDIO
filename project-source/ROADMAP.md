@@ -39,6 +39,8 @@ This is an aspiration, not a promise of parity with mature commercial teams. Eve
 - Add a lightweight run telemetry table: wave reached, build, damage taken, deaths, upgrade choices.
 - Gate: testers can explain why they died and name their build; median first-run completion reaches wave 3.
 
+Implementation status: feedback instrumentation is complete in `scripts/ui.lua`, `scripts/enemies.lua`, and `scripts/main.lua`. The 10-run evidence gate and balance changes are intentionally still pending; use `project-source/PLAYTEST_M1.md` as the only record.
+
 ### M2 — Content density prototype
 
 - Add Splitter and Shooter enemies with distinct counter-play.

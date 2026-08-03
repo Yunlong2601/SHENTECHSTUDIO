@@ -12,7 +12,7 @@ The game is a UI-driven UrhoX Lua game. `scripts/main.lua` owns engine lifecycle
 - `modules.lua` — six combat modules and their widget/effect updates.
 - `enemies.lua` — enemy spawn, movement, collision, damage, and projectiles.
 - `waves.lua` — wave modifier selection, wave start, and wave advancement.
-- `ui.lua` — all screen builders, HUD construction, touch surface, and HUD refresh.
+- `ui.lua` — all screen builders, HUD construction, touch surface, HUD refresh, damage numbers, hit flash, screen shake, and evolution feedback.
 - `main.lua` — UI lifecycle, input event binding, pickups, summary flow, and frame orchestration.
 
 ## Approved next refactor
@@ -30,6 +30,8 @@ The UI extraction is complete. `main.lua` now coordinates lifecycle, callbacks, 
 5. Update projectiles and pickups.
 6. Update orbit, mines, trail, and visual feedback.
 7. End the wave or refresh HUD.
+
+Feedback is updated after timers and before combat: transient damage labels are owned by `ui.lua`, enemy-hit events are emitted by `enemies.lua`, and run telemetry is accumulated in `state.runStats_` by the orchestration layer.
 
 ## Dependency rule
 
