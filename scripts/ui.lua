@@ -9,6 +9,11 @@ local function label(text, props) return callbacks.makeLabel(text, props) end
 local function rebuild() if callbacks.rebuild then callbacks.rebuild() end end
 local function module_name(id) return callbacks.moduleName(id) end
 local function modules_text() return callbacks.activeModuleText() end
+local function safe_style(widget, style)
+    if not widget then return false end
+    local ok = pcall(function() widget:SetStyle(style) end)
+    return ok
+end
 
 function M.show_damage_number(x, y, value, color)
     if not state.gameWorld_ then return end
@@ -139,7 +144,7 @@ function M.update_feedback(timeStep)
         if item.age >= item.lifetime then item.widget:Destroy(); table.remove(state.damageNumbers_, index)
         else
             local progress = item.age / item.lifetime
-            item.widget:SetStyle({ left = item.x - 12, top = item.y - 18 - progress * 30, opacity = 1 - progress })
+            safe_style(item.widget, { left = item.x - 12, top = item.y - 18 - progress * 30, opacity = 1 - progress })
         end
     end
     state.hitFlashDuration_ = math.max(0, state.hitFlashDuration_ - timeStep)
@@ -148,15 +153,15 @@ function M.update_feedback(timeStep)
     if state.hitFlashWidget_ then
         local alpha = math.max(state.hitFlash_, state.evolutionFlash_ * 0.7)
         local color = state.evolutionFlash_ > state.hitFlash_ and state.evolutionColor_ or state.hitFlashColor_
-        state.hitFlashWidget_:SetStyle({ backgroundColor = color, opacity = alpha })
+        safe_style(state.hitFlashWidget_, { backgroundColor = color, opacity = alpha })
     end
     if state.shakeTime_ > 0 then
         state.shakeTime_ = math.max(0, state.shakeTime_ - timeStep)
         local fade = state.shakeDuration_ > 0 and state.shakeTime_ / state.shakeDuration_ or 0
         local phase = state.runTime_ * 70
-        state.gameWorld_:SetStyle({ left = math.sin(phase) * state.shakeIntensity_ * 12 * fade, top = math.cos(phase * 1.3) * state.shakeIntensity_ * 12 * fade })
+        safe_style(state.gameWorld_, { left = math.sin(phase) * state.shakeIntensity_ * 12 * fade, top = math.cos(phase * 1.3) * state.shakeIntensity_ * 12 * fade })
     else
-        state.gameWorld_:SetStyle({ left = 0, top = 0 })
+        safe_style(state.gameWorld_, { left = 0, top = 0 })
         state.shakeIntensity_ = 0
     end
 end

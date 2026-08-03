@@ -227,7 +227,7 @@ end
 function HandleUpdate(_eventType, eventData)
     if state.screen_ ~= "game" then return end
     local timeStep = math.min(eventData["TimeStep"]:GetFloat(), 0.05); state.runTime_ = state.runTime_ + timeStep; state.waveTime_ = state.waveTime_ + timeStep
-    player.update_timers(timeStep); state.spawnTimer_ = state.spawnTimer_ - timeStep; state.surgeFlash_ = math.max(0, state.surgeFlash_ - timeStep); ui.update_feedback(timeStep)
+    player.update_timers(timeStep); state.spawnTimer_ = state.spawnTimer_ - timeStep; state.surgeFlash_ = math.max(0, state.surgeFlash_ - timeStep)
     if state.modifier_ == "surge" then state.surgeTimer_ = state.surgeTimer_ - timeStep; if state.surgeTimer_ <= 0 then state.surgeTimer_ = 4.0; state.surgeFlash_ = 0.55; for _, enemy in ipairs(state.enemies_) do if not enemy.dead then enemies.damage(enemy, 1); end end end end
     player.update_movement(timeStep)
     if state.waveSpawned_ == 0 and state.wave_ % 3 == 0 then enemies.spawn(true) end
@@ -243,7 +243,7 @@ function HandleUpdate(_eventType, eventData)
     modules.update_shell_visual()
     modules.update_mines(timeStep)
     modules.update_trail(timeStep)
-    if state.waveTime_ >= state.waveDuration_ and state.waveSpawned_ >= state.waveSpawnTarget_ and #state.enemies_ == 0 then EndWave() else ui.update_hud() end
+    if state.waveTime_ >= state.waveDuration_ and state.waveSpawned_ >= state.waveSpawnTarget_ and #state.enemies_ == 0 then EndWave() else ui.update_hud(); ui.update_feedback(timeStep) end
 end
 
 function HandleKeyDown(_eventType, eventData)
