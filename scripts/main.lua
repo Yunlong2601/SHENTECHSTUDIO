@@ -36,6 +36,28 @@ local function SetWidgetPosition(widget, x, y, size)
     if widget then widget:SetStyle({ left = x - size * 0.5, top = y - size * 0.5 }) end
 end
 
+local function ModuleName(moduleId)
+    if moduleId == "trace" then return state.T("module.trace") end
+    if moduleId == "orbit" then return state.T("module.orbit") end
+    if moduleId == "pulse" then return state.T("module.pulse") end
+    if moduleId == "shell" then return state.T("module.shell") end
+    if moduleId == "mine" then return state.T("module.mine") end
+    if moduleId == "hook" then return state.T("module.hook") end
+    return state.T("game.none")
+end
+
+local function IsModuleActive(moduleId)
+    return state.activeModules_[moduleId] == true
+end
+
+local function ActiveModuleText()
+    local list = {}
+    for _, id in ipairs({ "trace", "orbit", "pulse", "shell", "mine", "hook" }) do
+        if IsModuleActive(id) then table.insert(list, ModuleName(id) .. " Lv." .. state.moduleLevels_[id]) end
+    end
+    return #list > 0 and table.concat(list, " · ") or state.T("game.none")
+end
+
 local function SetTouchJoystickVisible(visible)
     if state.joystickBase_ then state.joystickBase_:SetVisible(visible) end
     if state.joystickKnob_ then state.joystickKnob_:SetVisible(visible) end
