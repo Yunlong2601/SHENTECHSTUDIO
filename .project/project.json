@@ -20,12 +20,13 @@
     "miniapp_id": "tapmckuxwagygm65sy"
   },
   "assets": {
-    "icon": "",
+    "icon": "./game_material/icon.png",
     "screenshots": [],
-    "promotional_image": ""
+    "promotional_image": "",
+    "icon_url": "https://tapcode-sce.spark.xd.com/assets/game_material/p_8x93/icon.png"
   },
   "metadata": {
-    "updated_at": "2026-08-03T15:21:00.884Z"
+    "updated_at": "2026-08-03T16:18:01.748Z"
   },
   "test_qrcode": {
     "url": "https://tapcode-sce.spark.xd.com/qrcode/p_8x93_1785770460745.png",
