@@ -5,7 +5,7 @@
     "id": "1092991871"
   },
   "entry": "main.lua",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "taptap_publish": {
     "title": "几何突围",
     "description": "<game description>",
@@ -27,10 +27,10 @@
     "promotional_image_url": "https://tapcode-sce.spark.xd.com/assets/game_material/p_8x93/promotional.png"
   },
   "metadata": {
-    "updated_at": "2026-08-03T16:37:19.921Z"
+    "updated_at": "2026-08-03T16:41:01.941Z"
   },
   "test_qrcode": {
-    "url": "https://tapcode-sce.spark.xd.com/qrcode/p_8x93_1785770460745.png",
-    "generated_at": "2026-08-03T15:21:00.884Z"
+    "url": "https://tapcode-sce.spark.xd.com/qrcode/p_8x93_1785775261816.png",
+    "generated_at": "2026-08-03T16:41:01.941Z"
   }
 }
