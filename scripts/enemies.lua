@@ -32,10 +32,11 @@ function M.kind_for_id(enemyId, wave)
         elseif r < 0.80 then return "charger"
         else return "shooter" end
     else
-        -- Wave 1-2: chaser 55%, skimmer 30%, charger 15%
-        if r < 0.55 then return "chaser"
-        elseif r < 0.85 then return "skimmer"
-        else return "charger" end
+        -- Wave 1-2: chaser 45%, skimmer 25%, charger 20%, shooter 10%
+        if r < 0.45 then return "chaser"
+        elseif r < 0.70 then return "skimmer"
+        elseif r < 0.90 then return "charger"
+        else return "shooter" end
     end
 end
 
@@ -160,7 +161,7 @@ end
 
 function M.update(timeStep)
     local bound = state.modifier_ == "compression" and 70 or 0; local player = p()
-    -- R-03: Corruption overlay — frame-rate-independent Poisson tick (~1.5s mean)
+    -- R-03: Corruption overlay — smooth drift instead of snap-jump (no flickering)
     local isGlitchWave = state.glitchWave_
     if isGlitchWave then
         state.glitchTickTimer_ = state.glitchTickTimer_ + timeStep
@@ -169,9 +170,19 @@ function M.update(timeStep)
             state.corruption_ = math.min(100, state.corruption_ + 1)
             for _, e in ipairs(state.enemies_) do
                 if not e.dead then
-                    e.x = e.x + math.random(-12, 12)
-                    e.y = e.y + math.random(-12, 12)
+                    e.glitchTargetX = e.glitchTargetX or e.x
+                    e.glitchTargetY = e.glitchTargetY or e.y
+                    e.glitchTargetX = e.x + math.random(-12, 12)
+                    e.glitchTargetY = e.y + math.random(-12, 12)
                 end
+            end
+        end
+        -- Smooth lerp toward glitch target each frame
+        local driftSpeed = 60
+        for _, e in ipairs(state.enemies_) do
+            if not e.dead and e.glitchTargetX then
+                e.x = e.x + (e.glitchTargetX - e.x) * math.min(1, driftSpeed * timeStep)
+                e.y = e.y + (e.glitchTargetY - e.y) * math.min(1, driftSpeed * timeStep)
             end
         end
     end

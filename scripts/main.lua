@@ -284,11 +284,11 @@ function HandleUpdate(_eventType, eventData)
             state.waveSpawned_ = 1
         end
         if state.spawnTimer_ <= 0 and state.waveSpawned_ < state.waveSpawnTarget_ and state.waveTime_ < state.waveDuration_ then
-            enemies.spawn(false); state.spawnTimer_ = math.max(0.8, 1.5 - state.wave_ * 0.05)
+            enemies.spawn(false); state.spawnTimer_ = math.max(0.5, 1.2 - state.wave_ * 0.05)
         end
     else
         if state.waveSpawned_ == 0 and state.wave_ % 3 == 0 then enemies.spawn(true) end
-        if state.spawnTimer_ <= 0 and state.waveSpawned_ < state.waveSpawnTarget_ and state.waveTime_ < state.waveDuration_ then enemies.spawn(false); state.spawnTimer_ = math.max(0.35, 0.9 - state.wave_ * 0.05) end
+        if state.spawnTimer_ <= 0 and state.waveSpawned_ < state.waveSpawnTarget_ and state.waveTime_ < state.waveDuration_ then enemies.spawn(false); state.spawnTimer_ = math.max(0.2, 0.7 - state.wave_ * 0.04) end
     end
 
     if IsModuleActive("trace") and player_.fireTimer <= 0 then modules.fire_trace_beam(); player_.fireTimer = math.max(0.18, 0.42 - state.moduleLevels_.trace * 0.04) end
