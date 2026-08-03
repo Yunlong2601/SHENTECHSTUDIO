@@ -21,4 +21,4 @@ Rules:
 2. Do not create parallel roadmaps or competing project-context files elsewhere.
 3. Record completed milestones in `PROJECT_CONTEXT.md` and plan future work in `ROADMAP.md`.
 4. Keep code in `scripts/`; keep generated assets in the Maker asset workflow.
-5. Treat TapTap Maker and `Yunlong2601/SHENTECHSTUDIO` as mandatory synchronized Git targets: whenever project code or canonical project-source commits are pushed to Maker, push the same commit history to GitHub and verify both branch tips independently.
+5. **TapTap Maker `main` is the base.** GitHub `main` (`Yunlong2601/SHENTECHSTUDIO`) is a replica that must always mirror TapTap Maker `main`. Every update pushes to TapTap Maker `main` first, then to GitHub `main`; both branch tips must be verified independently. If the two ever diverge, TapTap Maker `main` is authoritative.
