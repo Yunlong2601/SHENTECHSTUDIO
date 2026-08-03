@@ -227,7 +227,9 @@ After editing:
 1. Run local Lua LSP diagnostics when available.
 2. Test the smallest relevant behavior.
 3. Update this file only for durable decisions, not transient progress.
-4. Report failures honestly.
+4. When code or project-source changes are pushed to the TapTap Maker Git remote, also push the same commit history to the GitHub mirror `Yunlong2601/SHENTECHSTUDIO`.
+5. Verify the TapTap Maker push and the GitHub push independently. A successful push to one remote does not prove that the other remote is synchronized.
+6. Report failures honestly; never claim either remote is synchronized without checking its resulting branch commit.
 
 ### Do not do
 
@@ -260,7 +262,7 @@ Target repository:
 https://github.com/Yunlong2601/SHENTECHSTUDIO
 ```
 
-GitHub is intended to hold shared project documentation and future source/data files for collaboration across agent platforms.
+GitHub is the required mirror for shared project documentation and source/data files across agent platforms. Any commit pushed to the TapTap Maker project remote must also be pushed to this GitHub repository. Both remote branch tips must be checked after synchronization; do not treat a successful Maker push as proof of GitHub publication or vice versa.
 
 Recommended repository layout when the repository is initialized:
 
