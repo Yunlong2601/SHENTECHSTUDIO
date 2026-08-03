@@ -2,7 +2,7 @@
 
 > Shared project context for TapTap Maker development and collaboration across AI agent platforms.
 >
-> Last updated: 2026-08-03
+> Last updated: 2026-08-03 (Prototype 04 — Defense & Counter)
 >
 > This file is the project-level source of truth for product direction, current status, workflow boundaries, and collaboration rules. Update it when a durable project decision changes.
 
@@ -51,7 +51,7 @@ The game must feel like an original geometric/synthetic IP, not a clone or reski
 
 ### Current implementation reality
 
-The project now contains **Geometry Breakout Prototype 02**, a UI-driven playable progression loop built in the single-file local entry script.
+The project now contains **Geometry Breakout Prototype 04 — Defense & Counter**, a UI-driven playable progression loop built in the single-file local entry script.
 
 Current prototype behavior:
 
@@ -60,18 +60,25 @@ Current prototype behavior:
 - Timed waves with between-wave calibration pauses
 - Deterministic Chaser, Skimmer, and telegraphed Charger behaviors plus preserved elite core on every third wave
 - Deterministic Compression, Surge, and Overclock arena modifiers per wave
-- Automatic Trace Beam baseline attack with simultaneous Orbit Seed and Pulse Bloom combinations
+- Automatic Trace Beam baseline attack with simultaneous Orbit Seed, Pulse Bloom, Shell Lantern, Anchor Mine, and Vector Hook combinations
 - Data Fragment pickups with magnet attraction and collection
-- Pattern Shard experience, level-up thresholds, and a three-choice calibration overlay
-- Three simultaneous modules: Trace Beam, Orbit Seed, and Pulse Bloom, with level-3/5 evolution effects
-- Track Integrity, time, score, wave, modifier, data fragments, pattern shards, level, and all active module levels
+- Pattern Shard experience, level-up thresholds, and a three-choice calibration overlay (randomly shuffled from the eight available upgrade options per §11)
+- **Six simultaneous modules** with level-3/5 evolution effects:
+  - Trace Beam — narrow auto-tracking beam
+  - Orbit Seed — rotating attack node
+  - Pulse Bloom — periodic circular burst
+  - Shell Lantern — rechargeable defensive shell that absorbs hits before Integrity
+  - Anchor Mine — proximity mine that arms and detonates near enemies, blasting all in radius
+  - Vector Hook — damaging movement trail that drops fading damage points behind the player
+- Track Integrity, Shell, time, score, wave, modifier, data fragments, pattern shards, level, and all active module levels
 - Session-safe Calibration Archive with starting Integrity and magnet upgrades; summary awards calibration currency once
-- Contact damage, defeat state, restart, and run summary showing wave/score/level/module
+- Contact damage routed Shell-first then Integrity; defeat state, restart, and run summary showing wave/score/level/module
 
 ### Not implemented yet
 
 - Persistent storage-backed meta progression (storage API remains unverified; Prototype 03 uses a session fallback)
 - Mobile phone/tablet/iPhone/iPad device pass beyond the current touch prototype
+- Visual polish pass for the new modules (mine detonation vfx, hook trail fade curves)
 
 ## 4. MVP Target
 
@@ -173,14 +180,14 @@ Avoid changing a term between English and Chinese translations unless the meanin
 
 ## 7. Suggested MVP Modules
 
-1. **Trace Beam** — narrow auto-tracking beam
-2. **Orbit Seed** — one rotating attack node
-3. **Pulse Bloom** — periodic circular burst
-4. **Anchor Mine** — proximity mine
-5. **Vector Hook** — damaging movement trail
-6. **Shell Lantern** — rechargeable defensive shell
+1. **Trace Beam** — narrow auto-tracking beam — **implemented**
+2. **Orbit Seed** — one rotating attack node — **implemented**
+3. **Pulse Bloom** — periodic circular burst — **implemented**
+4. **Shell Lantern** — rechargeable defensive shell — **implemented (2026-08-03)**
+5. **Anchor Mine** — proximity mine that arms and detonates near enemies, blasting all in radius — **implemented (2026-08-03)**
+6. **Vector Hook** — damaging movement trail that drops fading damage points behind the player — **implemented (2026-08-03)**
 
-The first three are required for the initial build. The others can be added after the core loop works.
+The first three were required for the initial build. Shell Lantern was added on 2026-08-03 as the first defensive module, balancing the all-offense lineup. Anchor Mine and Vector Hook were added the same day as Prototype 04 (Defense & Counter) to fill the §11 six-module target and round out the build with crowd control and passive offense. All six are now implemented in the single-file scope.
 
 ## 8. Collaboration Rules
 
@@ -289,8 +296,8 @@ Do not assume GitHub has the newest local files. Confirm repository contents and
 
 - [x] Pickups
 - [x] XP/level-up
-- [x] Three upgrade choices
-- [x] Three modules
+- [x] Three upgrade choices (random three of eight per level-up, since Prototype 04)
+- [x] Six modules: Trace Beam, Orbit Seed, Pulse Bloom, Shell Lantern, Anchor Mine, Vector Hook (extended from three → four with Shell Lantern, then to six with Anchor Mine + Vector Hook on 2026-08-03)
 - [x] Timed waves
 - [x] Elite encounter and run summary
 
@@ -325,6 +332,19 @@ This local directory is the active TapTap Maker project. The project will also b
 
 Prototype 03 keeps the single-file UI architecture and mobile touch controls while adding deterministic enemy roles, per-wave arena modifiers, simultaneous modules with level-3/5 evolution, readable telegraphs, and a small non-essential Calibration Archive. The profile is intentionally an in-memory session fallback because no supported persistence API was verified.
 
+### 2026-08-03 — Shell Lantern module added
+
+The fourth module from the §7 roster, Shell Lantern, was added as the first defensive module. It absorbs hits before Integrity, recharges after a 2.6s − 0.3·level grace period at 0.8 + 0.2·level per second (plus +0.4/s at Lv3 evolution). Visuals: a gold ring around the player plus a dedicated HUD bar. i18n keys `module.shell`, `module.shell_desc`, `upgrade.shell`, `game.shell` added in both `zh_CN` and `en`. Single-file scope preserved (`scripts/main.lua` now ~792 lines, still under the 1000-line threshold).
+
+### 2026-08-03 — Prototype 04 Defense & Counter
+
+The fifth and sixth modules, Anchor Mine and Vector Hook, were added to close out the §7 six-module roster. Prototype 04 (Defense & Counter) pairs passive offense with crowd control:
+
+- **Anchor Mine** — auto-places a mine at the player's current position on a 4.0 − 0.6·level second cooldown (faster at higher level). Each mine arms after 0.3s (0.15s at Lv3) and detonates when an enemy enters its proximity, damaging all enemies in the blast radius. Visuals: cyan diamond with a soft glow that brightens at detonation.
+- **Vector Hook** — drops a damage point at the player's position every 0.10 − 0.02·level seconds (0.04s at Lv3) while the player is moving. Each point lives for 0.6 + 0.2·level seconds and fades with age. Visuals: small magenta dots that scale and dim over their lifetime.
+
+In the same pass, the upgrade overlay switched from "show all available modules" to a 3-random Fisher-Yates shuffle of all eight upgrade options (the six modules plus Integrity and Magnet), matching the spec in §11 and keeping the screen readable as the module roster grew. `ApplyUpgrade` now accepts `trace | orbit | pulse | shell | mine | hook` as module-level triggers and falls through to the global-stat upgrades for `integrity | magnet`. New i18n keys: `module.mine`, `module.mine_desc`, `module.hook`, `module.hook_desc`, `upgrade.mine`, `upgrade.hook` in both `zh_CN` and `en`. `scripts/main.lua` now ~926 lines, still well under the 1500-line split threshold from §6 / rule #13.
+
 ### 2026-08-03 — Prototype 02 progression loop
 
 Prototype 02 keeps the UI-only, single-file scope while adding the first roguelite loop: collectible Data Fragments and Pattern Shards, level-up choices, three module behaviors, timed waves with calibration pauses, elite encounters, and a bilingual run summary. The local entry remains `scripts/main.lua`; no build or remote synchronization is implied by this milestone.
@@ -346,13 +366,12 @@ The first playtest is ready when:
 
 ## 14. Immediate Next Action
 
-Prototype 02 has been built successfully in Maker and now includes a mobile virtual joystick. The next development focus is a mobile-first Prototype 03 systems pass:
+Prototype 03 (systems pass) and Prototype 04 (Defense & Counter) are both complete. The §7 six-module roster is fully implemented and the §11 three-choice upgrade spec is now correctly enforced via 3-random shuffle. With the module layer finished, the next development focus is **a gameplay-feel and content-density pass**:
 
-1. Add readable skimmer and charger enemy behaviors.
-2. Add deterministic arena modifiers per wave.
-3. Replace the single selected module with true simultaneous module combinations.
-4. Add level-based module evolution.
-5. Add a small permanent Calibration Archive for meta progression.
-6. Re-run Maker preview validation on Android phone/tablet and iPhone/iPad-sized layouts.
+1. Playtest the new module combos — especially Mine + Hook stacking on the elite Charger waves — and tune blast radius, arm time, and trail spacing if they feel too soft or too punishing.
+2. Add per-module evolution visuals at Lv3/Lv5 (e.g. larger mine blast, hook trail that arcs or splits) so the evolution feel matches the +0.4/s shell rate and other Lv3 bumps already shipped.
+3. Begin a small content pass on the **wave / modifier layer**: a fourth modifier type (suggestion: Glitch — brief player phase-shifts) and a wave 7 / 8 cadence to give the upgraded builds somewhere to breathe.
+4. Re-run Maker preview validation on Android phone/tablet and iPhone/iPad-sized layouts (Prototype 04 added a second HUD bar; verify the new shell widget does not crowd the touch joystick on small screens).
+5. Optional housekeeping: re-check that the new HUD shell widget and the trace trail (up to ~40 widgets) still hit 60fps on the lowest target phone, and consider splitting `scripts/main.lua` if the next module pass pushes it past the 1500-line threshold.
 
 Keep the first meta progression deliberately small and non-essential to winning a run. Do not begin with twelve chassis, a full shop, or a large asset pass.
