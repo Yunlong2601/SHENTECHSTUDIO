@@ -15,7 +15,7 @@
     "key": "t_GzlJOBm9HSodOcm5",
     "locations": [
       "i18n.lua:14",
-      "i18n.lua:43"
+      "i18n.lua:51"
     ]
   },
   "校准台已上线，准备开始突围。": {
@@ -400,55 +400,207 @@
   "校准档案": {
     "key": "t_1Hv4zRRWw1HQViC527",
     "locations": [
-      "i18n.lua:39"
+      "i18n.lua:41"
     ]
   },
   "校准档案（本次会话）": {
     "key": "t_1A2vPFVvw1AEfBlfwj",
     "locations": [
-      "i18n.lua:39"
+      "i18n.lua:41"
     ]
   },
   "校准片：%d": {
     "key": "t_5QW6ocFS5Itiktcl",
     "locations": [
-      "i18n.lua:39"
+      "i18n.lua:41"
     ]
   },
   "起始完整度 +1": {
     "key": "t_mGNGgLbimPCf6yFT",
     "locations": [
-      "i18n.lua:39"
+      "i18n.lua:41"
     ]
   },
   "磁吸范围 +35": {
     "key": "t_17Mas2A9p17qRbwMBk",
     "locations": [
-      "i18n.lua:39"
+      "i18n.lua:41"
     ]
   },
   "校准": {
     "key": "t_1FJPoKCyy1EsmLxFj3",
     "locations": [
-      "i18n.lua:39"
+      "i18n.lua:41"
     ]
   },
   "未验证持久化：仅在本次会话有效": {
     "key": "t_1C0TsdY1J1BrjHhA7s",
     "locations": [
-      "i18n.lua:39"
+      "i18n.lua:41"
     ]
   },
   "返回": {
     "key": "t_vKCzcTCiupNLbfGL",
     "locations": [
-      "i18n.lua:39"
+      "i18n.lua:41"
     ]
   },
   "Geometry Breakout / 几何突围": {
     "key": "t_ycjvROF0z6HuPaWh",
     "locations": [
-      "main.lua:300"
+      "main.lua:357"
+    ]
+  },
+  "几何突围 · Demo Build": {
+    "key": "t_zFfOCmgczilInRZS",
+    "locations": [
+      "i18n.lua:16"
+    ]
+  },
+  "突围成功": {
+    "key": "t_ztdddSlD10P4stEER",
+    "locations": [
+      "i18n.lua:33"
+    ]
+  },
+  "返回主菜单": {
+    "key": "t_E8IcvOH5E0IhwWdX",
+    "locations": [
+      "i18n.lua:36",
+      "i18n.lua:46"
+    ]
+  },
+  "击破最终核心，完成全部波次": {
+    "key": "t_1pcXYmcd1KNJHGQV",
+    "locations": [
+      "i18n.lua:36"
+    ]
+  },
+  "分裂体": {
+    "key": "t_KY7bzTqRK4laEUBr",
+    "locations": [
+      "i18n.lua:38"
+    ]
+  },
+  "射击体": {
+    "key": "t_9phZ8C0O9djoFErQ",
+    "locations": [
+      "i18n.lua:38"
+    ]
+  },
+  "护壳：%d / %d": {
+    "key": "t_Fh0LkNOzGBsQgWbR",
+    "locations": [
+      "i18n.lua:39"
+    ]
+  },
+  "故障：实体随机闪烁与位移": {
+    "key": "t_loSviAv5lgVeT04J",
+    "locations": [
+      "i18n.lua:40"
+    ]
+  },
+  "核心破坏者": {
+    "key": "t_INtt4ShTIZWpk3BP",
+    "locations": [
+      "i18n.lua:43"
+    ]
+  },
+  "核心：%d / %d": {
+    "key": "t_1FykNs3pP1FXjOgmlb",
+    "locations": [
+      "i18n.lua:43"
+    ]
+  },
+  "警告：核心脉冲蓄能": {
+    "key": "t_c8HTt20vcdGIqEaX",
+    "locations": [
+      "i18n.lua:43"
+    ]
+  },
+  "核心破坏者出现": {
+    "key": "t_105fm1PEn10D1YDseP",
+    "locations": [
+      "i18n.lua:43"
+    ]
+  },
+  "核心破坏者已被击破": {
+    "key": "t_7g4DDlycHS59fu",
+    "locations": [
+      "i18n.lua:43"
+    ]
+  },
+  "最终波次：核心战": {
+    "key": "t_1BfhYsQhq1BBaMaW9G",
+    "locations": [
+      "i18n.lua:44"
+    ]
+  },
+  "被核心破坏者击破": {
+    "key": "t_6qUjDqme6NmYP6nQ",
+    "locations": [
+      "i18n.lua:44"
+    ]
+  },
+  "工坊": {
+    "key": "t_LQzp9kBiLbuEnKxC",
+    "locations": [
+      "i18n.lua:46",
+      "i18n.lua:47"
+    ]
+  },
+  "外观定制 · 即将上线": {
+    "key": "t_BYUukpwGBQh0hYAK",
+    "locations": [
+      "i18n.lua:46"
+    ]
+  },
+  "矢量三角": {
+    "key": "t_JMDjKp6lJrZzRHvj",
+    "locations": [
+      "i18n.lua:46"
+    ]
+  },
+  "猩红协议": {
+    "key": "t_WNzbyQMSVtErCkSG",
+    "locations": [
+      "i18n.lua:46"
+    ]
+  },
+  "虚空回路": {
+    "key": "t_ecVqtAXSf3tzNej4",
+    "locations": [
+      "i18n.lua:46"
+    ]
+  },
+  "日冕引擎": {
+    "key": "t_GwtL44ZqHQrACF8Q",
+    "locations": [
+      "i18n.lua:46"
+    ]
+  },
+  "未解锁": {
+    "key": "t_1824EQCH218VEpZkDI",
+    "locations": [
+      "i18n.lua:46"
+    ]
+  },
+  "即将上线": {
+    "key": "t_tJr7FDXptAGkIOn7",
+    "locations": [
+      "i18n.lua:46"
+    ]
+  },
+  "支持开发者": {
+    "key": "t_8iWt3BWS8G2TthZA",
+    "locations": [
+      "i18n.lua:46"
+    ]
+  },
+  "未来可通过 TapTap 支持本项目": {
+    "key": "t_Ar7rhg5uB2KjXb0g",
+    "locations": [
+      "i18n.lua:46"
     ]
   }
 }

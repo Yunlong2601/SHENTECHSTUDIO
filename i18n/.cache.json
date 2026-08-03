@@ -1,10 +1,10 @@
 {
   "enemies.lua": {
-    "mtime": 1785725088,
+    "mtime": 1785770393,
     "results": []
   },
   "i18n.lua": {
-    "mtime": 1785723082,
+    "mtime": 1785767378,
     "results": [
       {
         "text": "几何突围",
@@ -37,7 +37,7 @@
         "args": null
       },
       {
-        "text": "几何突围 · Prototype 03",
+        "text": "几何突围 · Demo Build",
         "line": 16,
         "rule": "chinese_double_quote",
         "args": null
@@ -289,6 +289,12 @@
         "args": null
       },
       {
+        "text": "突围成功",
+        "line": 33,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
         "text": "运行总结",
         "line": 33,
         "rule": "chinese_double_quote",
@@ -337,7 +343,7 @@
         "args": null
       },
       {
-        "text": "返回语言选择",
+        "text": "返回主菜单",
         "line": 36,
         "rule": "chinese_double_quote",
         "args": null
@@ -349,7 +355,7 @@
         "args": null
       },
       {
-        "text": "完成全部波次",
+        "text": "击破最终核心，完成全部波次",
         "line": 36,
         "rule": "chinese_double_quote",
         "args": null
@@ -397,6 +403,18 @@
         "args": null
       },
       {
+        "text": "分裂体",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "射击体",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
         "text": "活动模块：%s",
         "line": 38,
         "rule": "chinese_double_quote",
@@ -409,74 +427,200 @@
         "args": null
       },
       {
-        "text": "校准档案",
+        "text": "护壳：%d / %d",
         "line": 39,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "故障：实体随机闪烁与位移",
+        "line": 40,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "校准档案",
+        "line": 41,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
         "text": "校准档案（本次会话）",
-        "line": 39,
+        "line": 41,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
         "text": "校准片：%d",
-        "line": 39,
+        "line": 41,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
         "text": "起始完整度 +1",
-        "line": 39,
+        "line": 41,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
         "text": "磁吸范围 +35",
-        "line": 39,
+        "line": 41,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
         "text": "校准",
-        "line": 39,
+        "line": 41,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
         "text": "未验证持久化：仅在本次会话有效",
-        "line": 39,
+        "line": 41,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
         "text": "返回",
-        "line": 39,
+        "line": 41,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "核心破坏者",
+        "line": 43,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "核心：%d / %d",
+        "line": 43,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "警告：核心脉冲蓄能",
+        "line": 43,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "核心破坏者出现",
+        "line": 43,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "核心破坏者已被击破",
+        "line": 43,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "最终波次：核心战",
+        "line": 44,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "被核心破坏者击破",
+        "line": 44,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "工坊",
+        "line": 46,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "外观定制 · 即将上线",
+        "line": 46,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "矢量三角",
+        "line": 46,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "猩红协议",
+        "line": 46,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "虚空回路",
+        "line": 46,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "日冕引擎",
+        "line": 46,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "未解锁",
+        "line": 46,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "即将上线",
+        "line": 46,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "支持开发者",
+        "line": 46,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "未来可通过 TapTap 支持本项目",
+        "line": 46,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "返回主菜单",
+        "line": 46,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "工坊",
+        "line": 47,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
         "text": "简体中文",
-        "line": 43,
+        "line": 51,
         "rule": "chinese_double_quote",
         "args": null
       }
     ]
   },
   "main.lua": {
-    "mtime": 1785726156,
+    "mtime": 1785770393,
     "results": [
       {
         "text": "Geometry Breakout / 几何突围",
-        "line": 300,
+        "line": 357,
         "rule": "chinese_double_quote",
         "args": null
       }
     ]
   },
   "modules.lua": {
-    "mtime": 1785723708,
+    "mtime": 1785766228,
     "results": []
   },
   "player.lua": {
@@ -484,19 +628,19 @@
     "results": []
   },
   "state.lua": {
-    "mtime": 1785725088,
+    "mtime": 1785769906,
     "results": []
   },
   "ui.lua": {
-    "mtime": 1785725495,
+    "mtime": 1785767378,
     "results": []
   },
   "waves.lua": {
-    "mtime": 1785723858,
+    "mtime": 1785769906,
     "results": []
   },
   "settings.json": {
-    "mtime": 1785723708,
+    "mtime": 1785770398,
     "results": []
   }
 }
