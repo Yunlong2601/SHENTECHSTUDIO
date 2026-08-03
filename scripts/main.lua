@@ -8,6 +8,7 @@ local player = require("player")
 local modules = require("modules")
 local waves = require("waves")
 local enemies = require("enemies")
+local ui = require("ui")
 local player_ = state.player_
 
 state.T = function(key, ...)
@@ -245,14 +246,7 @@ local function BuildSummaryScreen()
 end
 
 function BuildUI()
-    ---@type Widget|nil
-    local content = nil
-    if state.screen_ == "language" then content = BuildLanguageScreen()
-    elseif state.screen_ == "game" then content = BuildGameScreen()
-    elseif state.screen_ == "upgrade" then content = BuildUpgradeScreen()
-    elseif state.screen_ == "wave_pause" then content = BuildWavePauseScreen()
-    elseif state.screen_ == "archive" then content = BuildArchiveScreen()
-    else content = BuildSummaryScreen() end
+    local content = ui.build(state.screen_)
     local rootProps = { width = "100%", height = "100%", backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 8, 18, 42, 255 }, to = { 35, 20, 68, 255 } }, pointerEvents = "box-none", children = { content } }
     if state.screen_ ~= "game" then
         rootProps.justifyContent = "center"
@@ -609,7 +603,7 @@ function PrepareUpgradeChoices()
     end
 end
 
-local function UpdateHUD()
+local function LegacyUpdateHUD()
     if state.hudLabel_ then state.hudLabel_:SetText(state.T("game.integrity", math.max(0, player_.integrity), player_.maxIntegrity) .. "  |  " .. state.T("game.score", state.score_) .. "  |  " .. state.T("game.fragments", state.dataFragments_)) end
     if state.xpLabel_ then state.xpLabel_:SetText(state.T("game.level", state.level_) .. "  ·  " .. state.T("game.next_upgrade", math.max(0, state.levelGoal_ - state.levelProgress_))) end
     if state.xpBarFill_ then state.xpBarFill_:SetStyle({ width = tostring(math.floor(math.min(1, state.levelProgress_ / math.max(1, state.levelGoal_)) * 100)) .. "%" }) end
@@ -657,7 +651,7 @@ function HandleUpdate(_eventType, eventData)
     modules.update_shell_visual()
     modules.update_mines(timeStep)
     modules.update_trail(timeStep)
-    if state.waveTime_ >= state.waveDuration_ and state.waveSpawned_ >= state.waveSpawnTarget_ and #state.enemies_ == 0 then EndWave() else UpdateHUD() end
+    if state.waveTime_ >= state.waveDuration_ and state.waveSpawned_ >= state.waveSpawnTarget_ and #state.enemies_ == 0 then EndWave() else ui.update_hud() end
 end
 
 function HandleKeyDown(_eventType, eventData)
@@ -670,6 +664,19 @@ function HandleKeyUp(_eventType, eventData)
 end
 
 function Start()
+    ui.configure({
+        makeLabel = MakeLabel,
+        resetRunState = ResetRunState,
+        applyUpgrade = ApplyUpgrade,
+        activeModuleText = ActiveModuleText,
+        moduleName = ModuleName,
+        resetTouchControl = ResetTouchControl,
+        handleTouchDown = HandleTouchDown,
+        handleTouchMove = HandleTouchMove,
+        handleTouchUp = HandleTouchUp,
+        beginWave = waves.begin_wave,
+        rebuild = BuildUI,
+    })
     modules.configure({ findNearestEnemy = enemies.find_nearest, damageEnemy = enemies.damage, setWidgetPosition = SetWidgetPosition, destroyWidget = DestroyEntityWidget })
     enemies.configure({ spawnPickup = SpawnPickup, damagePlayer = DamagePlayer, setWidgetPosition = SetWidgetPosition, destroyWidget = DestroyEntityWidget })
     graphics.windowTitle = "Geometry Breakout / 几何突围"; UI.Init({ theme = "default-dark", fonts = { { family = "sans", weights = { normal = "Fonts/MiSans-Regular.ttf" } } }, scale = UI.Scale.DEFAULT })
