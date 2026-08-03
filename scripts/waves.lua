@@ -3,6 +3,7 @@ local state = require("state")
 local M = {}
 
 function M.modifier_for_wave(wave)
+    if wave >= 7 then return "glitch" end
     local cycle = (wave - 1) % 3
     if cycle == 0 then return "compression" end
     if cycle == 1 then return "surge" end

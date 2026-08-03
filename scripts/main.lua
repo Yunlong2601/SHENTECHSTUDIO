@@ -113,6 +113,7 @@ end
 local function ClearEntities()
     for _, e in ipairs(state.enemies_) do DestroyEntityWidget(e.widget) end
     for _, e in ipairs(state.projectiles_) do DestroyEntityWidget(e.widget) end
+    for _, e in ipairs(state.enemyProjectiles_) do DestroyEntityWidget(e.widget) end
     for _, e in ipairs(state.pickups_) do DestroyEntityWidget(e.widget) end
     for _, m in ipairs(state.mines_) do DestroyEntityWidget(m.widget) end
     for _, p in ipairs(state.trail_) do DestroyEntityWidget(p.widget) end
@@ -121,7 +122,8 @@ local function ClearEntities()
     if state.orbitWidget2_ then state.orbitWidget2_:Destroy(); state.orbitWidget2_ = nil end
     if state.shellRing_ then state.shellRing_:Destroy(); state.shellRing_ = nil end
     enemies.clear_boss()
-    state.enemies_, state.projectiles_, state.pickups_, state.mines_, state.trail_, state.damageNumbers_ = {}, {}, {}, {}, {}, {}
+    enemies.clear_enemy_projectiles()
+    state.enemies_, state.projectiles_, state.enemyProjectiles_, state.pickups_, state.mines_, state.trail_, state.damageNumbers_ = {}, {}, {}, {}, {}, {}, {}
 end
 
 local function ResetRunState()
@@ -136,6 +138,7 @@ local function ResetRunState()
     state.waveSpawnTarget_, state.wavePauseTimer_ = 10, 0
     state.chosenModule_, state.moduleLevel_, state.defeatReason_ = "", 0, ""
     state.summaryAwarded_ = false
+    state.isVictory_ = false
     state.damageNumbers_, state.hitFlash_, state.shakeTime_, state.evolutionFlash_ = {}, 0, 0, 0
     state.runStats_ = { damageTaken = 0, deaths = 0, maxWave = 1, upgrades = {} }
     state.boss_ = nil; state.bossFlash_ = 0
@@ -259,6 +262,7 @@ local function EndWave()
 
     if state.wave_ >= state.maxWaves_ then
         state.defeatReason_ = state.T("game.reason_complete")
+        state.isVictory_ = true
         if not state.summaryAwarded_ then state.profile_.calibration = state.profile_.calibration + math.max(1, math.floor(state.dataFragments_ / 8)); state.summaryAwarded_ = true end
         state.screen_ = "summary"; BuildUI(); return
     end
@@ -292,7 +296,7 @@ function HandleUpdate(_eventType, eventData)
     if not IsGameScreen() then return end
     enemies.update_boss(timeStep)
     if not IsGameScreen() then return end
-    enemies.update_projectiles(timeStep); UpdatePickups(timeStep)
+    enemies.update_projectiles(timeStep); enemies.update_enemy_projectiles(timeStep); UpdatePickups(timeStep)
     if not IsGameScreen() then return end
     modules.update_orbit(timeStep)
     modules.update_shell_visual()

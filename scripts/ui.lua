@@ -17,7 +17,7 @@ end
 
 function M.show_damage_number(x, y, value, color)
     if not state.gameWorld_ then return end
-    if #state.damageNumbers_ >= 28 then
+    if #state.damageNumbers_ >= 18 then
         local oldest = table.remove(state.damageNumbers_, 1)
         if oldest.widget then oldest.widget:Destroy() end
     end
@@ -75,9 +75,10 @@ local function game_screen()
     local arenaFloor = UI.Panel { position = "absolute", top = 0, left = 0, width = "100%", height = "100%", backgroundColor = { 10, 20, 44, 80 }, borderColor = { 30, 50, 90, 120 }, borderWidth = 2, borderRadius = 0, pointerEvents = "none" }
     state.gameWorld_:AddChild(arenaFloor)
 
-    local arenaRing1 = UI.Panel { position = "absolute", width = 280, height = 280, borderColor = { 25, 45, 85, 100 }, borderWidth = 1, borderRadius = 140, pointerEvents = "none" }
+    local cx, cy = state.worldWidth_ * 0.5, state.worldHeight_ * 0.5
+    local arenaRing1 = UI.Panel { position = "absolute", left = cx - 140, top = cy - 140, width = 280, height = 280, borderColor = { 25, 45, 85, 100 }, borderWidth = 1, borderRadius = 140, pointerEvents = "none" }
     state.gameWorld_:AddChild(arenaRing1)
-    local arenaRing2 = UI.Panel { position = "absolute", width = 480, height = 480, borderColor = { 20, 35, 70, 80 }, borderWidth = 1, borderRadius = 240, pointerEvents = "none" }
+    local arenaRing2 = UI.Panel { position = "absolute", left = cx - 240, top = cy - 240, width = 480, height = 480, borderColor = { 20, 35, 70, 80 }, borderWidth = 1, borderRadius = 240, pointerEvents = "none" }
     state.gameWorld_:AddChild(arenaRing2)
 
     state.playerWidget_ = UI.Panel { id = "player", position = "absolute", width = 32, height = 32, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 82, 214, 255, 255 }, to = { 50, 140, 220, 255 } }, borderColor = { 200, 250, 255, 255 }, borderWidth = 2, borderRadius = 4, rotate = 45, pointerEvents = "none" }
@@ -148,7 +149,34 @@ local function cosmetics_screen()
 end
 
 local function summary_screen()
-    return UI.Panel { width = "90%", maxWidth = 450, padding = 28, gap = 12, alignItems = "center", backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 30, 24, 54, 250 }, to = { 22, 18, 42, 250 } }, borderRadius = 24, borderWidth = 1, borderColor = { 231, 109, 143, 200 }, children = { label(state.T("game.defeated"), { fontSize = 28, fontWeight = "bold", fontColor = { 255, 150, 170, 255 }, textAlign = "center" }), label(state.T("game.summary"), { fontSize = 16, fontColor = { 210, 201, 231, 255 } }), label(state.T("game.reason", state.defeatReason_), { fontSize = 13, fontColor = { 210, 201, 231, 255 }, textAlign = "center" }), label(state.T("game.final_wave", state.wave_), { fontSize = 16, fontColor = { 177, 196, 231, 255 } }), label(state.T("game.final_score", state.score_), { fontSize = 16, fontColor = { 255, 230, 137, 255 } }), label(state.T("game.final_level", state.level_), { fontSize = 16, fontColor = { 146, 225, 191, 255 } }), label(state.T("game.modules", modules_text()), { fontSize = 14, fontColor = { 207, 220, 244, 255 }, textAlign = "center" }), label(state.T("game.final_fragments", state.dataFragments_), { fontSize = 14, fontColor = { 207, 220, 244, 255 } }), label(state.T("meta.currency", state.profile_.calibration), { fontSize = 13, fontColor = { 255, 230, 137, 255 } }), UI.Button { text = state.T("meta.archive"), variant = "secondary", width = "100%", height = 44, onClick = function() state.metaScreenReturn_ = "summary"; state.screen_ = "archive"; rebuild() end }, UI.Button { text = state.T("game.restart"), variant = "primary", width = "100%", height = 48, onClick = function() state.screen_ = "game"; callbacks.resetRunState(); rebuild() end }, UI.Button { text = state.T("game.back"), variant = "secondary", width = "100%", height = 44, onClick = function() state.screen_ = "language"; rebuild() end } } }
+    local isVictory = state.isVictory_
+    local titleKey = isVictory and "game.victory" or "game.defeated"
+    local titleColor = isVictory and { 146, 225, 191, 255 } or { 255, 150, 170, 255 }
+    local borderColor = isVictory and { 100, 200, 170, 200 } or { 231, 109, 143, 200 }
+    local gradFrom = isVictory and { 18, 42, 38, 250 } or { 30, 24, 54, 250 }
+    local gradTo = isVictory and { 14, 32, 30, 250 } or { 22, 18, 42, 250 }
+
+    local upgradeText = state.T("telemetry.no_upgrades")
+    if #state.runStats_.upgrades > 0 then
+        upgradeText = table.concat(state.runStats_.upgrades, " → ")
+    end
+
+    return UI.Panel { width = "90%", maxWidth = 450, padding = 26, gap = 10, alignItems = "center", backgroundGradient = { type = "linear", direction = "to-bottom-right", from = gradFrom, to = gradTo }, borderRadius = 24, borderWidth = 1, borderColor = borderColor, children = {
+        label(state.T(titleKey), { fontSize = 28, fontWeight = "bold", fontColor = titleColor, textAlign = "center" }),
+        label(state.T("game.summary"), { fontSize = 16, fontColor = { 210, 201, 231, 255 } }),
+        label(state.T("game.reason", state.defeatReason_), { fontSize = 13, fontColor = { 210, 201, 231, 255 }, textAlign = "center" }),
+        label(state.T("game.final_wave", state.wave_) .. "  ·  " .. state.T("game.final_score", state.score_) .. "  ·  " .. state.T("game.final_level", state.level_), { fontSize = 15, fontColor = { 255, 230, 137, 255 }, textAlign = "center" }),
+        label(state.T("game.final_fragments", state.dataFragments_) .. "  ·  " .. state.T("meta.currency", state.profile_.calibration), { fontSize = 13, fontColor = { 207, 220, 244, 255 } }),
+        UI.Panel { width = "100%", padding = 12, gap = 5, backgroundColor = { 9, 18, 36, 180 }, borderRadius = 12, children = {
+            label(state.T("telemetry.title"), { fontSize = 12, fontWeight = "bold", fontColor = { 146, 225, 191, 255 } }),
+            label(state.T("telemetry.damage", state.runStats_.damageTaken) .. "  ·  " .. state.T("telemetry.max_wave", state.runStats_.maxWave) .. "  ·  " .. state.T("telemetry.deaths", state.runStats_.deaths), { fontSize = 12, fontColor = { 183, 207, 242, 255 } }),
+            label(state.T("telemetry.build"), { fontSize = 11, fontWeight = "bold", fontColor = { 177, 196, 231, 255 }, marginTop = 4 }),
+            label(upgradeText, { fontSize = 11, fontColor = { 207, 220, 244, 255 }, textAlign = "center" }),
+        } },
+        UI.Button { text = state.T("meta.archive"), variant = "secondary", width = "100%", height = 44, onClick = function() state.metaScreenReturn_ = "summary"; state.screen_ = "archive"; rebuild() end },
+        UI.Button { text = state.T("game.restart"), variant = "primary", width = "100%", height = 48, onClick = function() state.screen_ = "game"; callbacks.resetRunState(); rebuild() end },
+        UI.Button { text = state.T("game.back"), variant = "secondary", width = "100%", height = 44, onClick = function() state.screen_ = "language"; rebuild() end },
+    } }
 end
 
 function M.build(screen)

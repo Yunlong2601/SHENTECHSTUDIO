@@ -117,6 +117,8 @@ M.enemies_ = {}
 ---@type table
 M.projectiles_ = {}
 ---@type table
+M.enemyProjectiles_ = {}
+---@type table
 M.pickups_ = {}
 ---@type table
 M.mines_ = {}
@@ -158,7 +160,7 @@ M.levelGoal_ = 5
 ---@type number
 M.wave_ = 1
 ---@type number
-M.maxWaves_ = 6
+M.maxWaves_ = 8
 ---@type number
 M.waveDuration_ = 18
 ---@type number
@@ -176,6 +178,7 @@ M.chosenModule_ = ""
 M.moduleLevel_ = 0
 M.upgradeCards_ = {}
 M.summaryAwarded_ = false
+M.isVictory_ = false
 M.runStats_ = { damageTaken = 0, deaths = 0, maxWave = 1, upgrades = {} }
 
 -- ─── Boss state ──────────────────────────────────────────────────────────

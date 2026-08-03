@@ -10,6 +10,14 @@ local function pos(widget, x, y, size) if callbacks.setWidgetPosition then callb
 local function destroy(widget) if callbacks.destroyWidget then callbacks.destroyWidget(widget) end end
 
 function M.kind_for_id(enemyId, wave)
+    if wave >= 5 then
+        local cycle = (enemyId + wave) % 5
+        if cycle == 0 then return "chaser" end
+        if cycle == 1 then return "skimmer" end
+        if cycle == 2 then return "charger" end
+        if cycle == 3 then return "splitter" end
+        return "shooter"
+    end
     local cycle = (enemyId + wave) % 3
     if cycle == 0 then return "chaser" end
     if cycle == 1 then return "skimmer" end
@@ -25,7 +33,7 @@ function M.spawn(elite)
     elseif side == 2 then x, y = math.random(30, math.max(31, math.floor(state.worldWidth_ - 30))), -30
     else x, y = math.random(30, math.max(31, math.floor(state.worldWidth_ - 30))), state.worldHeight_ + 30 end
     local kind = elite and "elite" or M.kind_for_id(state.enemyId_, state.wave_)
-    local size = elite and 38 or (kind == "charger" and 28 or 24)
+    local size = elite and 38 or (kind == "charger" and 28 or kind == "splitter" and 26 or kind == "shooter" and 26 or 24)
     local widget
     if elite then
         widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 255, 126, 63, 255 }, to = { 200, 80, 30, 255 } }, borderColor = { 255, 239, 164, 255 }, borderWidth = 3, borderRadius = 18, rotate = 0, pointerEvents = "none" }
@@ -33,11 +41,17 @@ function M.spawn(elite)
         widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 84, 216, 194, 255 }, to = { 40, 160, 140, 255 } }, borderColor = { 150, 255, 230, 255 }, borderWidth = 2, borderRadius = size * 0.5, pointerEvents = "none" }
     elseif kind == "charger" then
         widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 255, 168, 76, 255 }, to = { 200, 110, 30, 255 } }, borderColor = { 255, 220, 150, 255 }, borderWidth = 2, borderRadius = 3, rotate = 45, pointerEvents = "none" }
+    elseif kind == "splitter" then
+        widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 100, 220, 100, 255 }, to = { 50, 160, 50, 255 } }, borderColor = { 180, 255, 150, 255 }, borderWidth = 2, borderRadius = 6, rotate = 0, pointerEvents = "none" }
+    elseif kind == "shooter" then
+        widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 180, 130, 240, 255 }, to = { 120, 80, 200, 255 } }, borderColor = { 210, 170, 255, 255 }, borderWidth = 2, borderRadius = size * 0.4, rotate = 0, pointerEvents = "none" }
     else
         widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 244, 93, 133, 255 }, to = { 180, 50, 90, 255 } }, borderColor = { 255, 180, 200, 255 }, borderWidth = 2, borderRadius = 2, pointerEvents = "none" }
     end
     state.gameWorld_:AddChild(widget)
-    table.insert(state.enemies_, { x = x, y = y, radius = size * 0.5, speed = (elite and 38 or kind == "skimmer" and 46 or kind == "charger" and 40 or 52) + state.wave_ * 3, integrity = (elite and 12 or 2) + state.wave_, widget = widget, elite = elite, kind = kind, phase = 0, charge = 0, telegraph = 0, dead = false })
+    local baseSpeed = (elite and 38 or kind == "skimmer" and 46 or kind == "charger" and 40 or kind == "shooter" and 30 or kind == "splitter" and 44 or 52) + state.wave_ * 3
+    local baseIntegrity = (elite and 12 or kind == "splitter" and 3 or kind == "shooter" and 2 or 2) + state.wave_
+    table.insert(state.enemies_, { x = x, y = y, radius = size * 0.5, speed = baseSpeed, integrity = baseIntegrity, widget = widget, elite = elite, kind = kind, phase = 0, charge = 0, telegraph = 0, fireTimer = 2.0, dead = false, isFragment = false })
 end
 
 function M.spawn_boss()
@@ -57,6 +71,26 @@ function M.spawn_boss()
     end
 end
 
+function M.spawn_fragment(x, y)
+    if not state.gameWorld_ or #state.enemies_ >= 24 then return end
+    local size = 16
+    local widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 120, 230, 120, 255 }, to = { 60, 170, 60, 200 } }, borderColor = { 180, 255, 150, 220 }, borderWidth = 1, borderRadius = 4, pointerEvents = "none" }
+    state.gameWorld_:AddChild(widget)
+    local angle = math.random() * math.pi * 2
+    table.insert(state.enemies_, { x = x + math.cos(angle) * 12, y = y + math.sin(angle) * 12, radius = 8, speed = 60 + state.wave_ * 3, integrity = 1, widget = widget, elite = false, kind = "chaser", phase = 0, charge = 0, telegraph = 0, fireTimer = 0, dead = false, isFragment = true })
+end
+
+function M.spawn_enemy_projectile(x, y, tx, ty)
+    if not state.gameWorld_ then return end
+    local dx, dy = tx - x, ty - y
+    local length = math.sqrt(dx * dx + dy * dy)
+    if length <= 0 then return end
+    local speed = 160 + state.wave_ * 5
+    local widget = UI.Panel { position = "absolute", width = 10, height = 10, backgroundGradient = { type = "radial", from = { 200, 130, 255, 255 }, to = { 150, 80, 220, 200 } }, borderColor = { 230, 180, 255, 220 }, borderWidth = 1, borderRadius = 5, pointerEvents = "none" }
+    state.gameWorld_:AddChild(widget)
+    table.insert(state.enemyProjectiles_, { x = x, y = y, vx = dx / length * speed, vy = dy / length * speed, radius = 5, damage = 1, life = 3.0, widget = widget })
+end
+
 function M.find_nearest()
     local nearest, best = nil, math.huge; local player = p()
     for _, enemy in ipairs(state.enemies_) do
@@ -73,7 +107,11 @@ function M.damage(enemy, amount)
     if enemy.integrity > 0 then return end
     enemy.dead = true
     local reward = state.modifier_ == "overclock" and 2 or 1
-    state.score_ = state.score_ + (enemy.elite and 8 or 1)
+    state.score_ = state.score_ + (enemy.elite and 8 or enemy.isFragment and 0 or 1)
+    if enemy.kind == "splitter" and not enemy.isFragment then
+        M.spawn_fragment(enemy.x, enemy.y)
+        M.spawn_fragment(enemy.x, enemy.y)
+    end
     if callbacks.spawnPickup then callbacks.spawnPickup(enemy.x, enemy.y, "data", (enemy.elite and 3 or 1) * reward); callbacks.spawnPickup(enemy.x + 8, enemy.y, "shard", enemy.elite and 3 or 1) end
     destroy(enemy.widget)
 end
@@ -102,16 +140,44 @@ end
 
 function M.update(timeStep)
     local bound = state.modifier_ == "compression" and 70 or 0; local player = p()
+    local isGlitch = state.modifier_ == "glitch"
     for _, enemy in ipairs(state.enemies_) do
         if not enemy.dead then
             local dx, dy = player.x - enemy.x, player.y - enemy.y; local distance = math.sqrt(dx * dx + dy * dy)
             enemy.phase = enemy.phase + timeStep
             if enemy.kind == "skimmer" then local tx, ty = -dy / math.max(distance, 1), dx / math.max(distance, 1); dx, dy = dx + tx * 90, dy + ty * 90
             elseif enemy.kind == "charger" then if enemy.charge <= 0 then enemy.charge, enemy.telegraph = 2.1, 0.45 end; if enemy.telegraph > 0 then enemy.telegraph = enemy.telegraph - timeStep else enemy.charge = enemy.charge - timeStep; enemy.speed = 165 + state.wave_ * 5 end end
+            elseif enemy.kind == "shooter" then
+                enemy.fireTimer = enemy.fireTimer - timeStep
+                local idealRange = 200
+                if distance > idealRange + 30 then
+                    -- move closer
+                elseif distance < idealRange - 30 then
+                    dx, dy = -dx, -dy -- back away
+                else
+                    -- strafe
+                    local tx, ty = -dy / math.max(distance, 1), dx / math.max(distance, 1)
+                    dx, dy = tx * 60, ty * 60
+                end
+                if enemy.fireTimer <= 0 and distance < 350 then
+                    enemy.fireTimer = 2.5
+                    enemy.telegraph = 0.4
+                end
+                if enemy.telegraph > 0 then
+                    enemy.telegraph = enemy.telegraph - timeStep
+                    if enemy.telegraph <= 0 then
+                        M.spawn_enemy_projectile(enemy.x, enemy.y, player.x, player.y)
+                    end
+                end
+            end
+            if isGlitch and math.random() < 0.02 then
+                enemy.x = enemy.x + math.random(-12, 12)
+                enemy.y = enemy.y + math.random(-12, 12)
+            end
             if distance > 0 and (enemy.kind ~= "charger" or enemy.telegraph <= 0) then local mult = state.modifier_ == "overclock" and 1.25 or 1; enemy.x = enemy.x + dx / math.max(distance, 1) * enemy.speed * mult * timeStep; enemy.y = enemy.y + dy / math.max(distance, 1) * enemy.speed * mult * timeStep end
             if bound > 0 then enemy.x = math.max(bound, math.min(state.worldWidth_ - bound, enemy.x)); enemy.y = math.max(bound, math.min(state.worldHeight_ - bound, enemy.y)) end
-            if enemy.telegraph > 0 then enemy.widget:SetStyle({ backgroundColor = { 255, 245, 110, 255 }, borderColor = { 255, 70, 80, 255 }, scale = 1.2 }) else enemy.widget:SetStyle({ scale = 1.0 }) end
-            pos(enemy.widget, enemy.x, enemy.y, enemy.elite and 38 or (enemy.kind == "charger" and 28 or 24))
+            if enemy.telegraph > 0 and enemy.kind ~= "shooter" then enemy.widget:SetStyle({ backgroundColor = { 255, 245, 110, 255 }, borderColor = { 255, 70, 80, 255 }, scale = 1.2 }) elseif enemy.telegraph > 0 and enemy.kind == "shooter" then enemy.widget:SetStyle({ borderColor = { 255, 80, 255, 255 }, borderWidth = 3, scale = 1.15 }) else enemy.widget:SetStyle({ scale = 1.0 }) end
+            pos(enemy.widget, enemy.x, enemy.y, enemy.elite and 38 or (enemy.kind == "charger" and 28 or enemy.kind == "splitter" and 26 or enemy.kind == "shooter" and 26 or enemy.isFragment and 16 or 24))
             if distance < player.radius + enemy.radius and callbacks.damagePlayer then callbacks.damagePlayer(); if state.screen_ ~= "game" then return end; enemy.x = enemy.x - dx / math.max(distance, 1) * 22; enemy.y = enemy.y - dy / math.max(distance, 1) * 22 end
         end
     end
@@ -172,11 +238,15 @@ function M.update_boss(timeStep)
                 widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 84, 216, 194, 255 }, to = { 40, 160, 140, 255 } }, borderColor = { 150, 255, 230, 255 }, borderWidth = 2, borderRadius = size * 0.5, pointerEvents = "none" }
             elseif kind == "charger" then
                 widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 255, 168, 76, 255 }, to = { 200, 110, 30, 255 } }, borderColor = { 255, 220, 150, 255 }, borderWidth = 2, borderRadius = 3, rotate = 45, pointerEvents = "none" }
+            elseif kind == "splitter" then
+                widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 100, 220, 100, 255 }, to = { 50, 160, 50, 255 } }, borderColor = { 180, 255, 150, 255 }, borderWidth = 2, borderRadius = 6, pointerEvents = "none" }
+            elseif kind == "shooter" then
+                widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 180, 130, 240, 255 }, to = { 120, 80, 200, 255 } }, borderColor = { 210, 170, 255, 255 }, borderWidth = 2, borderRadius = size * 0.4, pointerEvents = "none" }
             else
                 widget = UI.Panel { position = "absolute", width = size, height = size, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 244, 93, 133, 255 }, to = { 180, 50, 90, 255 } }, borderColor = { 255, 180, 200, 255 }, borderWidth = 2, borderRadius = 2, pointerEvents = "none" }
             end
             state.gameWorld_:AddChild(widget)
-            table.insert(state.enemies_, { x = sx, y = sy, radius = 12, speed = 52 + state.wave_ * 3, integrity = 2 + state.wave_, widget = widget, elite = false, kind = kind, phase = 0, charge = 0, telegraph = 0, dead = false })
+            table.insert(state.enemies_, { x = sx, y = sy, radius = 12, speed = 52 + state.wave_ * 3, integrity = 2 + state.wave_, widget = widget, elite = false, kind = kind, phase = 0, charge = 0, telegraph = 0, fireTimer = 2.0, dead = false, isFragment = false })
         end
     end
 
@@ -203,6 +273,25 @@ function M.update_projectiles(timeStep)
     end
 end
 
+function M.update_enemy_projectiles(timeStep)
+    local player = p()
+    for index = #state.enemyProjectiles_, 1, -1 do
+        local proj = state.enemyProjectiles_[index]
+        proj.x = proj.x + proj.vx * timeStep
+        proj.y = proj.y + proj.vy * timeStep
+        proj.life = proj.life - timeStep
+        local remove = proj.life <= 0 or proj.x < -20 or proj.x > state.worldWidth_ + 20 or proj.y < -20 or proj.y > state.worldHeight_ + 20
+        if not remove then
+            local dx, dy = player.x - proj.x, player.y - proj.y
+            if dx * dx + dy * dy < (player.radius + proj.radius) ^ 2 then
+                if callbacks.damagePlayer then callbacks.damagePlayer() end
+                remove = true
+            end
+        end
+        if remove then destroy(proj.widget); table.remove(state.enemyProjectiles_, index) else pos(proj.widget, proj.x, proj.y, 10) end
+    end
+end
+
 function M.boss_exists()
     return state.boss_ ~= nil and not state.boss_.dead
 end
@@ -213,6 +302,11 @@ function M.clear_boss()
         destroy(state.boss_.coreWidget)
         state.boss_ = nil
     end
+end
+
+function M.clear_enemy_projectiles()
+    for _, proj in ipairs(state.enemyProjectiles_) do destroy(proj.widget) end
+    state.enemyProjectiles_ = {}
 end
 
 -- Called by pulse/mine/hook modules to also damage the boss

@@ -8,9 +8,9 @@ This is an aspiration, not a promise of parity with mature commercial teams. The
 
 ## Current state — 2026-08-03
 
-- Prototype 04, Defense & Counter, is playable and Maker build succeeds.
+- Demo Build is playable with Neon Vector Geometry visual pass, boss encounter, and monetization placeholder.
 - Six modules are implemented: Trace Beam, Orbit Seed, Pulse Bloom, Shell Lantern, Anchor Mine, Vector Hook.
-- Chaser, Skimmer, Charger, elite encounters, pickups, level-ups, three-choice upgrades, six waves, run summary, bilingual UI, and touch joystick are implemented.
+- Chaser, Skimmer, Charger, Splitter, Shooter, elite encounters, enemy projectiles, pickups, level-ups, three-choice upgrades, eight waves, boss fight, run telemetry, victory/defeat distinction, bilingual UI, and touch joystick are implemented.
 - `scripts/state.lua`, `scripts/i18n.lua`, `scripts/player.lua`, `scripts/modules.lua`, `scripts/enemies.lua`, and `scripts/waves.lua` now hold the core runtime layers.
 - UI builders and HUD updates are extracted into `scripts/ui.lua`; `main.lua` is orchestration-focused.
 - Persistence is not verified, device-matrix testing is incomplete, and combat feedback/content depth are below the long-term target.
@@ -26,7 +26,7 @@ This is an aspiration, not a promise of parity with mature commercial teams. The
 
 ## Milestone Ladder
 
-M1 is the active milestone. M2-M10 are locked as direction. For now, build readiness and TapTap commercial readiness are more important than playtest evidence. Playtests begin after the demo has enough content, polish, and monetization structure to represent the intended product.
+M2 is the active milestone. M3-M10 are locked as direction. For now, build readiness and TapTap commercial readiness are more important than playtest evidence. Playtests begin after the demo has enough content, polish, and monetization structure to represent the intended product.
 
 ### M0 — Architecture and truth-source cleanup (complete)
 
@@ -35,7 +35,7 @@ M1 is the active milestone. M2-M10 are locked as direction. For now, build readi
 - Make `project-source/` the only active planning source.
 - Gate passed: Maker build passes; six-wave runtime path remains wired; no duplicate roadmap is active.
 
-### M1 — Demo foundation buildout (active)
+### M1 — Demo foundation buildout (complete)
 
 - Add damage numbers, hit flashes, screen shake, module evolution bursts, and clearer telegraphs.
 - Add a lightweight run telemetry table: wave reached, build, damage taken, deaths, upgrade choices.
@@ -44,15 +44,17 @@ M1 is the active milestone. M2-M10 are locked as direction. For now, build readi
 - Build a full local demo loop: start, language, run, upgrades, waves, boss/elite, summary, restart, and session rewards.
 - Exit criteria: the demo loop is playable end-to-end, visually aligned with Neon Vector Geometry, and ready for internal build verification. No structured playtest evidence is required for M1.
 
-Implementation status: feedback instrumentation is complete in `scripts/ui.lua`, `scripts/enemies.lua`, and `scripts/main.lua`. The old 10-run playtest sheet remains available for later validation, but it is no longer an M1 blocker.
+Implementation status: M1 is complete. Feedback instrumentation, Neon Vector Geometry visuals, Core Breaker boss, run telemetry, victory/defeat distinction, and monetization placeholder are all implemented.
 
-### M2 — Content density and first boss
+### M2 — Content density and first boss (active)
 
 - Add Splitter and Shooter enemies with distinct counter-play.
 - Add the Glitch modifier and extend to waves 7–8.
 - Add one mid-boss and one final boss prototype.
 - Add first arena background pass if it keeps the combat center readable.
 - Exit criteria: an eight-wave run exists with regular enemies, at least one boss check, and visible enemy/module variety.
+
+Implementation status: Splitter, Shooter, Glitch modifier, and 8-wave structure are implemented. The Core Breaker serves as the final boss at wave 8. A mid-boss for earlier waves is the next addition.
 
 ### M3 — Buildcraft foundation (Brotato advantage)
 
@@ -122,12 +124,12 @@ Implementation status: feedback instrumentation is complete in `scripts/ui.lua`,
 - No structured balance playtest requirement before the demo is complete enough for test launch.
 - No large content expansion that does not contribute to the playable demo loop.
 
-## Current M1 Work Queue
+## Current M2 Work Queue
 
-1. Build the complete demo loop first: start, language, run, upgrades, waves, boss/elite, summary, restart, and session rewards.
-2. Add or refine readability-first Neon Vector Geometry art for Vector Triangle, core enemy roles, boss silhouette, module effects, and arena floor.
-3. Add a first monetization-design placeholder surface, such as a locked cosmetic/chassis skin or support panel, without wiring payment APIs yet.
-4. Verify the HUD remains readable after damage numbers, hit flash, screen shake, shell bar, touch joystick, upgrade overlay, and module effects overlap.
+1. Add a mid-boss encounter around wave 4 to break up the run pacing.
+2. Tune Splitter and Shooter spawn rates and difficulty curve across waves 5–7.
+3. Add visual feedback for the Glitch modifier (screen distortion, entity flicker).
+4. Verify the HUD remains readable with enemy projectiles, splitter fragments, and glitch effects on screen.
 5. Move structured playtesting to the test-launch prototype stage after the demo feels complete enough to judge.
 
 ## Weekly operating loop
