@@ -4,39 +4,8 @@
     "results": []
   },
   "enemies.lua": {
-    "mtime": 1785846384,
-    "results": [
-      {
-        "text": "追猎体",
-        "line": 12,
-        "rule": "chinese_double_quote",
-        "args": null
-      },
-      {
-        "text": "掠行体",
-        "line": 26,
-        "rule": "chinese_double_quote",
-        "args": null
-      },
-      {
-        "text": "蓄能体",
-        "line": 40,
-        "rule": "chinese_double_quote",
-        "args": null
-      },
-      {
-        "text": "分裂体",
-        "line": 54,
-        "rule": "chinese_double_quote",
-        "args": null
-      },
-      {
-        "text": "射击体",
-        "line": 68,
-        "rule": "chinese_double_quote",
-        "args": null
-      }
-    ]
+    "mtime": 1785846385,
+    "results": []
   },
   "i18n.lua": {
     "mtime": 1785846385,
@@ -1011,11 +980,11 @@
     "results": []
   },
   "stages.lua": {
-    "mtime": 1785846384,
+    "mtime": 1785778500,
     "results": [
       {
         "text": "赤红竞技场",
-        "line": 12,
+        "line": 10,
         "rule": "chinese_double_quote",
         "args": null
       },
@@ -1081,67 +1050,67 @@
       },
       {
         "text": "虚空核心",
-        "line": 39,
+        "line": 40,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
         "text": "Lv.1 · 虚空之门",
-        "line": 43,
-        "rule": "chinese_double_quote",
-        "args": null
-      },
-      {
-        "text": "Lv.2 · 暗能涌动",
         "line": 44,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
-        "text": "Lv.3 · 深渊低语",
+        "text": "Lv.2 · 暗能涌动",
         "line": 45,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
-        "text": "Lv.4 · 扭曲之径",
+        "text": "Lv.3 · 深渊低语",
         "line": 46,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
-        "text": "Lv.5 · 虚空领主",
+        "text": "Lv.4 · 扭曲之径",
         "line": 47,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
-        "text": "Lv.6 · 紫色迷障",
+        "text": "Lv.5 · 虚空领主",
         "line": 48,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
-        "text": "Lv.7 · 数据洪流",
+        "text": "Lv.6 · 紫色迷障",
         "line": 49,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
-        "text": "Lv.8 · 虚空回声",
+        "text": "Lv.7 · 数据洪流",
         "line": 50,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
-        "text": "Lv.9 · 混沌边缘",
+        "text": "Lv.8 · 虚空回声",
         "line": 51,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
-        "text": "Lv.10· 绝对虚空",
+        "text": "Lv.9 · 混沌边缘",
         "line": 52,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.10· 绝对虚空",
+        "line": 53,
         "rule": "chinese_double_quote",
         "args": null
       }
