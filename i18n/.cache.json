@@ -12,7 +12,7 @@
     "results": []
   },
   "i18n.lua": {
-    "mtime": 1785846385,
+    "mtime": 1785857871,
     "results": [
       {
         "text": "几何突围",
@@ -957,19 +957,151 @@
         "args": null
       },
       {
-        "text": "简体中文",
+        "text": "运行遥测",
+        "line": 79,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "伤害承受：%d",
+        "line": 79,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "最高波次：%d",
         "line": 80,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "死亡次数：%d",
+        "line": 80,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Build 路径",
+        "line": 81,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "（无升级记录）",
+        "line": 81,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "选择起始武器",
+        "line": 84,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "选择一件武器开始突围",
+        "line": 84,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "确认开始",
+        "line": 85,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "返回",
+        "line": 85,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "近战",
+        "line": 86,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "远程",
+        "line": 86,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "魔法",
+        "line": 86,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "高射速单体输出，安全距离击杀",
+        "line": 87,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "超远距离穿透弩箭，先发制人",
+        "line": 88,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "中距离多穿透投掷，群体压制",
+        "line": 89,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "解锁重摇 · %dg",
+        "line": 92,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "解锁锁定 · %dg",
+        "line": 92,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "重摇已解锁",
+        "line": 93,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "锁定已解锁",
+        "line": 93,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "最多锁定 1 张",
+        "line": 94,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "🔒 解锁后可锁定卡片保留至重摇",
+        "line": 94,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "简体中文",
+        "line": 98,
         "rule": "chinese_double_quote",
         "args": null
       }
     ]
   },
   "main.lua": {
-    "mtime": 1785855548,
+    "mtime": 1785857871,
     "results": [
       {
         "text": "Geometry Breakout / 几何突围",
-        "line": 560,
+        "line": 565,
         "rule": "chinese_double_quote",
         "args": null
       }
@@ -980,7 +1112,7 @@
     "results": []
   },
   "shop.lua": {
-    "mtime": 1785855548,
+    "mtime": 1785857871,
     "results": []
   },
   "stages.lua": {
@@ -1121,7 +1253,7 @@
     ]
   },
   "state.lua": {
-    "mtime": 1785846385,
+    "mtime": 1785857871,
     "results": []
   },
   "stats_panel.lua": {
@@ -1129,23 +1261,23 @@
     "results": []
   },
   "ui.lua": {
-    "mtime": 1785855548,
+    "mtime": 1785857871,
     "results": [
       {
         "text": "压缩",
-        "line": 492,
+        "line": 624,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
         "text": "波动",
-        "line": 492,
+        "line": 624,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
         "text": "加速",
-        "line": 492,
+        "line": 624,
         "rule": "chinese_double_quote",
         "args": null
       }

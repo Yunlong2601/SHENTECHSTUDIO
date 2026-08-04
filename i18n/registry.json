@@ -15,7 +15,7 @@
     "key": "t_GzlJOBm9HSodOcm5",
     "locations": [
       "i18n.lua:14",
-      "i18n.lua:80"
+      "i18n.lua:98"
     ]
   },
   "校准台已上线，准备开始突围。": {
@@ -442,13 +442,14 @@
   "返回": {
     "key": "t_vKCzcTCiupNLbfGL",
     "locations": [
-      "i18n.lua:43"
+      "i18n.lua:43",
+      "i18n.lua:85"
     ]
   },
   "Geometry Breakout / 几何突围": {
     "key": "t_ycjvROF0z6HuPaWh",
     "locations": [
-      "main.lua:560"
+      "main.lua:565"
     ]
   },
   "几何突围 · Demo Build": {
@@ -870,19 +871,19 @@
   "压缩": {
     "key": "t_JJKNzh84IoiivICn",
     "locations": [
-      "ui.lua:492"
+      "ui.lua:624"
     ]
   },
   "波动": {
     "key": "t_ETmovoy7Ez4hO2yU",
     "locations": [
-      "ui.lua:492"
+      "ui.lua:624"
     ]
   },
   "加速": {
     "key": "t_1Giyb7bBn1HDVIdtry",
     "locations": [
-      "ui.lua:492"
+      "ui.lua:624"
     ]
   },
   "武器：%s": {
@@ -894,13 +895,15 @@
   "近战": {
     "key": "t_wL6Zlv4XwT1rrUOD",
     "locations": [
-      "i18n.lua:38"
+      "i18n.lua:38",
+      "i18n.lua:86"
     ]
   },
   "远程": {
     "key": "t_R5YbdvzmRH4bXXkg",
     "locations": [
-      "i18n.lua:38"
+      "i18n.lua:38",
+      "i18n.lua:86"
     ]
   },
   "商店": {
@@ -1105,6 +1108,120 @@
     "key": "t_qvpqjMtsqTl8urNg",
     "locations": [
       "i18n.lua:76"
+    ]
+  },
+  "运行遥测": {
+    "key": "t_HyALsNcDHVKn6KHs",
+    "locations": [
+      "i18n.lua:79"
+    ]
+  },
+  "伤害承受：%d": {
+    "key": "t_10rx0IClb10gAuNPeY",
+    "locations": [
+      "i18n.lua:79"
+    ]
+  },
+  "最高波次：%d": {
+    "key": "t_sfjKlPrLsU94xyec",
+    "locations": [
+      "i18n.lua:80"
+    ]
+  },
+  "死亡次数：%d": {
+    "key": "t_dS7vbPJDdt6dOnHO",
+    "locations": [
+      "i18n.lua:80"
+    ]
+  },
+  "Build 路径": {
+    "key": "t_lAeiCUeWl038phej",
+    "locations": [
+      "i18n.lua:81"
+    ]
+  },
+  "（无升级记录）": {
+    "key": "t_eOierWv16THtQDk",
+    "locations": [
+      "i18n.lua:81"
+    ]
+  },
+  "选择起始武器": {
+    "key": "t_9VqRkDz19xZau1go",
+    "locations": [
+      "i18n.lua:84"
+    ]
+  },
+  "选择一件武器开始突围": {
+    "key": "t_A1XCQAlJASoXO7l6",
+    "locations": [
+      "i18n.lua:84"
+    ]
+  },
+  "确认开始": {
+    "key": "t_dp5pWuwodMRzQBOx",
+    "locations": [
+      "i18n.lua:85"
+    ]
+  },
+  "魔法": {
+    "key": "t_f7Q91PSBedphwrh8",
+    "locations": [
+      "i18n.lua:86"
+    ]
+  },
+  "高射速单体输出，安全距离击杀": {
+    "key": "t_1BIpagTWl1BTcltjK6",
+    "locations": [
+      "i18n.lua:87"
+    ]
+  },
+  "超远距离穿透弩箭，先发制人": {
+    "key": "t_fuhHvAI7gLPHramI",
+    "locations": [
+      "i18n.lua:88"
+    ]
+  },
+  "中距离多穿透投掷，群体压制": {
+    "key": "t_M8QNRXEjMJaxOoI0",
+    "locations": [
+      "i18n.lua:89"
+    ]
+  },
+  "解锁重摇 · %dg": {
+    "key": "t_yITPbvDvyB7XLAoc",
+    "locations": [
+      "i18n.lua:92"
+    ]
+  },
+  "解锁锁定 · %dg": {
+    "key": "t_SikCkNYBSDZlCcCQ",
+    "locations": [
+      "i18n.lua:92"
+    ]
+  },
+  "重摇已解锁": {
+    "key": "t_y0PMl2F0yT9pM72J",
+    "locations": [
+      "i18n.lua:93"
+    ]
+  },
+  "锁定已解锁": {
+    "key": "t_K9DtctbJKJyjVuX6",
+    "locations": [
+      "i18n.lua:93"
+    ]
+  },
+  "最多锁定 1 张": {
+    "key": "t_1Bhrfgwzv1CALsZu3y",
+    "locations": [
+      "i18n.lua:94"
+    ]
+  },
+  "🔒 解锁后可锁定卡片保留至重摇": {
+    "key": "t_DyhKfz9yE9uY5fQd",
+    "locations": [
+      "i18n.lua:94"
     ]
   }
 }
