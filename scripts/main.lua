@@ -138,8 +138,8 @@ local function ResetRunState()
     ClearEntities(); state.worldWidth_, state.worldHeight_ = GetWorldSize()
     player.reset(state.worldWidth_, state.worldHeight_)
     state.moduleLevels_ = { trace = 0, orbit = 0, pulse = 0, shell = 0, mine = 0, hook = 0, laser = 0, poison = 0 }; state.activeModules_ = { trace = false, orbit = false, pulse = false, shell = false, mine = false, hook = false, laser = false, poison = false }
-    -- P4: Equip starting weapon (blade in slot 1)
-    state.weapons_ = {}; weapons.equip("blade", 1)
+    -- P4: Equip starting weapon (chosen on weapon select screen; blade fallback)
+    state.weapons_ = {}; weapons.equip(state.chosenStartWeapon_ or "blade", 1)
     state.surgeTimer_, state.surgeFlash_ = 2.5, 0
     state.runTime_, state.waveTime_, state.spawnTimer_, state.enemyId_, state.score_ = 0, 0, 0, 0, 0
     state.dataFragments_, state.patternShards_, state.level_, state.levelProgress_ = 0, 0, 1, 0
@@ -158,7 +158,7 @@ local function ResetRunState()
     state.midBoss_ = nil; state.midBossFlash_ = 0
     state.maxEnemies_ = 30
     player_.gold_ = 0  -- P3: reset gold on new run
-    state.shop_ = { isOpen = false, rerollCount = 0, timer = 15.0, weapons = {}, items = {} }  -- P2
+    state.shop_ = { isOpen = false, rerollCount = 0, timer = 15.0, weapons = {}, items = {}, rerollUnlocked = false, lockUnlocked = false }  -- P2
     state.statAxes_ = { maxHP = 0, damage = 0, attackSpeed = 0, range = 0, critChance = 0, dodge = 0, moveSpeed = 0, luck = 0 }  -- P5
 end
 
@@ -510,6 +510,11 @@ function Start()
         selectStage = function(stageIdx)
             state.stage_ = stageIdx
             state.stageLevel_ = 1
+            state.screen_ = state.SCREEN_WEAPON_SELECT
+            BuildUI()
+        end,
+        confirmStartWeapon = function(weaponId)
+            state.chosenStartWeapon_ = weaponId
             ResetRunState()
             waves.begin_wave()
             BuildUI()

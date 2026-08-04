@@ -2,6 +2,8 @@ local UI = require("urhox-libs/UI")
 local state = require("state")
 local stages = require("stages")
 local stats_panel = require("stats_panel")  -- P2: right-side stat panel
+local stat_items = require("data.stat_items")  -- for format_upgrade_id
+local weapons_mod = require("weapons")  -- for weapon_select_screen
 
 local M = {}
 local callbacks = {}
@@ -11,6 +13,22 @@ local function label(text, props) return callbacks.makeLabel(text, props) end
 local function rebuild() if callbacks.rebuild then callbacks.rebuild() end end
 local function module_name(id) return callbacks.moduleName(id) end
 local function modules_text() return callbacks.activeModuleText() end
+
+-- Format upgrade ID for display: "weapon:bow" → "Bow", "stat:maxHP" → "生命强化"
+local function format_upgrade_id(id)
+    if not id or id == "" then return "" end
+    local prefix, sub = id:match("^(%w+):(.+)$")
+    if not prefix then return id end
+    if prefix == "weapon" then
+        local def = weapons_mod.get_def(sub)
+        return def and def.name or sub
+    elseif prefix == "stat" then
+        local sdef = stat_items.DEFS[sub]
+        if sdef and sdef.nameKey then return state.T(sdef.nameKey) end
+        return sub
+    end
+    return id
+end
 
 -- Get current stage's visual theme
 local function arena_theme()
@@ -180,7 +198,11 @@ local function summary_screen()
 
     local upgradeText = state.T("telemetry.no_upgrades")
     if #state.runStats_.upgrades > 0 then
-        upgradeText = table.concat(state.runStats_.upgrades, " → ")
+        local names = {}
+        for _, id in ipairs(state.runStats_.upgrades) do
+            names[#names + 1] = format_upgrade_id(id)
+        end
+        upgradeText = table.concat(names, " → ")
     end
 
     return UI.Panel { width = "90%", maxWidth = 450, padding = 26, gap = 10, alignItems = "center", backgroundGradient = { type = "linear", direction = "to-bottom-right", from = gradFrom, to = gradTo }, borderRadius = 24, borderWidth = 1, borderColor = borderColor, children = {
@@ -297,7 +319,7 @@ local function stage_summary_screen()
     local upgrades = state.runStats_.upgrades or {}
     if #upgrades > 0 then
         local names = {}
-        for _, id in ipairs(upgrades) do names[#names + 1] = module_name(id) end
+        for _, id in ipairs(upgrades) do names[#names + 1] = format_upgrade_id(id) end
         upgradeText = table.concat(names, " > ")
     end
     return UI.Panel { width = "90%", maxWidth = 520, padding = 24, gap = 6, alignItems = "center",
@@ -322,9 +344,119 @@ local function stage_summary_screen()
         } }
 end
 
+-- ── Weapon Select Screen ─────────────────────────────────────────────────
+-- Player picks a starting weapon before the run begins.
+-- Shows 3 ranged options (Bow / Crossbow / Thrown). Blade is the fallback default.
+
+local _selectedStartWeapon = nil  -- module-level UI selection state
+
+local START_WEAPONS = { "bow", "crossbow", "thrown" }
+
+local function weapon_select_screen()
+    local title = label(state.T("weapon_select.title"),
+        { fontSize = 26, fontWeight = "bold", fontColor = { 255, 230, 137, 255 }, textAlign = "center" })
+    local subtitle = label(state.T("weapon_select.subtitle"),
+        { fontSize = 13, fontColor = { 177, 196, 231, 255 }, textAlign = "center", marginBottom = 12 })
+
+    -- Build weapon cards
+    local cards = {}
+    for _, wid in ipairs(START_WEAPONS) do
+        local def = weapons_mod.get_def(wid)
+        if def then
+            local isSelected = _selectedStartWeapon == wid
+            local tagKey = "weapon_select.tag_" .. def.tag
+            local descKey = "weapon_select.desc_" .. wid
+
+            local tagColor = { 180, 190, 210, 255 }
+            if def.tag == "melee" then tagColor = { 255, 170, 80, 255 }
+            elseif def.tag == "magic" then tagColor = { 180, 120, 255, 255 }
+            end
+
+            local card = UI.Button {
+                text = "",
+                width = "31%", minHeight = 170, padding = 10, gap = 4,
+                backgroundColor = { 12, 22, 45, 220 },
+                borderColor = isSelected and { 255, 230, 137, 255 } or { 80, 120, 180, 150 },
+                borderWidth = isSelected and 3 or 1,
+                borderRadius = 10,
+                onClick = function()
+                    _selectedStartWeapon = wid
+                    rebuild()
+                end,
+                children = {
+                    UI.Panel {
+                        flexDirection = "column", alignItems = "center", gap = 3,
+                        children = {
+                            label(def.name, { fontSize = 16, fontWeight = "bold",
+                                fontColor = { 220, 235, 255, 255 }, textAlign = "center" }),
+                            label(state.T(tagKey), { fontSize = 10, fontColor = tagColor, textAlign = "center" }),
+                            label(state.T(descKey), { fontSize = 10, fontColor = { 150, 170, 200, 255 },
+                                textAlign = "center", marginTop = 4 }),
+                            label(string.format("DMG %.1f", def.damage), { fontSize = 11,
+                                fontColor = { 200, 210, 230, 255 }, textAlign = "center", marginTop = 6 }),
+                            label(string.format("CD %.2fs", def.cooldown), { fontSize = 11,
+                                fontColor = { 150, 170, 200, 255 }, textAlign = "center" }),
+                            isSelected and label("✓", { fontSize = 14, fontColor = { 255, 230, 137, 255 },
+                                textAlign = "center", marginTop = 4 }) or nil,
+                        },
+                    },
+                },
+            }
+            table.insert(cards, card)
+        end
+    end
+
+    local weaponRow = UI.Panel {
+        width = "100%", flexDirection = "row", justifyContent = "space-around", gap = 6,
+        children = cards,
+    }
+
+    local canConfirm = _selectedStartWeapon ~= nil
+    local confirmBtn = UI.Button {
+        text = state.T("weapon_select.confirm"),
+        variant = canConfirm and "primary" or "secondary",
+        width = "100%", height = 50, fontSize = 14,
+        opacity = canConfirm and 1 or 0.4,
+        onClick = function()
+            if canConfirm and callbacks.confirmStartWeapon then
+                local chosen = _selectedStartWeapon
+                _selectedStartWeapon = nil
+                callbacks.confirmStartWeapon(chosen)
+            end
+        end,
+    }
+
+    local backBtn = UI.Button {
+        text = state.T("weapon_select.back"),
+        variant = "secondary", width = "100%", height = 44,
+        onClick = function()
+            _selectedStartWeapon = nil
+            state.screen_ = state.SCREEN_STAGE_SELECT
+            rebuild()
+        end,
+    }
+
+    return UI.Panel {
+        width = "92%", maxWidth = 540, maxHeight = "85%", overflow = "scroll",
+        padding = 20, gap = 8,
+        backgroundGradient = { type = "linear", direction = "to-bottom-right",
+            from = { 14, 22, 48, 250 }, to = { 20, 16, 38, 250 } },
+        borderRadius = 22, borderWidth = 1, borderColor = { 130, 200, 255, 180 },
+        children = {
+            label("◆", { fontSize = 36, fontColor = { 82, 214, 255, 255 }, textAlign = "center" }),
+            title,
+            subtitle,
+            weaponRow,
+            confirmBtn,
+            backBtn,
+        },
+    }
+end
+
 function M.build(screen)
     if screen == "language" then return language_screen() end
     if screen == state.SCREEN_STAGE_SELECT then return stage_select_screen() end
+    if screen == state.SCREEN_WEAPON_SELECT then return weapon_select_screen() end
     if screen == "game" then return game_screen() end
     if screen == "upgrade" then return upgrade_screen() end
     if screen == "wave_pause" then return wave_pause_screen() end

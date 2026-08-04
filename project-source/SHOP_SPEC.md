@@ -2,7 +2,7 @@
 
 > Canonical spec for the inter-wave shop.
 >
-> Last updated: 2026-08-04
+> Last updated: 2026-08-04 (unlock mechanics added)
 
 ---
 
@@ -50,7 +50,7 @@ Wave ends → EndWave() → shop screen (15s or manual skip) → next wave
 │  │ 12g  │ │ 10g  │ │ 14g  │   │
 │  └──────┘ └──────┘ └──────┘   │
 │                                 │
-│  Gold: 35   [REROLL 2g] [SKIP] │ ← action bar
+│  Gold: 35   [REROLL 2g] [SKIP] │ ← action bar (unlock buttons shown before unlock)
 │  Timer: 12s                     │
 └─────────────────────────────────┘
 ```
@@ -70,16 +70,21 @@ Wave ends → EndWave() → shop screen (15s or manual skip) → next wave
 - Price: calculated from rarity + stat bonus (see ECONOMY.md)
 
 ### Reroll
-- Cost = 1 + reroll_count_this_shop
-- Refreshes ALL 6 items with new random draws
+- **One-time unlock**: 2g to unlock reroll capability for the rest of the run `[PLACEHOLDER · pending economy playtest]`
+- After unlock: cost = 1 + reroll_count_this_shop per reroll
+- Refreshes ALL non-locked items with new random draws
 - Can reroll multiple times (cost increases)
-- Locked items are preserved through reroll
+- Locked items are preserved through rerolls
+- Unlock cost is a per-run gold sink (reset on new run)
 
 ### Lock
-- Free action
-- Marks 1 item to stay in the shop for the next wave
-- Locked items persist through rerolls
+- **One-time unlock**: 3g to unlock lock capability for the rest of the run `[PLACEHOLDER · pending economy playtest]`
+- After unlock: locking is free (no per-use cost)
+- Max 1 locked card at a time (across both weapons and items)
+- Locked items persist through rerolls in the current shop
+- Lock state resets when a new shop opens (next wave)
 - Visual: padlock icon on locked item
+- Unlock cost is a per-run gold sink (reset on new run)
 
 ### Recycle (Sell)
 - Sell an equipped weapon
@@ -98,11 +103,13 @@ Wave ends → EndWave() → shop screen (15s or manual skip) → next wave
 
 ```lua
 state.shop_ = {
-    weapons = {},      -- { id, name, rarity, price, stats, locked }
-    items = {},        -- { id, name, price, effect, locked }
-    rerollCount = 0,   -- increments each reroll this shop
-    timer = 15.0,      -- countdown in seconds
+    weapons = {},           -- { id, name, rarity, price, stats, locked }
+    items = {},             -- { id, name, price, effect, locked }
+    rerollCount = 0,        -- increments each reroll this shop
+    timer = 15.0,           -- countdown in seconds
     isOpen = false,
+    rerollUnlocked = false, -- one-time unlock (2g per run)
+    lockUnlocked = false,   -- one-time unlock (3g per run)
 }
 ```
 
@@ -139,7 +146,10 @@ state.shop_ = {
 ---
 
 ## Edge Cases
-- Player has 0 gold: reroll/lock buttons disabled (skip only option)
+- Player has 0 gold: unlock/reroll/lock buttons disabled (skip only option)
+- Reroll not unlocked: "Unlock Reroll · 2g" button shown instead of reroll button
+- Lock not unlocked: lock buttons on cards hidden; "Unlock Lock · 3g" button in action bar
+- Max locks reached (1): attempting to lock a 2nd card is silently blocked
 - All weapon slots full: buying a weapon shows "replace?" confirm
 - Shop timer hits 0 during purchase animation: complete the purchase, then advance
 - Player dies during shop: not possible (shop is between waves, no enemies)

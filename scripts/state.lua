@@ -21,6 +21,7 @@ M.SCREEN_ARCHIVE      = "archive"
 M.SCREEN_SUMMARY      = "summary"
 M.SCREEN_COSMETICS    = "cosmetics"
 M.SCREEN_SHOP         = "shop"          -- Brotato P2: inter-wave shop
+M.SCREEN_WEAPON_SELECT= "weapon_select" -- Pre-run weapon selection
 
 -- ─── Language & current screen ───────────────────────────────────────────
 ---@type string
@@ -253,6 +254,8 @@ M.shop_ = {
     timer = 15.0,
     weapons = {},
     items = {},
+    rerollUnlocked = false,   -- [PLACEHOLDER · pending economy playtest] 2g one-time unlock
+    lockUnlocked = false,     -- [PLACEHOLDER · pending economy playtest] 3g one-time unlock
 }
 
 -- ─── Stat axes (Brotato P5) ─────────────────────────────────────────────
@@ -274,6 +277,10 @@ M.statAxes_ = {
 -- ── Dynamic enemy cap (R-06) ────────────────────────────────────────────
 ---@type number   -- max concurrent enemies on screen
 M.maxEnemies_ = 30
+
+-- ─── Chosen start weapon (set by weapon select screen) ───────────────────
+---@type string|nil  weapon ID chosen on the weapon select screen; nil = use "blade" fallback
+M.chosenStartWeapon_ = nil
 
 -- ─── Profile (session-only — no verified storage API) ───────────────────
 ---@class MetaProfile

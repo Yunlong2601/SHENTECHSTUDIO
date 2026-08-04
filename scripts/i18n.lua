@@ -74,6 +74,24 @@ M.TEXT = {
         ["stat.ddg_name"] = "闪避强化", ["stat.ddg_desc"] = "闪避率 +4%",
         ["stat.mov_name"] = "移速强化", ["stat.mov_desc"] = "移动速度 +5%",
         ["stat.lck_name"] = "幸运强化", ["stat.lck_desc"] = "掉落金币 +15%",
+
+        -- Telemetry (run summary stats)
+        ["telemetry.title"] = "运行遥测", ["telemetry.damage"] = "伤害承受：%d",
+        ["telemetry.max_wave"] = "最高波次：%d", ["telemetry.deaths"] = "死亡次数：%d",
+        ["telemetry.build"] = "Build 路径", ["telemetry.no_upgrades"] = "（无升级记录）",
+
+        -- Weapon Select Screen
+        ["weapon_select.title"] = "选择起始武器", ["weapon_select.subtitle"] = "选择一件武器开始突围",
+        ["weapon_select.confirm"] = "确认开始", ["weapon_select.back"] = "返回",
+        ["weapon_select.tag_melee"] = "近战", ["weapon_select.tag_ranged"] = "远程", ["weapon_select.tag_magic"] = "魔法",
+        ["weapon_select.desc_bow"] = "高射速单体输出，安全距离击杀",
+        ["weapon_select.desc_crossbow"] = "超远距离穿透弩箭，先发制人",
+        ["weapon_select.desc_thrown"] = "中距离多穿透投掷，群体压制",
+
+        -- Shop Unlock Mechanics
+        ["shop.unlock_reroll"] = "解锁重摇 · %dg", ["shop.unlock_lock"] = "解锁锁定 · %dg",
+        ["shop.reroll_unlocked"] = "重摇已解锁", ["shop.lock_unlocked"] = "锁定已解锁",
+        ["shop.lock_max"] = "最多锁定 1 张", ["shop.lock_hint"] = "🔒 解锁后可锁定卡片保留至重摇",
     },
     en = {
         ["menu.title"] = "Geometry Breakout", ["menu.subtitle"] = "Choose your language to begin",
@@ -140,6 +158,24 @@ M.TEXT = {
         ["stat.ddg_name"] = "Dodge Up", ["stat.ddg_desc"] = "+4% dodge chance",
         ["stat.mov_name"] = "Agility Up", ["stat.mov_desc"] = "+5% move speed",
         ["stat.lck_name"] = "Luck Up", ["stat.lck_desc"] = "+15% gold from drops",
+
+        -- Telemetry (run summary stats)
+        ["telemetry.title"] = "Run Telemetry", ["telemetry.damage"] = "Damage taken: %d",
+        ["telemetry.max_wave"] = "Max wave: %d", ["telemetry.deaths"] = "Deaths: %d",
+        ["telemetry.build"] = "Build path", ["telemetry.no_upgrades"] = "(no upgrades recorded)",
+
+        -- Weapon Select Screen
+        ["weapon_select.title"] = "Choose Starting Weapon", ["weapon_select.subtitle"] = "Pick a weapon to begin your breakout",
+        ["weapon_select.confirm"] = "Confirm & Start", ["weapon_select.back"] = "Back",
+        ["weapon_select.tag_melee"] = "Melee", ["weapon_select.tag_ranged"] = "Ranged", ["weapon_select.tag_magic"] = "Magic",
+        ["weapon_select.desc_bow"] = "High fire-rate single-target DPS, safe range",
+        ["weapon_select.desc_crossbow"] = "Long-range piercing bolts, first strike advantage",
+        ["weapon_select.desc_thrown"] = "Mid-range multi-pierce throws, crowd control",
+
+        -- Shop Unlock Mechanics
+        ["shop.unlock_reroll"] = "Unlock Reroll · %dg", ["shop.unlock_lock"] = "Unlock Lock · %dg",
+        ["shop.reroll_unlocked"] = "Reroll unlocked", ["shop.lock_unlocked"] = "Lock unlocked",
+        ["shop.lock_max"] = "Max 1 lock", ["shop.lock_hint"] = "🔒 Unlock to lock cards across rerolls",
     },
 }
 

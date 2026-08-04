@@ -56,6 +56,14 @@ local WEAPON_PRICES = {
     blunt = 35, staff = 35,
 }
 
+---One-time unlock costs. [PLACEHOLDER · pending economy playtest]
+---Rationale: 2g reroll = ~1 wave's gold; 3g lock = ~1.5 waves' gold.
+---These are early-game gold sinks that create a real decision:
+---"unlock shop tools now vs. buy items now."
+local UNLOCK_REROLL_COST = 2
+local UNLOCK_LOCK_COST   = 3
+local MAX_LOCKS          = 1  -- max locked cards per shop visit
+
 ---Stat item price: 10 + (current stat level × 5).
 local function stat_price(statKey)
     local cur = state.statAxes_[statKey] or 0
@@ -109,6 +117,26 @@ end
 
 -- ── Shop actions ─────────────────────────────────────────────────────────
 
+---Unlock reroll capability (one-time cost per run).
+function M.unlock_reroll()
+    if state.shop_.rerollUnlocked then return end
+    local gold = state.player_.gold_ or 0
+    if gold < UNLOCK_REROLL_COST then return end
+    state.player_.gold_ = gold - UNLOCK_REROLL_COST
+    state.shop_.rerollUnlocked = true
+    if _rebuild then _rebuild() end
+end
+
+---Unlock lock capability (one-time cost per run).
+function M.unlock_lock()
+    if state.shop_.lockUnlocked then return end
+    local gold = state.player_.gold_ or 0
+    if gold < UNLOCK_LOCK_COST then return end
+    state.player_.gold_ = gold - UNLOCK_LOCK_COST
+    state.shop_.lockUnlocked = true
+    if _rebuild then _rebuild() end
+end
+
 ---Buy a weapon or stat item by index.
 ---@param index number  1-based index into weapons[] or items[]
 ---@param category string  "weapon" | "item"
@@ -145,8 +173,9 @@ function M.buy(index, category)
     if _rebuild then _rebuild() end
 end
 
----Reroll all non-locked items. Cost = 1 + rerollCount.
+---Reroll all non-locked items. Cost = 1 + rerollCount. Requires unlock.
 function M.reroll()
+    if not state.shop_.rerollUnlocked then return end
     local cost = 1 + state.shop_.rerollCount
     local gold = state.player_.gold_ or 0
     if gold < cost then return end
@@ -210,10 +239,18 @@ function M.reroll()
     if _rebuild then _rebuild() end
 end
 
----Toggle lock on a weapon or stat item.
+---Toggle lock on a weapon or stat item. Requires unlock; max 1 locked card.
 function M.toggle_lock(index, category)
+    if not state.shop_.lockUnlocked then return end
     local list = category == "weapon" and state.shop_.weapons or state.shop_.items
     if not list or not list[index] then return end
+    -- Enforce max locks when locking a new card
+    if not list[index].locked then
+        local lockedCount = 0
+        for _, w in ipairs(state.shop_.weapons) do if w.locked then lockedCount = lockedCount + 1 end end
+        for _, it in ipairs(state.shop_.items) do if it.locked then lockedCount = lockedCount + 1 end end
+        if lockedCount >= MAX_LOCKS then return end
+    end
     list[index].locked = not list[index].locked
     if _rebuild then _rebuild() end
 end
@@ -288,13 +325,13 @@ local function weapon_card(index, w)
                 opacity = (canAfford and not slotsFull) and 1 or 0.5,
                 onClick = function() M.buy(index, "weapon") end,
             },
-            -- Lock toggle
-            UI.Button {
+            -- Lock toggle (only when lock is unlocked)
+            state.shop_.lockUnlocked and UI.Button {
                 text = w.locked and "🔒" or "🔓",
                 variant = "secondary",
                 height = 24, minWidth = 40, fontSize = 10,
                 onClick = function() M.toggle_lock(index, "weapon") end,
-            },
+            } or nil,
         },
     }
 end
@@ -338,13 +375,13 @@ local function stat_card(index, item)
                 opacity = canAfford and 1 or 0.5,
                 onClick = function() M.buy(index, "item") end,
             },
-            -- Lock toggle
-            UI.Button {
+            -- Lock toggle (only when lock is unlocked)
+            state.shop_.lockUnlocked and UI.Button {
                 text = item.locked and "🔒" or "🔓",
                 variant = "secondary",
                 height = 24, minWidth = 40, fontSize = 10,
                 onClick = function() M.toggle_lock(index, "item") end,
-            },
+            } or nil,
         },
     }
 end
@@ -409,27 +446,49 @@ function M.build()
           textAlign = "center", marginTop = 8 }
     )
 
-    -- Action buttons row
-    local canReroll = gold >= rerollCost
+    -- Action buttons row (conditional on unlock state)
+    local actionChildren = {}
+
+    -- REROLL or UNLOCK-REROLL button
+    if state.shop_.rerollUnlocked then
+        local canReroll = gold >= rerollCost
+        table.insert(actionChildren, UI.Button {
+            text = T("shop.reroll", rerollCost),
+            variant = "secondary", height = 40, minWidth = 100, fontSize = 12,
+            opacity = canReroll and 1 or 0.4,
+            onClick = function() if canReroll then M.reroll() end end,
+        })
+    else
+        local canUnlockR = gold >= UNLOCK_REROLL_COST
+        table.insert(actionChildren, UI.Button {
+            text = T("shop.unlock_reroll", UNLOCK_REROLL_COST),
+            variant = "secondary", height = 40, minWidth = 120, fontSize = 12,
+            opacity = canUnlockR and 1 or 0.4,
+            onClick = function() if canUnlockR then M.unlock_reroll() end end,
+        })
+    end
+
+    -- UNLOCK-LOCK button (only when not yet unlocked)
+    if not state.shop_.lockUnlocked then
+        local canUnlockL = gold >= UNLOCK_LOCK_COST
+        table.insert(actionChildren, UI.Button {
+            text = T("shop.unlock_lock", UNLOCK_LOCK_COST),
+            variant = "secondary", height = 40, minWidth = 120, fontSize = 12,
+            opacity = canUnlockL and 1 or 0.4,
+            onClick = function() if canUnlockL then M.unlock_lock() end end,
+        })
+    end
+
+    -- SKIP button (always available)
+    table.insert(actionChildren, UI.Button {
+        text = T("shop.skip"),
+        variant = "primary", height = 40, minWidth = 90, fontSize = 12,
+        onClick = function() M.skip() end,
+    })
+
     local actionRow = UI.Panel {
         width = "100%", flexDirection = "row", justifyContent = "center", gap = 10, marginTop = 10,
-        children = {
-            -- REROLL button
-            UI.Button {
-                text = T("shop.reroll", rerollCost),
-                variant = "secondary", height = 40, minWidth = 100, fontSize = 12,
-                opacity = canReroll and 1 or 0.4,
-                onClick = function()
-                    if canReroll then M.reroll() end
-                end,
-            },
-            -- SKIP button
-            UI.Button {
-                text = T("shop.skip"),
-                variant = "primary", height = 40, minWidth = 90, fontSize = 12,
-                onClick = function() M.skip() end,
-            },
-        },
+        children = actionChildren,
     }
 
     -- Assemble shop card
@@ -450,7 +509,7 @@ function M.build()
             goldDisplay,
             actionRow,
             -- Lock hint
-            label("🔒 = keep after reroll  |  🔓 = tap to lock",
+            label(T("shop.lock_hint"),
                 { fontSize = 9, fontColor = { 100, 130, 170, 200 },
                   textAlign = "center", marginTop = 6 }),
         },
