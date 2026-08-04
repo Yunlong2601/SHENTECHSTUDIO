@@ -370,21 +370,18 @@
   "追猎体": {
     "key": "t_xYyj6IHZxk057HeK",
     "locations": [
-      "enemies.lua:12",
       "i18n.lua:38"
     ]
   },
   "掠行体": {
     "key": "t_1DQFbmXS81Cwopb6xZ",
     "locations": [
-      "enemies.lua:26",
       "i18n.lua:38"
     ]
   },
   "蓄能体": {
     "key": "t_nZNXg8DZnkk1Nd7Q",
     "locations": [
-      "enemies.lua:40",
       "i18n.lua:38"
     ]
   },
@@ -482,14 +479,12 @@
   "分裂体": {
     "key": "t_KY7bzTqRK4laEUBr",
     "locations": [
-      "enemies.lua:54",
       "i18n.lua:38"
     ]
   },
   "射击体": {
     "key": "t_9phZ8C0O9djoFErQ",
     "locations": [
-      "enemies.lua:68",
       "i18n.lua:38"
     ]
   },
@@ -743,8 +738,7 @@
   "赤红竞技场": {
     "key": "t_OjVkSzGFOYZH7jkY",
     "locations": [
-      "stages.lua:10",
-      "stages.lua:12"
+      "stages.lua:10"
     ]
   },
   "Lv.1 · 初试锋芒": {
@@ -810,77 +804,66 @@
   "虚空核心": {
     "key": "t_eRINwbindzgBB2ku",
     "locations": [
-      "stages.lua:39",
       "stages.lua:40"
     ]
   },
   "Lv.1 · 虚空之门": {
     "key": "t_VVi5l5boVfkb1EBx",
     "locations": [
-      "stages.lua:43",
       "stages.lua:44"
     ]
   },
   "Lv.2 · 暗能涌动": {
     "key": "t_1A2mxBKTi1AEn2ZuNH",
     "locations": [
-      "stages.lua:44",
       "stages.lua:45"
     ]
   },
   "Lv.3 · 深渊低语": {
     "key": "t_DRHeYVwTDIBkDCPk",
     "locations": [
-      "stages.lua:45",
       "stages.lua:46"
     ]
   },
   "Lv.4 · 扭曲之径": {
     "key": "t_2vzm2HPXLxjqJC",
     "locations": [
-      "stages.lua:46",
       "stages.lua:47"
     ]
   },
   "Lv.5 · 虚空领主": {
     "key": "t_1EXrOBriw1EOusHmwh",
     "locations": [
-      "stages.lua:47",
       "stages.lua:48"
     ]
   },
   "Lv.6 · 紫色迷障": {
     "key": "t_3xZt00ZN47JLht4a",
     "locations": [
-      "stages.lua:48",
       "stages.lua:49"
     ]
   },
   "Lv.7 · 数据洪流": {
     "key": "t_n5rirzlZmtyfCV8a",
     "locations": [
-      "stages.lua:49",
       "stages.lua:50"
     ]
   },
   "Lv.8 · 虚空回声": {
     "key": "t_SS9YuIL7SKV2vCMO",
     "locations": [
-      "stages.lua:50",
       "stages.lua:51"
     ]
   },
   "Lv.9 · 混沌边缘": {
     "key": "t_DwaQ8QLEE79jBeo9",
     "locations": [
-      "stages.lua:51",
       "stages.lua:52"
     ]
   },
   "Lv.10· 绝对虚空": {
     "key": "t_3RYKG0ft3J4EvqqK",
     "locations": [
-      "stages.lua:52",
       "stages.lua:53"
     ]
   },
