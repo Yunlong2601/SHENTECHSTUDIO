@@ -870,19 +870,19 @@
   "压缩": {
     "key": "t_JJKNzh84IoiivICn",
     "locations": [
-      "ui.lua:497"
+      "ui.lua:492"
     ]
   },
   "波动": {
     "key": "t_ETmovoy7Ez4hO2yU",
     "locations": [
-      "ui.lua:497"
+      "ui.lua:492"
     ]
   },
   "加速": {
     "key": "t_1Giyb7bBn1HDVIdtry",
     "locations": [
-      "ui.lua:497"
+      "ui.lua:492"
     ]
   },
   "武器：%s": {

@@ -3,6 +3,10 @@
     "mtime": 1785846385,
     "results": []
   },
+  "data/stat_items.lua": {
+    "mtime": 1785855548,
+    "results": []
+  },
   "enemies.lua": {
     "mtime": 1785846385,
     "results": []
@@ -961,7 +965,7 @@
     ]
   },
   "main.lua": {
-    "mtime": 1785846385,
+    "mtime": 1785855548,
     "results": [
       {
         "text": "Geometry Breakout / 几何突围",
@@ -976,7 +980,7 @@
     "results": []
   },
   "shop.lua": {
-    "mtime": 1785846385,
+    "mtime": 1785855548,
     "results": []
   },
   "stages.lua": {
@@ -1121,27 +1125,27 @@
     "results": []
   },
   "stats_panel.lua": {
-    "mtime": 1785846385,
+    "mtime": 1785855548,
     "results": []
   },
   "ui.lua": {
-    "mtime": 1785846385,
+    "mtime": 1785855548,
     "results": [
       {
         "text": "压缩",
-        "line": 497,
+        "line": 492,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
         "text": "波动",
-        "line": 497,
+        "line": 492,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
         "text": "加速",
-        "line": 497,
+        "line": 492,
         "rule": "chinese_double_quote",
         "args": null
       }
@@ -1159,16 +1163,8 @@
     "mtime": 1785846385,
     "results": []
   },
-  "stat_items.lua": {
-    "mtime": 1785846385,
-    "results": []
-  },
-  "upgrades.lua": {
-    "mtime": 1785846385,
-    "results": []
-  },
   "settings.json": {
-    "mtime": 1785848638,
+    "mtime": 1785855548,
     "results": []
   }
 }
