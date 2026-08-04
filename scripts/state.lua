@@ -20,6 +20,7 @@ M.SCREEN_STAGE_SUMMARY= "stage_summary" -- stage complete → results
 M.SCREEN_ARCHIVE      = "archive"
 M.SCREEN_SUMMARY      = "summary"
 M.SCREEN_COSMETICS    = "cosmetics"
+M.SCREEN_SHOP         = "shop"          -- Brotato P2: inter-wave shop
 
 -- ─── Language & current screen ───────────────────────────────────────────
 ---@type string
@@ -104,6 +105,8 @@ M.keys_ = {}
 ---@field shellFlash number
 ---@field mineCooldown number
 ---@field trailTimer number
+---@field laserTimer number
+---@field poisonTimer number
 ---@type PlayerState
 M.player_ = {
     x = 0, y = 0, radius = 16, speed = 220,
@@ -112,6 +115,8 @@ M.player_ = {
     magnetRadius = 110, damage = 1,
     shell = 0, maxShell = 0, shellRechargeTimer = 0, shellFlash = 0,
     mineCooldown = 0, trailTimer = 0,
+    laserTimer = 0, poisonTimer = 0,
+    gold_ = 0,  -- P3: in-run gold for shop purchases
 }
 
 -- ─── Entity lists (flat per plan §4 — Component) ─────────────────────────
@@ -127,12 +132,26 @@ M.pickups_ = {}
 M.mines_ = {}
 ---@type table
 M.trail_ = {}
+---@type table
+M.laserBeams_ = {}
+---@type table
+M.poisonClouds_ = {}
 
--- ─── Module state ───────────────────────────────────────────────────────
+-- ─── Module state (DEPRECATED — replaced by weapons.lua in P4) ──────────
 ---@type table<string, number>
 M.moduleLevels_ = { trace = 1, orbit = 0, pulse = 0, shell = 0, mine = 0, hook = 0, laser = 0, poison = 0 }
 ---@type table<string, boolean>
 M.activeModules_ = { trace = true, orbit = false, pulse = false, shell = false, mine = false, hook = false, laser = false, poison = false }
+
+-- ─── Weapons (P4: Brotato 6-slot system) ────────────────────────────────
+---@type table<number, table>  { [slot] = { id = "blade", fireTimer = 0 } }
+M.weapons_ = {}
+
+-- ─── Character visuals (P4.3: geometric + humanoid player) ───────────────
+---@type table|nil  { body, glow, eyeL, eyeR, face } widgets
+M.charWidgets_ = nil
+---@type table  trail dots { x, y, age, lifetime, widget }
+M.charTrail_ = {}
 
 -- ─── Stage → Level → Wave progression (like Survivor.io / Brotato) ──────
 ---@type number  current stage index (1-based)
@@ -219,6 +238,38 @@ M.midBossBarFill_ = nil
 M.midBossLabel_ = nil
 ---@type Widget|nil
 M.midBossCard_ = nil
+
+-- ─── Shop state (Brotato P2-P6) ─────────────────────────────────────────
+---@class ShopState
+---@field isOpen boolean
+---@field rerollCount number
+---@field timer number
+---@field weapons table
+---@field items table
+---@type ShopState
+M.shop_ = {
+    isOpen = false,
+    rerollCount = 0,
+    timer = 15.0,
+    weapons = {},
+    items = {},
+}
+
+-- ─── Stat axes (Brotato P5) ─────────────────────────────────────────────
+---@class StatAxes
+---@field maxHP number
+---@field damage number
+---@field attackSpeed number
+---@field range number
+---@field critChance number
+---@field dodge number
+---@field moveSpeed number
+---@field luck number
+---@type StatAxes
+M.statAxes_ = {
+    maxHP = 0, damage = 0, attackSpeed = 0, range = 0,
+    critChance = 0, dodge = 0, moveSpeed = 0, luck = 0,
+}
 
 -- ── Dynamic enemy cap (R-06) ────────────────────────────────────────────
 ---@type number   -- max concurrent enemies on screen

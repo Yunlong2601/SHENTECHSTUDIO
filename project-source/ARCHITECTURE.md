@@ -1,38 +1,61 @@
 # Geometry Breakout Architecture
 
+> Last updated: 2026-08-04 (Brotato Transition — new modules added)
+
 ## Runtime shape
 
-The game is a UI-driven UrhoX Lua game. `scripts/main.lua` owns engine lifecycle and frame orchestration. Shared mutable runtime state lives in `scripts/state.lua`; feature modules receive state and callbacks rather than importing each other in a cycle.
+UI-driven UrhoX Lua game. `scripts/main.lua` owns engine lifecycle and frame orchestration. Shared mutable runtime state lives in `scripts/state.lua`; feature modules receive state and callbacks rather than importing each other in a cycle.
 
-## Current modules
+## Current modules (post-transition target)
 
-- `state.lua` — screen constants, shared state, entity lists, HUD references, profile state, and player state.
-- `i18n.lua` — bilingual runtime text source.
-- `player.lua` — player reset, movement, touch/keyboard movement interpretation, and timers.
-- `modules.lua` — six combat modules and their widget/effect updates.
-- `enemies.lua` — enemy spawn, movement, collision, damage, and projectiles.
-- `waves.lua` — wave modifier selection, wave start, and wave advancement.
-- `ui.lua` — all screen builders, HUD construction, touch surface, HUD refresh, damage numbers, hit flash, screen shake, and evolution feedback.
-- `main.lua` — UI lifecycle, input event binding, pickups, summary flow, and frame orchestration.
+| File | Status | Purpose |
+|------|--------|---------|
+| `state.lua` | Active | Screen constants, shared state, entity lists, HUD refs, profile, shop state, gold, stats |
+| `i18n.lua` | Active | Bilingual runtime text source (en + zh_CN) |
+| `player.lua` | Active | Player reset, movement, touch/keyboard input, timers, stat application |
+| `modules.lua` | **Deprecated** (P4) | 8 auto-attack modules. Will be replaced by `weapons.lua` |
+| `enemies.lua` | Active | Enemy spawn, AI, damage, gold drops (P3), boss/mid-boss |
+| `waves.lua` | Active | Wave lifecycle, modifier selection, shop routing (P2) |
+| `stages.lua` | Active | Stage/level definitions, visual themes |
+| `ui.lua` | Active | All screen builders, HUD, damage numbers, hit flash, shop screen (P2) |
+| `shop.lua` | **NEW** (P2) | Shop screen builder, item generation, buy/reroll/lock/recycle logic |
+| `stats_panel.lua` | **NEW** (P2) | Right-side stat display panel |
+| `weapons.lua` | **NEW** (P4) | 6 weapon types, slot system, auto-fire logic |
+| `items.lua` | **NEW** (P5) | Stat item definitions, effect application |
+| `star_shop.lua` | **NEW** (P8) | Permanent progression shop |
+| `main.lua` | Active | UI lifecycle, input events, pickups, frame orchestration |
 
-## Approved next refactor
+## Externalized data (`data/`)
 
-The UI extraction is complete. `main.lua` now coordinates lifecycle, callbacks, pickups, and the ordered update pipeline. Do not introduce a framework rewrite or ECS abstraction until the content prototype proves that the current module boundaries are insufficient.
+| File | Status | Content |
+|------|--------|---------|
+| `data/enemies.lua` | NEW (P1) | Enemy type definitions (name, stats, colors, behavior flags) |
+| `data/upgrades.lua` | NEW (P1) | Upgrade card definitions |
+| `data/stages.lua` | NEW (P1) | Stage/level/wave definitions (migrated from `stages.lua`) |
 
 ## Update pipeline
 
-`HandleUpdate` should remain ordered:
+`HandleUpdate` maintains this order:
 
-1. Read timestep and update run timers.
-2. Update player movement.
-3. Spawn enemies and automatic attacks.
-4. Update defensive modules and enemy movement/collision.
-5. Update projectiles and pickups.
-6. Update orbit, mines, trail, and visual feedback.
-7. End the wave or refresh HUD.
-
-Feedback is updated after timers and before combat: transient damage labels are owned by `ui.lua`, enemy-hit events are emitted by `enemies.lua`, and run telemetry is accumulated in `state.runStats_` by the orchestration layer.
+1. Read timestep + update run timers
+2. Update player movement + stat calculations
+3. Spawn enemies + weapon auto-fire (P4+)
+4. Update defensive systems + enemy movement/collision
+5. Update projectiles + pickups (gold P3+, XP)
+6. Update visual modules (orbit, mines, trail) / weapon effects
+7. End wave → route to shop (P2+) or wave_pause
+8. Refresh HUD + stats panel + feedback
 
 ## Dependency rule
 
-Feature modules communicate through explicit callbacks configured at startup. Avoid circular `require()` dependencies and avoid writing another module’s private tables directly. Any new system must state its owner, state fields, update order, and reset behavior before implementation.
+Feature modules communicate through explicit callbacks configured in `main.lua` → `Start()`. Avoid circular `require()` dependencies. Any new system must state: owner, state fields, update order, reset behavior before implementation.
+
+## Screen flow (Brotato transition target)
+
+```
+language → stage_select → game (combat) → shop (between waves) → game → ...
+                                                                    ↓
+   summary ← (death or wave 20 complete)
+```
+
+Current flow still routes to `wave_pause`; shop routing comes in P2.

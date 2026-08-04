@@ -25,6 +25,9 @@ logs/.nfs*
 .sce/logs/
 .sce/build/build_steps/__pycache__/
 
+# Archive / legacy references — not part of the game build
+archive/
+
 # Temp & swap files
 .tmp/
 *.crswap

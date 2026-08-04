@@ -5,11 +5,16 @@ local UI = require("urhox-libs/UI")
 local state = require("state")
 local i18n = require("i18n")
 local player = require("player")
-local modules = require("modules")
+local weapons = require("weapons")        -- P4: 6-slot weapon system (replaces modules)
+local character = require("character")    -- P4.3: visible player character
+local vfx = require("vfx")                -- P8: death particles, trails, banners
 local waves = require("waves")
 local enemies = require("enemies")
 local stages = require("stages")
 local ui = require("ui")
+local shop = require("shop")
+local stats_panel = require("stats_panel")
+local stat_items = require("data.stat_items")  -- P5: 8 stat axes
 local player_ = state.player_
 
 state.T = function(key, ...)
@@ -42,28 +47,18 @@ local function SetWidgetPosition(widget, x, y, size)
     if widget then widget:SetStyle({ left = x - size * 0.5, top = y - size * 0.5 }) end
 end
 
-local function ModuleName(moduleId)
-    if moduleId == "trace" then return state.T("module.trace") end
-    if moduleId == "orbit" then return state.T("module.orbit") end
-    if moduleId == "pulse" then return state.T("module.pulse") end
-    if moduleId == "shell" then return state.T("module.shell") end
-    if moduleId == "mine" then return state.T("module.mine") end
-    if moduleId == "hook" then return state.T("module.hook") end
-    if moduleId == "laser" then return state.T("module.laser") end
-    if moduleId == "poison" then return state.T("module.poison") end
-    return state.T("game.none")
+local function WeaponName(id)
+    local def = weapons.get_def(id)
+    return def and def.name or state.T("game.none")
 end
 
-local function IsModuleActive(moduleId)
-    return state.activeModules_[moduleId] == true
-end
-
-local function ActiveModuleText()
+local function EquippedWeaponsText()
     local list = {}
-    for _, id in ipairs({ "trace", "orbit", "pulse", "shell", "mine", "hook", "laser", "poison" }) do
-        if IsModuleActive(id) then table.insert(list, ModuleName(id) .. " Lv." .. state.moduleLevels_[id]) end
+    for i = 1, 6 do
+        local w = state.weapons_[i]
+        if w then table.insert(list, WeaponName(w.id)) end
     end
-    return #list > 0 and table.concat(list, " · ") or state.T("game.none")
+    return #list > 0 and table.concat(list, " + ") or state.T("game.none")
 end
 
 local function SetTouchJoystickVisible(visible)
@@ -131,6 +126,8 @@ local function ClearEntities()
     if state.orbitWidget_ then state.orbitWidget_:Destroy(); state.orbitWidget_ = nil end
     if state.orbitWidget2_ then state.orbitWidget2_:Destroy(); state.orbitWidget2_ = nil end
     if state.shellRing_ then state.shellRing_:Destroy(); state.shellRing_ = nil end
+    character.destroy()   -- P4.3: cleanup character visuals
+    vfx.destroy_all()     -- P8: cleanup death particles, trails, banners
     enemies.clear_boss()
     enemies.clear_midboss()
     enemies.clear_enemy_projectiles()
@@ -140,7 +137,9 @@ end
 local function ResetRunState()
     ClearEntities(); state.worldWidth_, state.worldHeight_ = GetWorldSize()
     player.reset(state.worldWidth_, state.worldHeight_)
-    state.moduleLevels_ = { trace = 1, orbit = 0, pulse = 0, shell = 0, mine = 0, hook = 0, laser = 0, poison = 0 }; state.activeModules_ = { trace = true, orbit = false, pulse = false, shell = false, mine = false, hook = false, laser = false, poison = false }
+    state.moduleLevels_ = { trace = 0, orbit = 0, pulse = 0, shell = 0, mine = 0, hook = 0, laser = 0, poison = 0 }; state.activeModules_ = { trace = false, orbit = false, pulse = false, shell = false, mine = false, hook = false, laser = false, poison = false }
+    -- P4: Equip starting weapon (blade in slot 1)
+    state.weapons_ = {}; weapons.equip("blade", 1)
     state.surgeTimer_, state.surgeFlash_ = 2.5, 0
     state.runTime_, state.waveTime_, state.spawnTimer_, state.enemyId_, state.score_ = 0, 0, 0, 0, 0
     state.dataFragments_, state.patternShards_, state.level_, state.levelProgress_ = 0, 0, 1, 0
@@ -158,11 +157,19 @@ local function ResetRunState()
     state.boss_ = nil; state.bossFlash_ = 0
     state.midBoss_ = nil; state.midBossFlash_ = 0
     state.maxEnemies_ = 30
+    player_.gold_ = 0  -- P3: reset gold on new run
+    state.shop_ = { isOpen = false, rerollCount = 0, timer = 15.0, weapons = {}, items = {} }  -- P2
+    state.statAxes_ = { maxHP = 0, damage = 0, attackSpeed = 0, range = 0, critChance = 0, dodge = 0, moveSpeed = 0, luck = 0 }  -- P5
 end
 
 function BuildUI()
     local t = ArenaTheme()
-    local content = ui.build(state.screen_)
+    local content
+    if state.screen_ == state.SCREEN_SHOP then
+        content = shop.build()
+    else
+        content = ui.build(state.screen_)
+    end
     local rootProps = {
         width = "100%", height = "100%",
         backgroundGradient = { type = "linear", direction = "to-bottom-right",
@@ -187,6 +194,7 @@ function BuildUI()
     state._gTick, state._gShowCache, state._introShowCache = nil, nil, nil
     if state.screen_ == "game" then
         SetWidgetPosition(state.playerWidget_, state.player_.x, state.player_.y, 32)
+        character.create()   -- P4.3: create visible player character
         ui.update_hud()
     end
 end
@@ -197,6 +205,11 @@ local function SpawnPickup(x, y, kind, amount)
         local widget = UI.Panel { position = "absolute", width = 10, height = 10, backgroundGradient = { type = "radial", from = { 255, 214, 92, 255 }, to = { 200, 160, 50, 200 } }, borderColor = { 255, 240, 180, 220 }, borderWidth = 1, borderRadius = 5, pointerEvents = "none" }
         state.gameWorld_:AddChild(widget)
         table.insert(state.pickups_, { x = x, y = y, kind = kind, amount = amount, radius = 5, widget = widget })
+    elseif kind == "gold" then
+        -- P3: Gold pickup (coin-shaped, yellow)
+        local widget = UI.Panel { position = "absolute", width = 12, height = 12, backgroundGradient = { type = "radial", from = { 255, 214, 50, 255 }, to = { 200, 160, 20, 200 } }, borderColor = { 255, 240, 100, 255 }, borderWidth = 2, borderRadius = 6, pointerEvents = "none" }
+        state.gameWorld_:AddChild(widget)
+        table.insert(state.pickups_, { x = x, y = y, kind = kind, amount = amount, radius = 6, widget = widget })
     else
         local widget = UI.Panel { position = "absolute", width = 13, height = 13, backgroundGradient = { type = "radial", from = { 175, 128, 255, 255 }, to = { 120, 80, 200, 200 } }, borderColor = { 210, 180, 255, 220 }, borderWidth = 1, borderRadius = 6, pointerEvents = "none" }
         state.gameWorld_:AddChild(widget)
@@ -206,6 +219,14 @@ end
 
 local function DamagePlayer()
     if player_.invulnerable > 0 or state.screen_ ~= "game" then return end
+    -- P5: Dodge check (before shell / integrity)
+    local dodgeChance = math.min(0.60, (state.statAxes_.dodge or 0) * 0.04)
+    if math.random() < dodgeChance then
+        ui.show_damage_number(player_.x, player_.y - 10, 0, { 170, 102, 255, 255 })  -- purple "dodged"
+        ui.trigger_hit_flash({ 170, 102, 255, 255 }, 0.15, 0.08)
+        player_.invulnerable = 0.15  -- brief invuln on dodge
+        return
+    end
     if player_.shell >= 1 then
         player_.shell = player_.shell - 1
         if player_.shell < 0 then player_.shell = 0 end
@@ -233,7 +254,9 @@ local function UpdatePickups(timeStep)
         local pickup = state.pickups_[index]; local dx, dy = player_.x - pickup.x, player_.y - pickup.y; local distance = math.sqrt(dx * dx + dy * dy)
         if distance < player_.magnetRadius and distance > 0 then local speed = distance < 45 and 330 or 180; pickup.x = pickup.x + dx / distance * speed * timeStep; pickup.y = pickup.y + dy / distance * speed * timeStep end
         if distance < player_.radius + pickup.radius then
-            if pickup.kind == "data" then state.dataFragments_ = state.dataFragments_ + pickup.amount else state.patternShards_ = state.patternShards_ + pickup.amount; state.levelProgress_ = state.levelProgress_ + pickup.amount end
+            if pickup.kind == "data" then state.dataFragments_ = state.dataFragments_ + pickup.amount
+            elseif pickup.kind == "gold" then player_.gold_ = (player_.gold_ or 0) + pickup.amount  -- P3
+            else state.patternShards_ = state.patternShards_ + pickup.amount; state.levelProgress_ = state.levelProgress_ + pickup.amount end
             DestroyEntityWidget(pickup.widget); table.remove(state.pickups_, index)
             if state.levelProgress_ >= state.levelGoal_ and state.screen_ == "game" then
                 state.levelProgress_ = state.levelProgress_ - state.levelGoal_
@@ -250,41 +273,105 @@ local function UpdatePickups(timeStep)
 end
 
 function ApplyUpgrade(id)
-    if id == "trace" or id == "orbit" or id == "pulse" or id == "shell" or id == "mine" or id == "hook" or id == "laser" or id == "poison" then
-        state.activeModules_[id] = true; state.moduleLevels_[id] = math.min(5, state.moduleLevels_[id] + 1); state.chosenModule_ = id; state.moduleLevel_ = state.moduleLevels_[id]
-        table.insert(state.runStats_.upgrades, id .. "@" .. tostring(state.moduleLevels_[id]))
-        if state.moduleLevels_[id] == 3 or state.moduleLevels_[id] == 5 then ui.trigger_evolution(id, state.moduleLevels_[id]) end
-        if id == "shell" then
-            local newMax = 2 + state.moduleLevels_.shell
-            if newMax > player_.maxShell then player_.maxShell = newMax end
-            player_.shell = player_.maxShell
+    -- P5: Stat axis upgrades (from data/stat_items.lua)
+    if stat_items.DEFS[id] then
+        state.statAxes_[id] = (state.statAxes_[id] or 0) + 1
+        table.insert(state.runStats_.upgrades, "stat:" .. id)
+        -- Apply immediate effects for HP and speed
+        if id == "maxHP" then
+            player_.maxIntegrity = player_.maxIntegrity + 2
+            player_.integrity = player_.maxIntegrity
         end
-    elseif id == "integrity" then player_.maxIntegrity = player_.maxIntegrity + 1; player_.integrity = player_.maxIntegrity
+        ui.trigger_evolution(id, state.statAxes_[id])
+        return
+    end
+    -- P4: Weapon upgrades
+    local def = weapons.get_def(id)
+    if def then
+        local slot = weapons.find_empty()
+        if slot then
+            weapons.equip(id, slot)
+        else
+            -- All slots full: refresh weapon (instant next shot)
+            for i = 1, 6 do
+                if state.weapons_[i] and state.weapons_[i].id == id then
+                    state.weapons_[i].fireTimer = 0
+                    break
+                end
+            end
+        end
+        table.insert(state.runStats_.upgrades, "weapon:" .. id)
+        ui.trigger_evolution(id, weapons.weapon_count())
+        return
+    end
+    -- Legacy: integrity / magnet
+    if id == "integrity" then player_.maxIntegrity = player_.maxIntegrity + 1; player_.integrity = player_.maxIntegrity
     elseif id == "magnet" then player_.magnetRadius = player_.magnetRadius + 55 end
 end
 
 function PrepareUpgradeChoices()
-    local options = { "trace", "orbit", "pulse", "shell", "mine", "hook", "laser", "poison", "integrity", "magnet" }
-    for index = #options, 2, -1 do
-        local j = math.random(1, index)
-        options[index], options[j] = options[j], options[index]
+    -- P5: Weapon pool + stat item pool + utility (integrity/magnet)
+    local weaponIds = {}
+    for id, _ in pairs(weapons.all_defs()) do table.insert(weaponIds, id) end
+    local statIds = {}
+    for _, key in ipairs(stat_items.ORDER) do table.insert(statIds, key) end
+
+    -- Build pool: pick 2 weapons, 2 stat items, 2 utility → shuffle
+    local pool = {}
+    -- 2 weapons (unique)
+    for _ = 1, 2 do
+        local idx = math.random(1, #weaponIds)
+        table.insert(pool, { type = "weapon", id = weaponIds[idx] })
     end
+    -- 2 stat items (unique per screen)
+    local pickedStats = {}
+    for _ = 1, 2 do
+        local idx, sid
+        repeat
+            idx = math.random(1, #statIds)
+            sid = statIds[idx]
+        until not pickedStats[sid]
+        pickedStats[sid] = true
+        table.insert(pool, { type = "stat", id = sid })
+    end
+    -- 1 utility
+    table.insert(pool, { type = "utility", id = math.random() < 0.5 and "integrity" or "magnet" })
+
+    -- Shuffle pool
+    for i = #pool, 2, -1 do
+        local j = math.random(1, i)
+        pool[i], pool[j] = pool[j], pool[i]
+    end
+
     state.upgradeCards_ = {}
-    local pickCount = math.min(3, #options)
-    for index = 1, pickCount do
-        local id = options[index]
-        local title, description = "", ""
-        if id == "trace" then title, description = state.T("upgrade.trace"), state.T("module.trace_desc")
-        elseif id == "orbit" then title, description = state.T("upgrade.orbit"), state.T("module.orbit_desc")
-        elseif id == "pulse" then title, description = state.T("upgrade.pulse"), state.T("module.pulse_desc")
-        elseif id == "shell" then title, description = state.T("upgrade.shell"), state.T("module.shell_desc")
-        elseif id == "mine" then title, description = state.T("upgrade.mine"), state.T("module.mine_desc")
-        elseif id == "hook" then title, description = state.T("upgrade.hook"), state.T("module.hook_desc")
-        elseif id == "laser" then title, description = state.T("upgrade.laser"), state.T("module.laser_desc")
-        elseif id == "poison" then title, description = state.T("upgrade.poison"), state.T("module.poison_desc")
-        elseif id == "integrity" then title, description = state.T("upgrade.integrity"), state.T("upgrade.desc")
-        else title, description = state.T("upgrade.magnet"), state.T("upgrade.desc") end
-        table.insert(state.upgradeCards_, { id = id, title = title, description = description })
+    local pickCount = math.min(4, #pool)  -- P4: 4-card upgrade
+    for i = 1, pickCount do
+        local item = pool[i]
+        local title, desc = "", ""
+        if item.type == "weapon" then
+            local def = weapons.get_def(item.id)
+            if def then
+                title = def.name
+                desc = string.format("DMG %.1f | CD %.2fs | %s",
+                    def.damage, def.cooldown,
+                    def.tag == "melee" and state.T("weapon.melee") or state.T("weapon.ranged"))
+            end
+        elseif item.type == "stat" then
+            local sdef = stat_items.DEFS[item.id]
+            if sdef then
+                local cur = state.statAxes_[item.id] or 0
+                title = state.T(sdef.nameKey)
+                desc = state.T(sdef.descKey) .. " | " .. sdef.icon .. " x" .. (cur + 1)
+            end
+        else
+            if item.id == "integrity" then
+                title, desc = state.T("upgrade.integrity"), state.T("upgrade.desc")
+            else
+                title, desc = state.T("upgrade.magnet"), state.T("upgrade.desc")
+            end
+        end
+        table.insert(state.upgradeCards_,
+            { id = item.id, type = item.type, title = title, description = desc })
     end
 end
 
@@ -294,28 +381,13 @@ local function EndWave()
     state.runStats_.maxStageLevel = math.max(state.runStats_.maxStageLevel or 1, state.stageLevel_)
     ui.trigger_shake(0.18, 0.18)
 
-    -- Check if this level is fully complete
+    -- P6: Was this the final wave? Shop will advance level after skip.
     local lvl = stages.level(state.stage_, state.stageLevel_)
     local maxW = lvl and lvl.totalWaves or state.maxWaves_
+    state.shop_._advanceAfter = (state.wave_ >= maxW)
 
-    if state.wave_ >= maxW then
-        local totalLevels = stages.totalLevels(state.stage_)
-        if state.stageLevel_ < totalLevels then
-            -- Advance to next level within the stage
-            waves.advance_level()
-        else
-            -- Stage fully cleared
-            state.defeatReason_ = state.T("game.reason_complete")
-            state.isVictory_ = true
-            if not state.summaryAwarded_ then
-                state.profile_.calibration = state.profile_.calibration + math.max(1, math.floor(state.dataFragments_ / 8))
-                state.summaryAwarded_ = true
-            end
-            state.screen_ = state.SCREEN_STAGE_SUMMARY
-        end
-    else
-        waves.advance()
-    end
+    -- Always route through the inter-wave shop
+    waves.advance()
     state._needsRebuild = true
 end
 
@@ -356,6 +428,9 @@ function HandleUpdate(_eventType, eventData)
     if state.modifier_ == "surge" then state.surgeTimer_ = state.surgeTimer_ - timeStep; if state.surgeTimer_ <= 0 then state.surgeTimer_ = 4.0; state.surgeFlash_ = 0.55; for _, enemy in ipairs(state.enemies_) do if not enemy.dead then enemies.damage(enemy, 1); end end end end
     player.update_movement(timeStep)
 
+    -- P4: Weapon auto-fire (replaces all module fire calls)
+    weapons.update(timeStep)
+
     if waves.is_midboss_wave(state.wave_) then
         if not enemies.midboss_exists() and state.waveTime_ > 0.8 and state.waveSpawned_ == 0 then
             enemies.spawn_midboss()
@@ -378,17 +453,15 @@ function HandleUpdate(_eventType, eventData)
         if state.spawnTimer_ <= 0 and state.waveSpawned_ < state.waveSpawnTarget_ and state.waveTime_ < state.waveDuration_ then enemies.spawn(false); state.spawnTimer_ = interval end
     end
 
-    if IsModuleActive("trace") and player_.fireTimer <= 0 then modules.fire_trace_beam(); player_.fireTimer = math.max(0.18, 0.42 - state.moduleLevels_.trace * 0.04) end
-    if IsModuleActive("pulse") and player_.pulseTimer <= 0 then modules.pulse_bloom(); player_.pulseTimer = math.max(1.4, 3.0 - state.moduleLevels_.pulse * 0.25) end
-    if IsModuleActive("laser") and (player_.laserTimer or 0) <= 0 then
-        modules.fire_laser_gun()
-        player_.laserTimer = math.max(1.0, 2.4 - state.moduleLevels_.laser * 0.22)
+    -- P4: Shell management (moved from modules.update_shell)
+    if player_.maxShell > 0 then
+        player_.shellRechargeTimer = player_.shellRechargeTimer + timeStep
+        player_.shellFlash = math.max(0, player_.shellFlash - timeStep * 4)
+        if player_.shell < player_.maxShell and player_.shellRechargeTimer >= 2.0 then
+            player_.shell = math.min(player_.maxShell, player_.shell + 0.5 * timeStep)
+        end
     end
-    if IsModuleActive("poison") and (player_.poisonTimer or 0) <= 0 then
-        modules.deploy_poison_bomb(player_.x, player_.y)
-        player_.poisonTimer = math.max(1.6, 3.5 - state.moduleLevels_.poison * 0.3)
-    end
-    modules.update_shell(timeStep)
+
     enemies.update(timeStep)
     if not IsGameScreen() then return end
     enemies.update_boss(timeStep)
@@ -397,12 +470,11 @@ function HandleUpdate(_eventType, eventData)
     if not IsGameScreen() then return end
     enemies.update_projectiles(timeStep); enemies.update_enemy_projectiles(timeStep); UpdatePickups(timeStep)
     if not IsGameScreen() then return end
-    modules.update_orbit(timeStep)
-    modules.update_shell_visual()
-    modules.update_mines(timeStep)
-    modules.update_trail(timeStep)
-    modules.update_laser(timeStep)
-    modules.update_poison(timeStep)
+
+    -- P4.3: Character visuals (replaces all module visual updates)
+    character.update(timeStep)
+    -- P8: VFX update (death particles, projectile trails, wave banners)
+    vfx.update(timeStep)
 
     local waveDone = state.waveTime_ >= state.waveDuration_ and state.waveSpawned_ >= state.waveSpawnTarget_ and #state.enemies_ == 0
     if waves.is_midboss_wave(state.wave_) then
@@ -427,15 +499,14 @@ function Start()
         makeLabel = MakeLabel,
         resetRunState = ResetRunState,
         applyUpgrade = ApplyUpgrade,
-        activeModuleText = ActiveModuleText,
-        moduleName = ModuleName,
+        activeModuleText = EquippedWeaponsText,   -- P4: show weapons instead of modules
+        moduleName = WeaponName,
         resetTouchControl = ResetTouchControl,
         handleTouchDown = HandleTouchDown,
         handleTouchMove = HandleTouchMove,
         handleTouchUp = HandleTouchUp,
         beginWave = waves.begin_wave,
         rebuild = BuildUI,
-        -- Stage select callback: set stage then start run
         selectStage = function(stageIdx)
             state.stage_ = stageIdx
             state.stageLevel_ = 1
@@ -443,18 +514,28 @@ function Start()
             waves.begin_wave()
             BuildUI()
         end,
-        -- Return to stage select from summary
         goStageSelect = function()
             state.screen_ = state.SCREEN_STAGE_SELECT
             BuildUI()
         end,
     })
-    modules.configure({
+    weapons.configure({
         findNearestEnemy = enemies.find_nearest,
         damageEnemy = enemies.damage,
         damageArea = enemies.damage_area,
         damageBoss = enemies.damage_boss,
         damageMidboss = enemies.damage_midboss,
+        setWidgetPosition = SetWidgetPosition,
+        destroyWidget = DestroyEntityWidget,
+        spawnPickup = SpawnPickup,
+    })
+    shop.configure({
+        rebuild = BuildUI,
+        beginWave = waves.begin_wave,
+        advanceLevel = waves.advance_level,
+        T = state.T,
+    })
+    vfx.configure({
         setWidgetPosition = SetWidgetPosition,
         destroyWidget = DestroyEntityWidget,
     })
@@ -464,12 +545,11 @@ function Start()
         setWidgetPosition = SetWidgetPosition,
         destroyWidget = DestroyEntityWidget,
         spawnMidBossDrop = function()
-            -- R-01: Guaranteed module drop on mid-boss defeat
-            for _, id in ipairs({ "orbit", "pulse", "shell", "mine", "hook" }) do
-                if not IsModuleActive(id) then
-                    state.activeModules_[id] = true; state.moduleLevels_[id] = 1; break
-                end
-            end
+            -- P4: Give a random new weapon on mid-boss defeat
+            local all = {}
+            for id, _ in pairs(weapons.all_defs()) do table.insert(all, id) end
+            local pick = all[math.random(1, #all)]
+            weapons.equip(pick)
         end,
         onDamage = function(x, y, amount, elite)
             ui.show_damage_number(x, y, amount, elite and { 255, 213, 83, 255 } or { 255, 255, 255, 255 })

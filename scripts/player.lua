@@ -9,11 +9,16 @@ end
 function M.reset(worldWidth, worldHeight)
     local player = state.player_
     player.x, player.y = worldWidth * 0.5, worldHeight * 0.5
-    player.integrity, player.maxIntegrity = 5 + state.profile_.startingIntegrity, 5 + state.profile_.startingIntegrity
+    -- P5: base HP + profile bonus + statAxis HP bonus
+    local hpBonus = (state.statAxes_.maxHP or 0) * 2
+    player.integrity = 5 + state.profile_.startingIntegrity + hpBonus
+    player.maxIntegrity = 5 + state.profile_.startingIntegrity + hpBonus
     player.invulnerable, player.fireTimer, player.pulseTimer = 0, 0, 0
     player.orbitAngle, player.magnetRadius, player.damage = 0, 110 + state.profile_.magnet * 35, 1
+    player._baseSpeed = 220   -- P5: store base speed for stat scaling
     player.shell, player.maxShell, player.shellRechargeTimer, player.shellFlash = 0, 0, 0, 0
     player.mineCooldown, player.trailTimer = 0, 0
+    player.laserTimer, player.poisonTimer = 0, 0
 end
 
 function M.update_movement(timeStep)
@@ -31,9 +36,15 @@ function M.update_movement(timeStep)
         local length = math.sqrt(dx * dx + dy * dy)
         if length > 0 then dx, dy = dx / length, dy / length end
     end
+    -- P5: effective speed = base × (1 + moveSpeed stat × 0.05)
+    local effSpeed = (player._baseSpeed or 220) * (1 + (state.statAxes_.moveSpeed or 0) * 0.05)
+    player.speed = effSpeed
     if dx ~= 0 or dy ~= 0 then
-        player.x = player.x + dx * player.speed * timeStep
-        player.y = player.y + dy * player.speed * timeStep
+        player.x = player.x + dx * effSpeed * timeStep
+        player.y = player.y + dy * effSpeed * timeStep
+        player._vx, player._vy = dx * effSpeed, dy * effSpeed   -- P4.3: for character direction
+    else
+        player._vx, player._vy = 0, 0
     end
     local bound = state.modifier_ == "compression" and 70 or player.radius
     player.x = math.max(bound, math.min(state.worldWidth_ - bound, player.x))
@@ -46,6 +57,8 @@ function M.update_timers(timeStep)
     player.invulnerable = math.max(0, player.invulnerable - timeStep)
     player.fireTimer = player.fireTimer - timeStep
     player.pulseTimer = player.pulseTimer - timeStep
+    player.laserTimer = player.laserTimer - timeStep
+    player.poisonTimer = player.poisonTimer - timeStep
 end
 
 return M

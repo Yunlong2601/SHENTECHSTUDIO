@@ -1,6 +1,7 @@
 local UI = require("urhox-libs/UI")
 local state = require("state")
 local stages = require("stages")
+local stats_panel = require("stats_panel")  -- P2: right-side stat panel
 
 local M = {}
 local callbacks = {}
@@ -103,6 +104,8 @@ local function game_screen()
     local statusCard = UI.Panel { width = "44%", maxWidth = 420, padding = 12, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 8, 20, 45, 220 }, to = { 10, 16, 38, 220 } }, borderColor = t.accentDim, borderWidth = 1, borderRadius = 14, children = { state.hudLabel_, state.xpLabel_, xpBar, state.shellLabel_, shellBar } }
     state.waveLabel_ = label("", { fontSize = 14, fontWeight = "bold", fontColor = { 255, 230, 137, 255 }, textAlign = "right" })
     state.moduleLabel_ = label("", { fontSize = 11, fontColor = { 207, 220, 244, 255 }, textAlign = "right", marginTop = 5 })
+    -- P4: Gold counter
+    state.goldLabel_ = label("", { fontSize = 12, fontWeight = "bold", fontColor = { 255, 215, 50, 255 }, textAlign = "right", marginTop = 5 })
 
     state.bossLabel_ = label("", { fontSize = 13, fontWeight = "bold", fontColor = { 255, 180, 60, 255 }, textAlign = "center", opacity = 0 })
     state.bossBarFill_ = UI.Panel { width = "100%", height = "100%", backgroundGradient = { type = "linear", direction = "to-right", from = { 255, 100, 60, 255 }, to = { 255, 180, 60, 255 } }, borderRadius = 4, pointerEvents = "none" }
@@ -126,12 +129,12 @@ local function game_screen()
 
     state.feedbackLabel_ = label("", { position = "absolute", top = 130, left = 0, right = 0, textAlign = "center", fontSize = 13, fontWeight = "bold", fontColor = { 255, 111, 126, 0 }, pointerEvents = "none" })
     state.hitFlashWidget_ = UI.Panel { position = "absolute", top = 0, left = 0, width = "100%", height = "100%", backgroundColor = { 255, 255, 255, 255 }, opacity = 0, pointerEvents = "none" }
-    local waveCard = UI.Panel { width = "38%", maxWidth = 360, padding = 12, alignItems = "flex-end", backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 8, 20, 45, 220 }, to = { 10, 16, 38, 220 } }, borderColor = { 146, 225, 191, 150 }, borderWidth = 1, borderRadius = 14, children = { state.waveLabel_, state.moduleLabel_ } }
+    local waveCard = UI.Panel { width = "38%", maxWidth = 360, padding = 12, alignItems = "flex-end", backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 8, 20, 45, 220 }, to = { 10, 16, 38, 220 } }, borderColor = { 146, 225, 191, 150 }, borderWidth = 1, borderRadius = 14, children = { state.waveLabel_, state.moduleLabel_, state.goldLabel_ } }
     local hud = UI.Panel { position = "absolute", top = 14, left = 16, right = 16, flexDirection = "row", justifyContent = "space-between", pointerEvents = "none", children = { statusCard, waveCard } }
     state.joystickBase_ = UI.Panel { position = "absolute", width = state.touchRadius_ * 2, height = state.touchRadius_ * 2, backgroundColor = { 72, 133, 204, 60 }, borderColor = { 157, 220, 255, 120 }, borderWidth = 2, borderRadius = state.touchRadius_, pointerEvents = "none", visible = false }
     state.joystickKnob_ = UI.Panel { position = "absolute", width = 52, height = 52, backgroundGradient = { type = "radial", from = { 108, 220, 255, 200 }, to = { 60, 160, 220, 160 } }, borderColor = { 230, 252, 255, 200 }, borderWidth = 2, borderRadius = 26, pointerEvents = "none", visible = false }
     state.touchSurface_ = UI.Panel { position = "absolute", top = 0, left = 0, width = "100%", height = "100%", pointerEvents = "auto", onPointerDown = callbacks.handleTouchDown, onPointerMove = callbacks.handleTouchMove, onPointerUp = callbacks.handleTouchUp, onPointerCancel = callbacks.handleTouchUp, children = { state.joystickBase_, state.joystickKnob_ } }
-    return UI.Panel { width = "100%", height = "100%", pointerEvents = "box-none", children = { state.gameWorld_, hud, bossCard, state.feedbackLabel_, label(state.T("game.hint"), { position = "absolute", bottom = 28, left = 0, right = 0, textAlign = "center", fontSize = 11, fontColor = { 131, 151, 190, 180 } }), label(state.T("game.mobile_hint"), { position = "absolute", bottom = 10, left = 0, right = 0, textAlign = "center", fontSize = 10, fontColor = { 122, 190, 218, 200 } }), state.touchSurface_, state.hitFlashWidget_ } }
+    return UI.Panel { width = "100%", height = "100%", pointerEvents = "box-none", children = { state.gameWorld_, hud, bossCard, state.feedbackLabel_, label(state.T("game.hint"), { position = "absolute", bottom = 28, left = 0, right = 0, textAlign = "center", fontSize = 11, fontColor = { 131, 151, 190, 180 } }), label(state.T("game.mobile_hint"), { position = "absolute", bottom = 10, left = 0, right = 0, textAlign = "center", fontSize = 10, fontColor = { 122, 190, 218, 200 } }), state.touchSurface_, state.hitFlashWidget_, stats_panel.build() } }
 end
 
 local function upgrade_screen()
@@ -144,7 +147,7 @@ local function wave_pause_screen()
     local remaining = math.max(0, state.levelGoal_ - state.levelProgress_)
     local isBoss = state.wave_ >= state.maxWaves_
     local nextLabel = isBoss and state.T("game.boss_wave") or state.T("game.wave_next", state.wave_)
-    return UI.Panel { width = "90%", maxWidth = 520, padding = 28, gap = 14, alignItems = "center", backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 20, 39, 63, 250 }, to = { 16, 30, 52, 250 } }, borderRadius = 24, borderWidth = 1, borderColor = isBoss and { 255, 150, 60, 200 } or { 146, 225, 191, 200 }, children = { label(state.T("game.wave_pause"), { fontSize = 25, fontWeight = "bold", fontColor = isBoss and { 255, 180, 60, 255 } or { 146, 225, 191, 255 }, textAlign = "center" }), label(nextLabel, { fontSize = 18, fontWeight = "bold", fontColor = { 255, 230, 137, 255 } }), UI.Panel { width = "100%", padding = 14, gap = 7, backgroundColor = { 9, 20, 43, 180 }, borderRadius = 12, children = { label(state.T("game.stats"), { fontSize = 12, fontWeight = "bold", fontColor = { 146, 225, 191, 255 } }), label(state.T("game.integrity", math.max(0, state.player_.integrity), state.player_.maxIntegrity), { fontSize = 14, fontColor = { 220, 235, 255, 255 } }), label(state.T("game.level", state.level_) .. "  ·  " .. state.T("game.next_upgrade", remaining), { fontSize = 14, fontColor = { 183, 207, 242, 255 } }), label(state.T("game.fragments", state.dataFragments_) .. "  ·  " .. state.T("game.score", state.score_), { fontSize = 14, fontColor = { 255, 230, 137, 255 } }) } }, label(state.T("game.modifier", state.T("modifier." .. state.modifier_)), { fontSize = 14, fontWeight = "bold", fontColor = { 255, 182, 105, 255 }, textAlign = "center" }), label(state.T("game.modules", modules_text()), { fontSize = 13, fontColor = { 207, 220, 244, 255 }, textAlign = "center" }), UI.Button { text = state.T("game.continue"), variant = "primary", width = "100%", height = 50, onClick = function() callbacks.beginWave(); rebuild() end } } }
+    return UI.Panel { width = "90%", maxWidth = 520, padding = 28, gap = 14, alignItems = "center", backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 20, 39, 63, 250 }, to = { 16, 30, 52, 250 } }, borderRadius = 24, borderWidth = 1, borderColor = isBoss and { 255, 150, 60, 200 } or { 146, 225, 191, 200 }, children = { label(state.T("game.wave_pause"), { fontSize = 25, fontWeight = "bold", fontColor = isBoss and { 255, 180, 60, 255 } or { 146, 225, 191, 255 }, textAlign = "center" }), label(nextLabel, { fontSize = 18, fontWeight = "bold", fontColor = { 255, 230, 137, 255 } }), UI.Panel { width = "100%", padding = 14, gap = 7, backgroundColor = { 9, 20, 43, 180 }, borderRadius = 12, children = { label(state.T("game.stats"), { fontSize = 12, fontWeight = "bold", fontColor = { 146, 225, 191, 255 } }), label(state.T("game.integrity", math.max(0, state.player_.integrity), state.player_.maxIntegrity), { fontSize = 14, fontColor = { 220, 235, 255, 255 } }), label(state.T("game.level", state.level_) .. "  ·  " .. state.T("game.next_upgrade", remaining), { fontSize = 14, fontColor = { 183, 207, 242, 255 } }), label(state.T("game.fragments", state.dataFragments_) .. "  ·  " .. state.T("game.score", state.score_), { fontSize = 14, fontColor = { 255, 230, 137, 255 } }) } }, label(state.T("game.modifier", state.T("modifier." .. state.modifier_)), { fontSize = 14, fontWeight = "bold", fontColor = { 255, 182, 105, 255 }, textAlign = "center" }), label(state.T("game.weapons", modules_text()), { fontSize = 13, fontColor = { 207, 220, 244, 255 }, textAlign = "center" }), UI.Button { text = state.T("game.continue"), variant = "primary", width = "100%", height = 50, onClick = function() callbacks.beginWave(); rebuild() end } } }
 end
 
 local function archive_screen()
@@ -327,10 +330,14 @@ function M.build(screen)
     if screen == state.SCREEN_STAGE_SUMMARY then return stage_summary_screen() end
     if screen == "archive" then return archive_screen() end
     if screen == "cosmetics" then return cosmetics_screen() end
+    if screen == state.SCREEN_SHOP then return require("shop").build() end
     return summary_screen()
 end
 
 function M.update_hud()
+    -- P5: Refresh stats panel each frame
+    stats_panel.refresh()
+
     local player = state.player_
 
     -- HUD top label (integrity / score / fragments) — only update on change
@@ -366,10 +373,19 @@ function M.update_hud()
         end
     end
 
-    -- Module label — only on change
+    -- Module/Weapon label — only on change
     if state.moduleLabel_ then
-        local txt = state.T("game.modules", modules_text())
+        local txt = state.T("game.weapons", modules_text())
         if txt ~= state._modCache then state.moduleLabel_:SetText(txt); state._modCache = txt end
+    end
+
+    -- Gold label (P4) — only on change
+    if state.goldLabel_ then
+        local gold = state.player_.gold_ or 0
+        if gold ~= state._goldCache then
+            state.goldLabel_:SetText(string.format("G %d", gold))
+            state._goldCache = gold
+        end
     end
 
     -- Feedback label — only on change

@@ -4,6 +4,8 @@
 
 local state  = require("state")
 local stages = require("stages")
+local shop   = require("shop")   -- P6: shop generation on wave advance
+local vfx    = require("vfx")    -- P8: wave banners
 
 local M = {}
 
@@ -40,6 +42,7 @@ end
 -- ── Level advancement ─────────────────────────────────────────────────────
 
 ---Advance to the next level within the current stage.
+---Now also handles stage-completion metadata (P6: called from shop.skip after final wave).
 function M.advance_level()
     local total = stages.totalLevels(state.stage_)
     if state.stageLevel_ < total then
@@ -53,8 +56,13 @@ function M.advance_level()
         -- Reset boss/mid-boss for new level
         state.boss_ = nil; state.midBoss_ = nil
     else
-        -- Stage fully cleared
+        -- Stage fully cleared — P6: summary metadata set here (was in EndWave)
+        state.defeatReason_ = state.T("game.reason_complete")
         state.isVictory_ = true
+        if not state.summaryAwarded_ then
+            state.profile_.calibration = state.profile_.calibration + math.max(1, math.floor(state.dataFragments_ / 8))
+            state.summaryAwarded_ = true
+        end
         state.screen_ = state.SCREEN_STAGE_SUMMARY
         if state.stage_ < state.totalStages_ and state.stagesUnlocked_ <= state.stage_ then
             state.stagesUnlocked_ = state.stage_ + 1
@@ -82,28 +90,46 @@ function M.begin_wave()
     state.maxEnemies_ = 30
     state.surgeTimer_, state.waveTime_, state.waveSpawned_, state.spawnTimer_ = 2.5, 0, 0, 0
 
+    -- P8: Wave banner
+    local bannerText = state.T("game.wave", state.wave_, state.maxWaves_)
+    local bannerColor = { 255, 239, 164, 255 }  -- default gold
+    if M.is_boss_wave(state.wave_) then
+        bannerText = "BOSS  ·  " .. bannerText
+        bannerColor = { 255, 120, 60, 255 }
+    elseif M.is_midboss_wave(state.wave_) then
+        bannerText = "ELITE  ·  " .. bannerText
+        bannerColor = { 100, 200, 255, 255 }
+    end
+    vfx.show_wave_banner(bannerText, bannerColor)
+
     if M.is_boss_wave(state.wave_) then
         state.waveSpawnTarget_ = 4
     elseif M.is_midboss_wave(state.wave_) then
         state.waveSpawnTarget_ = 6
         state.maxEnemies_ = 20
     else
-        state.waveSpawnTarget_ = 8 + state.wave_ * 3
+        -- P9: Increased density — 12 + wave*4 (was 8 + wave*3)
+        -- Wave 1: 16 enemies, Wave 6: 36 enemies
+        -- More enemies = more gold, balanced by improved weapon DPS
+        state.waveSpawnTarget_ = 12 + state.wave_ * 4
     end
 end
 
----Advance to the next wave. Returns false if the level is done
----(caller should check and trigger advance_level).
+---Advance to the next wave. Opens the inter-wave shop.
+---Caller is responsible for checking level completion and setting
+---state.shop_._advanceAfter before calling.
 function M.advance()
     local lvl = stages.level(state.stage_, state.stageLevel_)
     local maxW = lvl and lvl.totalWaves or state.maxWaves_
 
-    if state.wave_ >= maxW then
-        return false  -- level complete
+    -- Increment wave (if not the final wave — caller may override)
+    if state.wave_ < maxW then
+        state.wave_ = state.wave_ + 1
     end
 
-    state.wave_ = state.wave_ + 1
-    state.screen_ = state.SCREEN_WAVE_PAUSE
+    -- P6: Route to shop instead of wave_pause
+    shop.generate_items()
+    state.screen_ = state.SCREEN_SHOP
     state.wavePauseTimer_ = 0
     return true
 end

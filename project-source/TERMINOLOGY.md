@@ -1,8 +1,10 @@
 # Geometry Breakout / 几何突围 Terminology
 
-> Chinese-first terminology source for the project. Add every new player-facing term here before using it in UI, design documents, or data files.
+> Chinese-first terminology source. Add every new player-facing term here before using it in UI, design docs, or data files.
 >
-> Translation policy: preserve the gameplay meaning and use the same English term everywhere. Do not translate the same concept differently between screens.
+> Translation policy: preserve the gameplay meaning and use the same English term everywhere.
+>
+> Last updated: 2026-08-04 (Brotato terms added)
 
 ## Product Identity
 
@@ -10,82 +12,62 @@
 |---|---|---|
 | 几何突围 | Geometry Breakout | Official game title |
 | 几何体 | Geometric Form | General playable/entity category |
-| 突围 | Breakout | The central run objective and theme |
-| 竞技场 | Arena | Combat space |
-| 模拟空间 | Simulation Space | Setting description, not necessarily UI text |
+| 突围 | Breakout | Central run objective |
 
-## Core Gameplay
+## Core Gameplay (Brotato Transition)
 
 | Chinese | English | Usage |
 |---|---|---|
-| 形态 | Chassis | Playable class identity; use this consistently in player-facing text |
-| 模块 | Module | Equippable combat system |
-| 发射器 | Emitter | Module subtype that projects an attack |
+| 武器 | Weapon | Equippable auto-fire item (replaces "模块/Module") |
+| 道具 | Item | Equippable stat-boosting item |
+| 商店 | Shop | Inter-wave purchase screen |
+| 金币 | Gold | In-run currency for shop purchases |
+| 重摇 | Reroll | Refresh shop items (costs gold) |
+| 锁定 | Lock | Preserve a shop item for next wave (free) |
+| 回收 | Recycle | Sell an equipped weapon for gold |
+| 属性 | Stat | Character attribute (HP, DMG, SPD, etc.) |
+| 稀有度 | Rarity | Item quality tier (Common/Uncommon/Legendary) |
 | 波次 | Wave | Timed combat phase |
-| 精英 | Elite | Strong enemy tier |
-| 首领 | Boss | End-of-run or major encounter |
-| 敌人 | Enemy | Hostile entity |
-| 升级 | Upgrade | A choice that improves the current run |
-| 校准台 | Calibration Deck | Between-wave decision interface |
-| 三选一 | Three-choice selection | Upgrade presentation format |
-| 重开 | Restart | Start a new run after death or from the result screen |
+| 升级 | Upgrade | Level-up card choice |
+| 四选一 | Four-choice selection | Upgrade format (upgraded from 3) |
 
-## Player Systems
+## Stat Axes (8 Total)
+
+| Chinese | English | Abbr |
+|---|---|---|
+| 生命值 | Max HP | HP |
+| 伤害 | Damage | DMG |
+| 攻击速度 | Attack Speed | SPD |
+| 范围 | Range | RNG |
+| 暴击率 | Crit Chance | CRT |
+| 闪避 | Dodge | DDG |
+| 移动速度 | Move Speed | MOV |
+| 幸运 | Luck | LCK |
+
+## Resources & Progression
 
 | Chinese | English | Usage |
 |---|---|---|
-| 完整度 | Integrity | Primary health layer |
-| 护壳 | Shell | Rechargeable defensive layer |
-| 相位 | Phase | Temporary alternate/intangible state |
-| 不稳定度 | Instability | Risk/power pressure system |
-| 向量 | Vector | Movement and direction-related stat/tag |
-| 轨道 | Orbit | Rotating attack or module behavior |
-| 拓扑 | Topology | Arena, structure, and spatial relationship system |
-| 共振 | Resonance | Repeated-hit buildup and break effect |
-| 共振突破 | Resonance Break | Effect triggered when a target reaches its Resonance threshold |
-| 折射 | Refraction | Damage-type conversion behavior |
-| 结构节点 | Structure Node | Deployable or connected arena object |
+| 金币 | Gold | In-run shop currency (source: enemy kills, wave clears) |
+| 经验 | XP / Experience | In-run level-up resource |
+| 星星 | Star | Permanent progression currency (earned on run completion) |
+| 星币商店 | Star Shop | Permanent upgrade shop |
 
-## Resources and Progression
+## Legacy Terms (Still Active Until P4)
 
-| Chinese | English | Usage |
+| Chinese | English | Note |
 |---|---|---|
-| 数据碎片 | Data Fragment | Run currency used in the Calibration Deck |
-| 模式碎片 | Pattern Shard | Run experience resource used for level-ups |
-| 共振核心 | Resonance Core | Rare run resource |
-| 重写次数 | Rewrite Charge | Limited reroll resource |
-| 回收 | Salvage | Convert an unwanted module or offer into partial value |
-| 锁定 | Lock | Preserve an offer for a later Calibration Deck visit |
-| 合并 | Combine | Fuse compatible modules |
-| 演化 | Evolve | Transform a module after meeting a special condition |
-| 研究数据 | Research Data | Long-term progression resource |
-| 档案信用点 | Archive Credits | General long-term unlock currency |
-| 信号勋章 | Signal Medal | Challenge and achievement reward |
+| 模块 | Module | Being replaced by "武器/Weapon" in P4 |
+| 模式碎片 | Pattern Shard | Being replaced by "XP" in P3 |
+| 数据碎片 | Data Fragment | Legacy run currency; may be deprecated |
+| 完整度 | Integrity | May be renamed to "HP" or "生命值" |
 
-## Initial MVP Content
+## UI & Localization Rules (unchanged)
 
-| Chinese | English | Usage |
-|---|---|---|
-| 向量三角 | Vector Triangle | First playable chassis |
-| 追踪光束 | Trace Beam | Narrow auto-tracking beam module |
-| 轨道种子 | Orbit Seed | Rotating attack-node module |
-| 脉冲绽放 | Pulse Bloom | Periodic circular pulse module |
-| 锚定地雷 | Anchor Mine | Proximity mine module |
-| 向量钩 | Vector Hook | Movement-trail module |
-| 护壳灯 | Shell Lantern | Rechargeable defensive module |
-| 爬行节点 | Crawler Node | Basic pursuing enemy |
-| 向量枪骑 | Vector Lancer | Telegraphing dash enemy |
-| 中继螨 | Relay Mite | Enemy that supports nearby enemies |
-
-## UI and Localization Rules
-
-1. All player-facing strings use stable keys such as `menu.start`, `wave.next`, and `module.trace_beam`.
-2. Chinese is the source/design language: `zh_CN`.
-3. English is the first target language: `en`.
-4. Translate each feature when it is added; do not postpone all translation until the end.
-5. English text may be longer than Chinese. Buttons and cards must be flexible.
-6. Do not put player-facing text directly into images.
-7. Preserve placeholders exactly, for example `%d`, `%s`, `{0}`, and `{name}`.
-8. Keep names such as `Resonance`, `Phase`, and `Topology` consistent across gameplay, UI, documentation, and data files.
-9. If a new term is ambiguous, add it here before implementing it.
-10. Use `Geometry Breakout / 几何突围` in title and marketing copy; do not reintroduce the placeholder name `Star Quest / 星星探险`.
+1. All player-facing strings use stable keys in `scripts/i18n.lua`.
+2. Chinese (zh_CN) is the design language; English (en) is the first target.
+3. Translate each feature when added; don't postpone.
+4. English text may be longer — buttons/cards must be flexible.
+5. No player-facing text in images.
+6. Preserve placeholders exactly: `%d`, `%s`.
+7. New ambiguous terms → add here before implementing.

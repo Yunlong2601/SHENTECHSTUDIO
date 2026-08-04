@@ -1,5 +1,6 @@
 local UI = require("urhox-libs/UI")
 local state = require("state")
+local vfx = require("vfx")   -- P8: death particle bursts
 
 local M = {}
 local callbacks = {}
@@ -8,6 +9,12 @@ function M.configure(nextCallbacks) callbacks = nextCallbacks or {} end
 local function p() return state.player_ end
 local function pos(widget, x, y, size) if callbacks.setWidgetPosition then callbacks.setWidgetPosition(widget, x, y, size) end end
 local function destroy(widget) if callbacks.destroyWidget then callbacks.destroyWidget(widget) end end
+
+-- P5: Luck multiplier for gold drops
+local function luck_gold(baseAmount)
+    local mult = 1 + (state.statAxes_.luck or 0) * 0.15
+    return math.max(1, math.floor(baseAmount * mult + 0.5))
+end
 
 -- Stage-based enemy scaling: higher stages = faster & tougher enemies
 local function stage_scale()
@@ -78,9 +85,14 @@ function M.spawn_boss()
     state.gameWorld_:AddChild(widget)
     local coreWidget = UI.Panel { position = "absolute", width = 28, height = 28, backgroundColor = { 255, 80, 80, 255 }, borderColor = { 255, 200, 100, 255 }, borderWidth = 2, borderRadius = 14, pointerEvents = "none" }
     state.gameWorld_:AddChild(coreWidget)
-    local maxIntegrity = 40 + state.wave_ * 3
+    -- P9: Boss HP = 60 + wave*10 + (stage-1)*30
+    -- Stage 1 Wave 6: 60+60=120 HP. With ~20 DPS (3 weapons+stats) → ~6s kill.
+    -- Stage 2 Wave 12: 60+120+30=210 HP. With ~35 DPS (6 weapons+stats) → ~6s.
+    local maxIntegrity = 60 + state.wave_ * 10 + (state.stage_ - 1) * 30
     state.boss_ = { x = bx, y = by, radius = 36, speed = 30, integrity = maxIntegrity, maxIntegrity = maxIntegrity, widget = widget, coreWidget = coreWidget, phase = 0, pulseTimer = 3.5, spawnTimer = 6.0, telegraph = 0, dead = false, entering = true, targetX = state.worldWidth_ * 0.5, targetY = state.worldHeight_ * 0.3 }
     state.bossFlash_ = 0.6
+    vfx.screen_flash({ 255, 180, 60, 255 }, 0.55)  -- P8: boss intro flash
+    vfx.big_shake(0.35, 0.28)
     if state.feedbackLabel_ then
         state.feedbackLabel_:SetText("◆  " .. state.T("boss.spawn") .. "  ◆")
         state.feedbackLabel_:SetStyle({ fontColor = { 255, 180, 60, 255 }, opacity = 1 })
@@ -93,10 +105,14 @@ function M.spawn_midboss()
     local mx, my = state.worldWidth_ * 0.5, -70
     local widget = UI.Panel { position = "absolute", width = 64, height = 64, backgroundGradient = { type = "radial", from = { 80, 200, 220, 255 }, to = { 25, 100, 140, 255 } }, borderColor = { 140, 255, 255, 255 }, borderWidth = 4, borderRadius = 16, pointerEvents = "none" }
     state.gameWorld_:AddChild(widget)
-    local maxIntegrity = 55 + state.moduleLevel_ * 2
+    -- P9: Mid-boss HP = 75 + wave*8 + (stage-1)*25
+    -- Stage 1 Wave 5: 75+40=115 HP, armor 3. With ~12 DPS → ~10s kill (armor eats 3/hit).
+    -- Stage 2 Wave 11: 75+88+25=188 HP. With ~25 DPS → ~8s.
+    local maxIntegrity = 75 + state.wave_ * 8 + (state.stage_ - 1) * 25
     state.midBoss_ = { x = mx, y = my, radius = 32, speed = 28, integrity = maxIntegrity, maxIntegrity = maxIntegrity, armor = 3, widget = widget, phase = 0, bashTimer = 4.0, telegraph = 0, spawnTimer = 4.0, dead = false, entering = true, targetX = state.worldWidth_ * 0.5, targetY = state.worldHeight_ * 0.35, moveDir = 1 }
     state.midBossFlash_ = 0.6
     state.surgeFlash_ = 0.5  -- R-11: Screen flash on mid-boss intro
+    vfx.screen_flash({ 100, 200, 255, 255 }, 0.45)  -- P8: mid-boss intro flash
     if state.feedbackLabel_ then
         state.feedbackLabel_:SetText("◆  " .. state.T("midboss.spawn") .. "  ◆")
         state.feedbackLabel_:SetStyle({ fontColor = { 100, 200, 255, 255 }, opacity = 1 })
@@ -117,8 +133,13 @@ function M.damage_midboss(amount)
     if callbacks.spawnPickup then
         for _ = 1, 4 do callbacks.spawnPickup(state.midBoss_.x + math.random(-25, 25), state.midBoss_.y + math.random(-25, 25), "data", 3) end
         for _ = 1, 3 do callbacks.spawnPickup(state.midBoss_.x + math.random(-20, 20), state.midBoss_.y + math.random(-20, 20), "shard", 2) end
+        for _ = 1, 5 do callbacks.spawnPickup(state.midBoss_.x + math.random(-30, 30), state.midBoss_.y + math.random(-30, 30), "gold", luck_gold(4)) end  -- P3+P5
     end
     destroy(state.midBoss_.widget)
+    -- P8: Death burst + flash for mid-boss
+    vfx.spawn_death_burst(state.midBoss_.x, state.midBoss_.y, { 80, 200, 220, 255 }, 14)
+    vfx.screen_flash({ 100, 220, 240, 255 }, 0.5)
+    vfx.big_shake(0.35, 0.3)
     state.midBoss_ = nil
     if state.feedbackLabel_ then
         state.feedbackLabel_:SetText("◆  " .. state.T("midboss.defeated") .. "  ◆")
@@ -246,7 +267,24 @@ function M.damage(enemy, amount)
         M.spawn_fragment(enemy.x, enemy.y)
         M.spawn_fragment(enemy.x, enemy.y)
     end
-    if callbacks.spawnPickup then callbacks.spawnPickup(enemy.x, enemy.y, "data", (enemy.elite and 3 or 1) * reward); callbacks.spawnPickup(enemy.x + 8, enemy.y, "shard", enemy.elite and 3 or 1) end
+    if callbacks.spawnPickup then
+        callbacks.spawnPickup(enemy.x, enemy.y, "data", (enemy.elite and 3 or 1) * reward)
+        callbacks.spawnPickup(enemy.x + 8, enemy.y, "shard", enemy.elite and 3 or 1)
+        -- P3+P5: Gold drops from all non-fragment enemies
+        if not enemy.isFragment then
+            local baseAmount = enemy.elite and 5 or (enemy.kind == "charger" or enemy.kind == "splitter" or enemy.kind == "shooter") and 2 or 1
+            callbacks.spawnPickup(enemy.x - 8, enemy.y + 5, "gold", luck_gold(baseAmount))
+        end
+    end
+    -- P8: Death particle burst (color matches enemy type)
+    local deathColor = { 244, 93, 133, 255 }   -- default: chaser red
+    if enemy.kind == "skimmer" then deathColor = { 84, 216, 194, 255 }
+    elseif enemy.kind == "charger" then deathColor = { 255, 168, 76, 255 }
+    elseif enemy.kind == "splitter" then deathColor = { 100, 220, 100, 255 }
+    elseif enemy.kind == "shooter" then deathColor = { 180, 130, 240, 255 }
+    elseif enemy.elite then deathColor = { 255, 126, 63, 255 }
+    end
+    vfx.spawn_death_burst(enemy.x, enemy.y, deathColor, enemy.elite and 8 or enemy.isFragment and 3 or 5)
     destroy(enemy.widget)
 end
 
@@ -262,9 +300,14 @@ function M.damage_boss(amount)
     if callbacks.spawnPickup then
         for _ = 1, 6 do callbacks.spawnPickup(state.boss_.x + math.random(-30, 30), state.boss_.y + math.random(-30, 30), "data", 3) end
         for _ = 1, 4 do callbacks.spawnPickup(state.boss_.x + math.random(-20, 20), state.boss_.y + math.random(-20, 20), "shard", 2) end
+        for _ = 1, 8 do callbacks.spawnPickup(state.boss_.x + math.random(-35, 35), state.boss_.y + math.random(-35, 35), "gold", luck_gold(5)) end  -- P3+P5
     end
     destroy(state.boss_.widget)
     destroy(state.boss_.coreWidget)
+    -- P8: Big death burst + screen flash for boss
+    vfx.spawn_death_burst(state.boss_.x, state.boss_.y, { 255, 180, 60, 255 }, 20)
+    vfx.screen_flash({ 255, 200, 80, 255 }, 0.7)
+    vfx.big_shake(0.5, 0.4)
     state.boss_ = nil
     if state.feedbackLabel_ then
         state.feedbackLabel_:SetText("◆  " .. state.T("boss.defeated") .. "  ◆")
@@ -429,15 +472,22 @@ function M.update_projectiles(timeStep)
         for enemyIndex = #state.enemies_, 1, -1 do
             local enemy = state.enemies_[enemyIndex]; if not enemy then break end
             local dx, dy = enemy.x - projectile.x, enemy.y - projectile.y
-            if dx * dx + dy * dy < (enemy.radius + projectile.radius) ^ 2 then M.damage(enemy, projectile.damage); projectile.pierce = projectile.pierce - 1; remove = projectile.pierce <= 0; if remove then break end end
+            if dx * dx + dy * dy < (enemy.radius + projectile.radius) ^ 2 then M.damage(enemy, projectile.damage); projectile.pierce = projectile.pierce - 1; remove = projectile.pierce <= 0
+                -- P4: Magic weapons trigger AoE on hit
+                if projectile.onHitAoE then M.damage_area(projectile.x, projectile.y, projectile.onHitAoE, projectile.damage * 0.5) end
+                if remove then break end end
         end
         if not remove and state.boss_ and not state.boss_.dead then
             local dx, dy = state.boss_.x - projectile.x, state.boss_.y - projectile.y
-            if dx * dx + dy * dy < (state.boss_.radius + projectile.radius) ^ 2 then M.damage_boss(projectile.damage); projectile.pierce = projectile.pierce - 1; remove = projectile.pierce <= 0 end
+            if dx * dx + dy * dy < (state.boss_.radius + projectile.radius) ^ 2 then M.damage_boss(projectile.damage); projectile.pierce = projectile.pierce - 1; remove = projectile.pierce <= 0
+                if projectile.onHitAoE then M.damage_area(projectile.x, projectile.y, projectile.onHitAoE, projectile.damage * 0.5) end
+            end
         end
         if not remove and state.midBoss_ and not state.midBoss_.dead then
             local dx, dy = state.midBoss_.x - projectile.x, state.midBoss_.y - projectile.y
-            if dx * dx + dy * dy < (state.midBoss_.radius + projectile.radius) ^ 2 then M.damage_midboss(projectile.damage); projectile.pierce = projectile.pierce - 1; remove = projectile.pierce <= 0 end
+            if dx * dx + dy * dy < (state.midBoss_.radius + projectile.radius) ^ 2 then M.damage_midboss(projectile.damage); projectile.pierce = projectile.pierce - 1; remove = projectile.pierce <= 0
+                if projectile.onHitAoE then M.damage_area(projectile.x, projectile.y, projectile.onHitAoE, projectile.damage * 0.5) end
+            end
         end
         if remove then destroy(projectile.widget); table.remove(state.projectiles_, projectileIndex) else pos(projectile.widget, projectile.x, projectile.y, 10) end
     end

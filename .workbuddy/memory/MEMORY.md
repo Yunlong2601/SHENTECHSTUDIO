@@ -1,23 +1,57 @@
 # Project Long-Term Memory — Geometry Breakout / 几何突围
 
-## Git Remote Hierarchy (updated 2026-08-03)
+## Current Phase: Brotato Transition (P0-P5 complete, P6 next)
 
-- **TapTap Maker `main` is the base / source of truth.**
-- **GitHub `main` (`Yunlong2601/SHENTECHSTUDIO`) is a replica** — it must always mirror TapTap Maker `main`.
-- Every update: push to **only these two remotes** — TapTap Maker `main` first, then GitHub `main`.
-- Verify both remotes independently; one success does not prove the other.
-- If the two diverge: TapTap Maker `main` wins; realign GitHub `main` to match it.
-- GitHub `taptap-main` branch is no longer part of the routine sync — ignore it.
+### Design Locked
+- Brotato-style: 6 weapon slots, auto-fire, 4-card upgrades, 20 waves × ~30s (~20 min runs)
+- Shop between every wave: weapons + stat items + reroll/lock/recycle
+- Gold economy: enemies drop gold → spend in shop
+- 8 stat axes: HP/DMG/SPD/RNG/CRT/DDG/MOV/LCK
+- 3 weapon rarity tiers: Common/Uncommon/Legendary
+- Neon Vector Geometry visual style preserved
+- Player character: geometric body (diamond) + humanoid features (eyes, face bar, trail) — distinct from monsters
+- Full design: `project-source/GAME_DESIGN.md`
 
-## Project Facts
+### Phase Status
+| Phase | Status |
+|-------|--------|
+| P0 (cleanup + docs) | ✅ Complete |
+| P1 (data externalization) | ✅ Complete |
+| P2 (shop + stats scaffolding) | ✅ Complete |
+| P3 (gold economy) | ✅ Complete |
+| P4 (weapons + character) | ✅ Complete |
+| P5 (stat items + 4-card) | ✅ Complete |
+| P6 (shop purchasing) | ⏳ Next |
 
+### Project Facts (unchanged)
 - TapTap Maker project UUID: `5e6c0799-195d-48e4-8bcb-0445b036dcf3`
 - GitHub repo: `https://github.com/Yunlong2601/SHENTECHSTUDIO`
-- Art style: Neon Vector Geometry (see `project-source/ART_STYLE.md`)
-- Current milestone: M2 — Content density and first boss (active)
-- M1 is complete: demo loop, Neon Vector Geometry, boss, telemetry, monetization placeholder
-- M2 progress: R-05 (fragment cap) complete; R-02 (weighted spawn) partial — wrong wave gating; R-03 (Glitch fix) partial — missing Poisson/corruption/flicker; R-06 (dynamic enemy cap) minimal — field exists but never updated from 24. Phase 2+3 not started. Month task package for VS Code Copilot at `deliverables/product-strategy/month-task-package-vscode-2026-08-03.md`
-- M2 key design decisions: Mid-boss W4 HP=60; Final boss W8 HP=300 (100+wave×25) 4-stage DPS check; Glitch frame-rate independent Poisson λ≈0.18/s corrupts (not replaces) active modifier; Splitter W3, Shooter W5; weighted spawn distribution; dynamic enemy cap (30 normal/25 glitch); fragment cap 8-10
-- Workflow: 方向明 (PM helmsman) manages project & weekly task packages → user executes via VS Code Copilot (switched from CodeBuddy 2026-08-03) → reports back for review
 - Entry point: `scripts/main.lua`
+- Art style: Neon Vector Geometry (`project-source/ART_STYLE.md`)
 - i18n config: `.project/i18n.json`, translations in `i18n/`
+- **TapTap Maker `main` is source of truth.** GitHub `main` is a mirror. Always push to both.
+
+### Key Files for Agents
+- **Quick-start:** `project-source/CONTEXT.md`
+- **Full design:** `project-source/GAME_DESIGN.md`
+- **Mechanics:** `project-source/SHOP_SPEC.md`, `STATS_SPEC.md`, `ECONOMY.md`
+- **Roadmap:** `project-source/ROADMAP.md`
+- **Architecture:** `project-source/ARCHITECTURE.md`
+
+### Active Scripts
+- `main.lua` — scheduler: weapons.update + character.update + shell + enemies
+- `weapons.lua` — 6 weapon types (blade/bow/staff/blunt/crossbow/thrown), 6 slots, auto-fire
+- `character.lua` — visible player: diamond body + eyes + trail
+- `player.lua` — movement + collision + velocity tracking
+- `enemies.lua` — spawn/damage/projectile system (now with onHitAoE support)
+- `waves.lua` / `stages.lua` — wave progression
+- `ui.lua` / `shop.lua` / `stats_panel.lua` — UI layer
+- `state.lua` — shared state (includes weapons_, charWidgets_, gold_)
+
+### Archive
+- Legacy reference project moved to `archive/base-references/`
+- `modules.lua` deleted in P4 — weapons.lua is the replacement
+
+### What NOT to touch
+- `urhox-libs/`, `engine-docs/`, `examples/`, `templates/` — engine files
+- Don't change art style away from Neon Vector Geometry
