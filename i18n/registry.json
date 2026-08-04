@@ -15,7 +15,7 @@
     "key": "t_GzlJOBm9HSodOcm5",
     "locations": [
       "i18n.lua:14",
-      "i18n.lua:51"
+      "i18n.lua:61"
     ]
   },
   "校准台已上线，准备开始突围。": {
@@ -400,55 +400,55 @@
   "校准档案": {
     "key": "t_1Hv4zRRWw1HQViC527",
     "locations": [
-      "i18n.lua:41"
+      "i18n.lua:43"
     ]
   },
   "校准档案（本次会话）": {
     "key": "t_1A2vPFVvw1AEfBlfwj",
     "locations": [
-      "i18n.lua:41"
+      "i18n.lua:43"
     ]
   },
   "校准片：%d": {
     "key": "t_5QW6ocFS5Itiktcl",
     "locations": [
-      "i18n.lua:41"
+      "i18n.lua:43"
     ]
   },
   "起始完整度 +1": {
     "key": "t_mGNGgLbimPCf6yFT",
     "locations": [
-      "i18n.lua:41"
+      "i18n.lua:43"
     ]
   },
   "磁吸范围 +35": {
     "key": "t_17Mas2A9p17qRbwMBk",
     "locations": [
-      "i18n.lua:41"
+      "i18n.lua:43"
     ]
   },
   "校准": {
     "key": "t_1FJPoKCyy1EsmLxFj3",
     "locations": [
-      "i18n.lua:41"
+      "i18n.lua:43"
     ]
   },
   "未验证持久化：仅在本次会话有效": {
     "key": "t_1C0TsdY1J1BrjHhA7s",
     "locations": [
-      "i18n.lua:41"
+      "i18n.lua:43"
     ]
   },
   "返回": {
     "key": "t_vKCzcTCiupNLbfGL",
     "locations": [
-      "i18n.lua:41"
+      "i18n.lua:43"
     ]
   },
   "Geometry Breakout / 几何突围": {
     "key": "t_ycjvROF0z6HuPaWh",
     "locations": [
-      "main.lua:357"
+      "main.lua:480"
     ]
   },
   "几何突围 · Demo Build": {
@@ -467,7 +467,7 @@
     "key": "t_E8IcvOH5E0IhwWdX",
     "locations": [
       "i18n.lua:36",
-      "i18n.lua:46"
+      "i18n.lua:56"
     ]
   },
   "击破最终核心，完成全部波次": {
@@ -503,104 +503,386 @@
   "核心破坏者": {
     "key": "t_INtt4ShTIZWpk3BP",
     "locations": [
-      "i18n.lua:43"
+      "i18n.lua:45"
     ]
   },
   "核心：%d / %d": {
     "key": "t_1FykNs3pP1FXjOgmlb",
     "locations": [
-      "i18n.lua:43"
+      "i18n.lua:45"
     ]
   },
   "警告：核心脉冲蓄能": {
     "key": "t_c8HTt20vcdGIqEaX",
     "locations": [
-      "i18n.lua:43"
+      "i18n.lua:45"
     ]
   },
   "核心破坏者出现": {
     "key": "t_105fm1PEn10D1YDseP",
     "locations": [
-      "i18n.lua:43"
+      "i18n.lua:45"
     ]
   },
   "核心破坏者已被击破": {
     "key": "t_7g4DDlycHS59fu",
     "locations": [
-      "i18n.lua:43"
+      "i18n.lua:45"
     ]
   },
   "最终波次：核心战": {
     "key": "t_1BfhYsQhq1BBaMaW9G",
     "locations": [
-      "i18n.lua:44"
+      "i18n.lua:46"
     ]
   },
   "被核心破坏者击破": {
     "key": "t_6qUjDqme6NmYP6nQ",
     "locations": [
-      "i18n.lua:44"
+      "i18n.lua:46"
     ]
   },
   "工坊": {
     "key": "t_LQzp9kBiLbuEnKxC",
     "locations": [
-      "i18n.lua:46",
-      "i18n.lua:47"
+      "i18n.lua:56",
+      "i18n.lua:57"
     ]
   },
   "外观定制 · 即将上线": {
     "key": "t_BYUukpwGBQh0hYAK",
     "locations": [
-      "i18n.lua:46"
+      "i18n.lua:56"
     ]
   },
   "矢量三角": {
     "key": "t_JMDjKp6lJrZzRHvj",
     "locations": [
-      "i18n.lua:46"
+      "i18n.lua:56"
     ]
   },
   "猩红协议": {
     "key": "t_WNzbyQMSVtErCkSG",
     "locations": [
-      "i18n.lua:46"
+      "i18n.lua:56"
     ]
   },
   "虚空回路": {
     "key": "t_ecVqtAXSf3tzNej4",
     "locations": [
-      "i18n.lua:46"
+      "i18n.lua:56"
     ]
   },
   "日冕引擎": {
     "key": "t_GwtL44ZqHQrACF8Q",
     "locations": [
-      "i18n.lua:46"
+      "i18n.lua:56"
     ]
   },
   "未解锁": {
     "key": "t_1824EQCH218VEpZkDI",
     "locations": [
-      "i18n.lua:46"
+      "i18n.lua:56"
     ]
   },
   "即将上线": {
     "key": "t_tJr7FDXptAGkIOn7",
     "locations": [
-      "i18n.lua:46"
+      "i18n.lua:56"
     ]
   },
   "支持开发者": {
     "key": "t_8iWt3BWS8G2TthZA",
     "locations": [
-      "i18n.lua:46"
+      "i18n.lua:56"
     ]
   },
   "未来可通过 TapTap 支持本项目": {
     "key": "t_Ar7rhg5uB2KjXb0g",
     "locations": [
-      "i18n.lua:46"
+      "i18n.lua:56"
+    ]
+  },
+  "Laser Gun · 激光炮": {
+    "key": "t_AwFz37T8AnVC61oZ",
+    "locations": [
+      "i18n.lua:40"
+    ]
+  },
+  "高伤害穿透激光束，瞄准最近敌人": {
+    "key": "t_15NpxjNGU14uKFlcF1",
+    "locations": [
+      "i18n.lua:40"
+    ]
+  },
+  "Poison Bomb · 毒雾弹": {
+    "key": "t_11RMaLmqu11HMRIB3J",
+    "locations": [
+      "i18n.lua:41"
+    ]
+  },
+  "部署持续伤害毒云，造成范围伤害": {
+    "key": "t_izKb3MCTjR6SIlAC",
+    "locations": [
+      "i18n.lua:41"
+    ]
+  },
+  "强化激光炮": {
+    "key": "t_xjkXntijxZFvPvAG",
+    "locations": [
+      "i18n.lua:42"
+    ]
+  },
+  "强化毒雾弹": {
+    "key": "t_1CilnkDS51CYXt0GtE",
+    "locations": [
+      "i18n.lua:42"
+    ]
+  },
+  "守门者": {
+    "key": "t_15sce8wYQ15jn9Nw6x",
+    "locations": [
+      "i18n.lua:47"
+    ]
+  },
+  "守门者：%d / %d": {
+    "key": "t_tVNS7w5Pt3basFcE",
+    "locations": [
+      "i18n.lua:47"
+    ]
+  },
+  "守门者出现": {
+    "key": "t_1E8OpwlSA1Ddl7R1l1",
+    "locations": [
+      "i18n.lua:47"
+    ]
+  },
+  "守门者已被击破": {
+    "key": "t_YaFfSXGuYlXVgnO9",
+    "locations": [
+      "i18n.lua:47"
+    ]
+  },
+  "选择竞技场": {
+    "key": "t_xmWmgweexbJbgqP3",
+    "locations": [
+      "i18n.lua:49"
+    ]
+  },
+  "不同阶段的场域配置不同，层层深入": {
+    "key": "t_MOKjFQaHLu1orNdI",
+    "locations": [
+      "i18n.lua:49"
+    ]
+  },
+  "%d 个关卡": {
+    "key": "t_oDAzh6RCoMLahw7r",
+    "locations": [
+      "i18n.lua:49"
+    ]
+  },
+  "关卡 %d · %d 波": {
+    "key": "t_vverwsYYvTMCB05f",
+    "locations": [
+      "i18n.lua:50"
+    ]
+  },
+  "⚠ 首领战": {
+    "key": "t_wwPBQYqbx79upmE8",
+    "locations": [
+      "i18n.lua:50"
+    ]
+  },
+  "◆ 精英战": {
+    "key": "t_18Sph1Fs717zck8JY6",
+    "locations": [
+      "i18n.lua:51"
+    ]
+  },
+  "准备开始...": {
+    "key": "t_Jh4fyI3eJWhMssV1",
+    "locations": [
+      "i18n.lua:51"
+    ]
+  },
+  "阶段通关！": {
+    "key": "t_N3YDRhiQMZ3r8t6N",
+    "locations": [
+      "i18n.lua:52"
+    ]
+  },
+  "阶段失败": {
+    "key": "t_LahWZZHnLSD8orNS",
+    "locations": [
+      "i18n.lua:52"
+    ]
+  },
+  "已解锁：%s": {
+    "key": "t_n7g1vYrEmwzy2NTJ",
+    "locations": [
+      "i18n.lua:53"
+    ]
+  },
+  "下一阶段 ▶": {
+    "key": "t_99CMl3GC8zx5KvGz",
+    "locations": [
+      "i18n.lua:53"
+    ]
+  },
+  "%s · Lv.%d · %d/%d 波": {
+    "key": "t_KGczB14EKR7ba6Lr",
+    "locations": [
+      "i18n.lua:54"
+    ]
+  },
+  "赤红竞技场": {
+    "key": "t_OjVkSzGFOYZH7jkY",
+    "locations": [
+      "stages.lua:10"
+    ]
+  },
+  "Lv.1 · 初试锋芒": {
+    "key": "t_6lE1XkCy6JNkeTDx",
+    "locations": [
+      "stages.lua:16"
+    ]
+  },
+  "Lv.2 · 暗流涌动": {
+    "key": "t_1CnBRR5x01CKQuQ50Z",
+    "locations": [
+      "stages.lua:17"
+    ]
+  },
+  "Lv.3 · 血色黄昏": {
+    "key": "t_kmNxaGXykIZoGW1T",
+    "locations": [
+      "stages.lua:18"
+    ]
+  },
+  "Lv.4 · 烈焰回廊": {
+    "key": "t_PmZIpee2PvVpraLz",
+    "locations": [
+      "stages.lua:19"
+    ]
+  },
+  "Lv.5 · 狱火降临": {
+    "key": "t_EwICKNSAERjAdmb1",
+    "locations": [
+      "stages.lua:20"
+    ]
+  },
+  "Lv.6 · 熔岩之心": {
+    "key": "t_NdIWdSv6N9u8x2on",
+    "locations": [
+      "stages.lua:21"
+    ]
+  },
+  "Lv.7 · 铁与火": {
+    "key": "t_14K9mSy2Z14nOmocrW",
+    "locations": [
+      "stages.lua:22"
+    ]
+  },
+  "Lv.8 · 燃烬之路": {
+    "key": "t_INlsjw9vIZexOBug",
+    "locations": [
+      "stages.lua:23"
+    ]
+  },
+  "Lv.9 · 焚天": {
+    "key": "t_112n6wu8O10aBx8PIP",
+    "locations": [
+      "stages.lua:24"
+    ]
+  },
+  "Lv.10· 终焉红莲": {
+    "key": "t_poKAWyx2pKvW7boL",
+    "locations": [
+      "stages.lua:25"
+    ]
+  },
+  "虚空核心": {
+    "key": "t_eRINwbindzgBB2ku",
+    "locations": [
+      "stages.lua:40"
+    ]
+  },
+  "Lv.1 · 虚空之门": {
+    "key": "t_VVi5l5boVfkb1EBx",
+    "locations": [
+      "stages.lua:44"
+    ]
+  },
+  "Lv.2 · 暗能涌动": {
+    "key": "t_1A2mxBKTi1AEn2ZuNH",
+    "locations": [
+      "stages.lua:45"
+    ]
+  },
+  "Lv.3 · 深渊低语": {
+    "key": "t_DRHeYVwTDIBkDCPk",
+    "locations": [
+      "stages.lua:46"
+    ]
+  },
+  "Lv.4 · 扭曲之径": {
+    "key": "t_2vzm2HPXLxjqJC",
+    "locations": [
+      "stages.lua:47"
+    ]
+  },
+  "Lv.5 · 虚空领主": {
+    "key": "t_1EXrOBriw1EOusHmwh",
+    "locations": [
+      "stages.lua:48"
+    ]
+  },
+  "Lv.6 · 紫色迷障": {
+    "key": "t_3xZt00ZN47JLht4a",
+    "locations": [
+      "stages.lua:49"
+    ]
+  },
+  "Lv.7 · 数据洪流": {
+    "key": "t_n5rirzlZmtyfCV8a",
+    "locations": [
+      "stages.lua:50"
+    ]
+  },
+  "Lv.8 · 虚空回声": {
+    "key": "t_SS9YuIL7SKV2vCMO",
+    "locations": [
+      "stages.lua:51"
+    ]
+  },
+  "Lv.9 · 混沌边缘": {
+    "key": "t_DwaQ8QLEE79jBeo9",
+    "locations": [
+      "stages.lua:52"
+    ]
+  },
+  "Lv.10· 绝对虚空": {
+    "key": "t_3RYKG0ft3J4EvqqK",
+    "locations": [
+      "stages.lua:53"
+    ]
+  },
+  "压缩": {
+    "key": "t_JJKNzh84IoiivICn",
+    "locations": [
+      "ui.lua:481"
+    ]
+  },
+  "波动": {
+    "key": "t_ETmovoy7Ez4hO2yU",
+    "locations": [
+      "ui.lua:481"
+    ]
+  },
+  "加速": {
+    "key": "t_1Giyb7bBn1HDVIdtry",
+    "locations": [
+      "ui.lua:481"
     ]
   }
 }
