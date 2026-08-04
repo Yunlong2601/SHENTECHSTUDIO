@@ -31,6 +31,13 @@
 - i18n config: `.project/i18n.json`, translations in `i18n/`
 - **TapTap Maker `main` is source of truth.** GitHub `main` is a mirror. Always push to both.
 
+### TapTap Maker Build Config (gotcha — learned 2026-08-04)
+- `.project/settings.json` `build.asset_dirs` lists dirs the engine scans at build + loads at runtime. **Any new top-level dir holding `.lua` modules MUST be added here**, else `require("dir.module")` fails at runtime with `Module not found`.
+- Currently registered: `../assets`, `../scripts`, `../data`.
+- `require("foo")` → bare name, searched across all asset_dirs. `require("data.foo")` → `data.` prefix maps to the `data` asset_dir → `../data/foo.lua`.
+- `.lua.meta` files (UUID refs) are NOT required for `require()` resolution — 5 active scripts have none and load fine (TapTap Maker auto-generates .meta server-side on git sync). Only needed for UUID-based asset refs in scenes/prefabs.
+- `resources.json` uses `"default": ["**"]` (全量引用) → all files under asset_dirs are included; no per-file registration needed.
+
 ### Key Files for Agents
 - **Quick-start:** `project-source/CONTEXT.md`
 - **Full design:** `project-source/GAME_DESIGN.md`
