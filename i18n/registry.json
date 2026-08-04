@@ -15,7 +15,7 @@
     "key": "t_GzlJOBm9HSodOcm5",
     "locations": [
       "i18n.lua:14",
-      "i18n.lua:61"
+      "i18n.lua:80"
     ]
   },
   "校准台已上线，准备开始突围。": {
@@ -448,7 +448,7 @@
   "Geometry Breakout / 几何突围": {
     "key": "t_ycjvROF0z6HuPaWh",
     "locations": [
-      "main.lua:480"
+      "main.lua:560"
     ]
   },
   "几何突围 · Demo Build": {
@@ -870,19 +870,241 @@
   "压缩": {
     "key": "t_JJKNzh84IoiivICn",
     "locations": [
-      "ui.lua:481"
+      "ui.lua:497"
     ]
   },
   "波动": {
     "key": "t_ETmovoy7Ez4hO2yU",
     "locations": [
-      "ui.lua:481"
+      "ui.lua:497"
     ]
   },
   "加速": {
     "key": "t_1Giyb7bBn1HDVIdtry",
     "locations": [
-      "ui.lua:481"
+      "ui.lua:497"
+    ]
+  },
+  "武器：%s": {
+    "key": "t_11HcaW5vJ11R5zGMBh",
+    "locations": [
+      "i18n.lua:38"
+    ]
+  },
+  "近战": {
+    "key": "t_wL6Zlv4XwT1rrUOD",
+    "locations": [
+      "i18n.lua:38"
+    ]
+  },
+  "远程": {
+    "key": "t_R5YbdvzmRH4bXXkg",
+    "locations": [
+      "i18n.lua:38"
+    ]
+  },
+  "商店": {
+    "key": "t_c2RidLRUbYUGkWkO",
+    "locations": [
+      "i18n.lua:60"
+    ]
+  },
+  "金币：%d": {
+    "key": "t_euLwwVclem3DMmZj",
+    "locations": [
+      "i18n.lua:60"
+    ]
+  },
+  "重摇 %dg": {
+    "key": "t_JKJ87CjsIsZWCjD2",
+    "locations": [
+      "i18n.lua:61"
+    ]
+  },
+  "锁定": {
+    "key": "t_1DP0eCveT1Cy4HWcu1",
+    "locations": [
+      "i18n.lua:61"
+    ]
+  },
+  "跳过 ▶": {
+    "key": "t_189aRN7kO18Irzku0O",
+    "locations": [
+      "i18n.lua:62"
+    ]
+  },
+  "— 武器 —": {
+    "key": "t_tPTqqXqPtELJKA7J",
+    "locations": [
+      "i18n.lua:62"
+    ]
+  },
+  "— 道具 —": {
+    "key": "t_OPHvux81OslMvrSH",
+    "locations": [
+      "i18n.lua:63"
+    ]
+  },
+  "金币": {
+    "key": "t_GkSPgmnfGJ1zrodj",
+    "locations": [
+      "i18n.lua:64"
+    ]
+  },
+  "主要属性": {
+    "key": "t_wITEVhhTwQo29tOF",
+    "locations": [
+      "i18n.lua:65"
+    ]
+  },
+  "次要属性": {
+    "key": "t_jpZ2ZXwrjzyllN5x",
+    "locations": [
+      "i18n.lua:65"
+    ]
+  },
+  "生命": {
+    "key": "t_AELtoL0xAPg12Mw3",
+    "locations": [
+      "i18n.lua:66"
+    ]
+  },
+  "伤害": {
+    "key": "t_1BrrDcIM31C0LEjLHj",
+    "locations": [
+      "i18n.lua:66"
+    ]
+  },
+  "攻速": {
+    "key": "t_7Ntl5Qjx6w860jKj",
+    "locations": [
+      "i18n.lua:66"
+    ]
+  },
+  "范围": {
+    "key": "t_5FRCoyD55P8EG6aJ",
+    "locations": [
+      "i18n.lua:67"
+    ]
+  },
+  "暴击": {
+    "key": "t_GHoT3En0GletDmxK",
+    "locations": [
+      "i18n.lua:67"
+    ]
+  },
+  "闪避": {
+    "key": "t_zBOeR0ZIyhHNuyfk",
+    "locations": [
+      "i18n.lua:67"
+    ]
+  },
+  "移速": {
+    "key": "t_YDSCqNh0XjEBf4s2",
+    "locations": [
+      "i18n.lua:68"
+    ]
+  },
+  "幸运": {
+    "key": "t_WKwPLrk9VrQwEYU5",
+    "locations": [
+      "i18n.lua:68"
+    ]
+  },
+  "生命强化": {
+    "key": "t_QxLErckvRPIcdhnp",
+    "locations": [
+      "i18n.lua:69"
+    ]
+  },
+  "最大生命 +2": {
+    "key": "t_91Tzm2br9CVMK5wB",
+    "locations": [
+      "i18n.lua:69"
+    ]
+  },
+  "伤害强化": {
+    "key": "t_1DW2PPP8V1D0iYe4p9",
+    "locations": [
+      "i18n.lua:70"
+    ]
+  },
+  "所有武器伤害 +8%": {
+    "key": "t_17b3Bj0Rz17ledeEyN",
+    "locations": [
+      "i18n.lua:70"
+    ]
+  },
+  "攻速强化": {
+    "key": "t_pF2puKZmpfgB0OJO",
+    "locations": [
+      "i18n.lua:71"
+    ]
+  },
+  "攻击间隔 -4%": {
+    "key": "t_17T4CfMB517f71SyVL",
+    "locations": [
+      "i18n.lua:71"
+    ]
+  },
+  "范围强化": {
+    "key": "t_2PJ8kWsB1vGrAdPz",
+    "locations": [
+      "i18n.lua:72"
+    ]
+  },
+  "攻击距离 +5%": {
+    "key": "t_15HfWKfU614qo8W6MQ",
+    "locations": [
+      "i18n.lua:72"
+    ]
+  },
+  "暴击强化": {
+    "key": "t_w68iNxAWwYKIyR20",
+    "locations": [
+      "i18n.lua:73"
+    ]
+  },
+  "暴击率 +4%": {
+    "key": "t_gAMzsad6g0u2Kae0",
+    "locations": [
+      "i18n.lua:73"
+    ]
+  },
+  "闪避强化": {
+    "key": "t_98ydfKfW90BsE8Qo",
+    "locations": [
+      "i18n.lua:74"
+    ]
+  },
+  "闪避率 +4%": {
+    "key": "t_AKRnyAWgA9srdJWc",
+    "locations": [
+      "i18n.lua:74"
+    ]
+  },
+  "移速强化": {
+    "key": "t_NeepoS9fNDNnDRSJ",
+    "locations": [
+      "i18n.lua:75"
+    ]
+  },
+  "移动速度 +5%": {
+    "key": "t_kgQVmNIVkEqaZY47",
+    "locations": [
+      "i18n.lua:75"
+    ]
+  },
+  "幸运强化": {
+    "key": "t_Fie0WIigGAE5weeY",
+    "locations": [
+      "i18n.lua:76"
+    ]
+  },
+  "掉落金币 +15%": {
+    "key": "t_qvpqjMtsqTl8urNg",
+    "locations": [
+      "i18n.lua:76"
     ]
   }
 }
