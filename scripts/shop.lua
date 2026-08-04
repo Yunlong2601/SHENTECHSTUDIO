@@ -258,7 +258,7 @@ local function weapon_card(index, w)
     end
 
     return UI.Panel {
-        width = "30%", minHeight = 130, padding = 8, gap = 4,
+        width = "31%", minHeight = 130, padding = 8, gap = 4,
         alignItems = "center", justifyContent = "space-between",
         backgroundColor = COLOR_BG,
         borderColor = w.locked and { 255, 180, 60, 200 } or { 80, 120, 180, 150 },
@@ -272,8 +272,10 @@ local function weapon_card(index, w)
             -- Tag
             label(def.tag:upper() or "",
                 { fontSize = 9, fontColor = tagColor, textAlign = "center" }),
-            -- Stats line
-            label(string.format("DMG %.1f  CD %.2f", def.damage, def.cooldown),
+            -- Stats: DMG on one line, CD on another
+            label(string.format("DMG %.1f", def.damage),
+                { fontSize = 10, fontColor = { 200, 210, 230, 255 }, textAlign = "center" }),
+            label(string.format("CD %.2fs", def.cooldown),
                 { fontSize = 10, fontColor = { 150, 170, 200, 255 }, textAlign = "center" }),
             -- Lock indicator
             w.locked and label("🔒",
@@ -308,7 +310,7 @@ local function stat_card(index, item)
     local nextVal = cur + 1
 
     return UI.Panel {
-        width = "30%", minHeight = 130, padding = 8, gap = 4,
+        width = "31%", minHeight = 130, padding = 8, gap = 4,
         alignItems = "center", justifyContent = "space-between",
         backgroundColor = COLOR_BG,
         borderColor = item.locked and { 255, 180, 60, 200 } or { sdef.color[1] * 0.5, sdef.color[2] * 0.5, sdef.color[3] * 0.5, 150 },
@@ -368,7 +370,7 @@ function M.build()
         local w = state.shop_.weapons[i]
         table.insert(weaponCards,
             w and weapon_card(i, w)
-              or UI.Panel { width = "30%", minHeight = 130, padding = 8,
+              or UI.Panel { width = "31%", minHeight = 130, padding = 8,
                   backgroundColor = { 8, 15, 32, 120 },
                   borderColor = { 40, 60, 90, 80 }, borderWidth = 1, borderRadius = 10,
                   alignItems = "center", justifyContent = "center",
@@ -387,7 +389,7 @@ function M.build()
         local it = state.shop_.items[i]
         table.insert(itemCards,
             it and stat_card(i, it)
-               or UI.Panel { width = "30%", minHeight = 130, padding = 8,
+               or UI.Panel { width = "31%", minHeight = 130, padding = 8,
                    backgroundColor = { 8, 15, 32, 120 },
                    borderColor = { 40, 60, 90, 80 }, borderWidth = 1, borderRadius = 10,
                    alignItems = "center", justifyContent = "center",

@@ -1,0 +1,17 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+	hooksPath = C:/Users/ShenYunLong/Desktop/taptapgame/.git/hooks
+[remote "github"]
+	url = https://github.com/Yunlong2601/SHENTECHSTUDIO.git
+	fetch = +refs/heads/*:refs/remotes/github/*
+[remote "origin"]
+	url = https://git:tmpct_KysntNik7KFJWqjMdaWjmgwbUXoZ_cJ9@maker.taptap.cn/git/5e6c0799-195d-48e4-8bcb-0445b036dcf3.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[user]
+	name = Claude
+	email = noreply@anthropic.com

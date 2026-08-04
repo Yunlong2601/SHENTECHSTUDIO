@@ -101,11 +101,9 @@ local function game_screen()
     state.shellLabel_ = label("", { fontSize = 11, fontColor = t.bossAccent, marginTop = 5, opacity = 0 })
     state.shellBarFill_ = UI.Panel { width = "0%", height = "100%", backgroundGradient = { type = "linear", direction = "to-right", from = t.bossAccent, to = { 255, 165, 80, 255 } }, borderRadius = 5, pointerEvents = "none" }
     local shellBar = UI.Panel { width = "100%", height = 8, marginTop = 4, backgroundColor = { 40, 35, 22, 220 }, borderRadius = 5, overflow = "hidden", opacity = 0, children = { state.shellBarFill_ } }
-    local statusCard = UI.Panel { width = "44%", maxWidth = 420, padding = 12, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 8, 20, 45, 220 }, to = { 10, 16, 38, 220 } }, borderColor = t.accentDim, borderWidth = 1, borderRadius = 14, children = { state.hudLabel_, state.xpLabel_, xpBar, state.shellLabel_, shellBar } }
-    state.waveLabel_ = label("", { fontSize = 14, fontWeight = "bold", fontColor = { 255, 230, 137, 255 }, textAlign = "right" })
-    state.moduleLabel_ = label("", { fontSize = 11, fontColor = { 207, 220, 244, 255 }, textAlign = "right", marginTop = 5 })
-    -- P4: Gold counter
-    state.goldLabel_ = label("", { fontSize = 12, fontWeight = "bold", fontColor = { 255, 215, 50, 255 }, textAlign = "right", marginTop = 5 })
+    state.waveLabel_ = label("", { fontSize = 12, fontWeight = "bold", fontColor = { 255, 230, 137, 255 }, textAlign = "left", marginTop = 6 })
+    state.moduleLabel_ = label("", { fontSize = 10, fontColor = { 177, 196, 231, 255 }, textAlign = "left", marginTop = 2 })
+    local statusCard = UI.Panel { width = "44%", maxWidth = 420, padding = 12, gap = 2, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 8, 20, 45, 220 }, to = { 10, 16, 38, 220 } }, borderColor = t.accentDim, borderWidth = 1, borderRadius = 14, children = { state.hudLabel_, state.xpLabel_, xpBar, state.shellLabel_, shellBar, state.waveLabel_, state.moduleLabel_ } }
 
     state.bossLabel_ = label("", { fontSize = 13, fontWeight = "bold", fontColor = { 255, 180, 60, 255 }, textAlign = "center", opacity = 0 })
     state.bossBarFill_ = UI.Panel { width = "100%", height = "100%", backgroundGradient = { type = "linear", direction = "to-right", from = { 255, 100, 60, 255 }, to = { 255, 180, 60, 255 } }, borderRadius = 4, pointerEvents = "none" }
@@ -129,18 +127,17 @@ local function game_screen()
 
     state.feedbackLabel_ = label("", { position = "absolute", top = 130, left = 0, right = 0, textAlign = "center", fontSize = 13, fontWeight = "bold", fontColor = { 255, 111, 126, 0 }, pointerEvents = "none" })
     state.hitFlashWidget_ = UI.Panel { position = "absolute", top = 0, left = 0, width = "100%", height = "100%", backgroundColor = { 255, 255, 255, 255 }, opacity = 0, pointerEvents = "none" }
-    local waveCard = UI.Panel { width = "38%", maxWidth = 360, padding = 12, alignItems = "flex-end", backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 8, 20, 45, 220 }, to = { 10, 16, 38, 220 } }, borderColor = { 146, 225, 191, 150 }, borderWidth = 1, borderRadius = 14, children = { state.waveLabel_, state.moduleLabel_, state.goldLabel_ } }
-    local hud = UI.Panel { position = "absolute", top = 14, left = 16, right = 16, flexDirection = "row", justifyContent = "space-between", pointerEvents = "none", children = { statusCard, waveCard } }
+    local hud = UI.Panel { position = "absolute", top = 38, left = 16, right = 16, flexDirection = "row", justifyContent = "flex-start", pointerEvents = "none", children = { statusCard } }
     state.joystickBase_ = UI.Panel { position = "absolute", width = state.touchRadius_ * 2, height = state.touchRadius_ * 2, backgroundColor = { 72, 133, 204, 60 }, borderColor = { 157, 220, 255, 120 }, borderWidth = 2, borderRadius = state.touchRadius_, pointerEvents = "none", visible = false }
     state.joystickKnob_ = UI.Panel { position = "absolute", width = 52, height = 52, backgroundGradient = { type = "radial", from = { 108, 220, 255, 200 }, to = { 60, 160, 220, 160 } }, borderColor = { 230, 252, 255, 200 }, borderWidth = 2, borderRadius = 26, pointerEvents = "none", visible = false }
     state.touchSurface_ = UI.Panel { position = "absolute", top = 0, left = 0, width = "100%", height = "100%", pointerEvents = "auto", onPointerDown = callbacks.handleTouchDown, onPointerMove = callbacks.handleTouchMove, onPointerUp = callbacks.handleTouchUp, onPointerCancel = callbacks.handleTouchUp, children = { state.joystickBase_, state.joystickKnob_ } }
-    return UI.Panel { width = "100%", height = "100%", pointerEvents = "box-none", children = { state.gameWorld_, hud, bossCard, state.feedbackLabel_, label(state.T("game.hint"), { position = "absolute", bottom = 28, left = 0, right = 0, textAlign = "center", fontSize = 11, fontColor = { 131, 151, 190, 180 } }), label(state.T("game.mobile_hint"), { position = "absolute", bottom = 10, left = 0, right = 0, textAlign = "center", fontSize = 10, fontColor = { 122, 190, 218, 200 } }), state.touchSurface_, state.hitFlashWidget_, stats_panel.build() } }
+    return UI.Panel { width = "100%", height = "100%", pointerEvents = "box-none", children = { state.gameWorld_, hud, bossCard, state.feedbackLabel_, label(state.T("game.hint"), { position = "absolute", bottom = 44, left = 0, right = 0, textAlign = "center", fontSize = 11, fontColor = { 131, 151, 190, 180 } }), label(state.T("game.mobile_hint"), { position = "absolute", bottom = 24, left = 0, right = 0, textAlign = "center", fontSize = 10, fontColor = { 122, 190, 218, 200 } }), state.touchSurface_, state.hitFlashWidget_, stats_panel.build() } }
 end
 
 local function upgrade_screen()
     local cards = {}
-    for index, card in ipairs(state.upgradeCards_) do cards[index] = UI.Button { text = card.title .. "\n" .. card.description, variant = index == 1 and "primary" or "secondary", width = "100%", minHeight = 72, marginBottom = 10, fontSize = 13, onClick = function() callbacks.applyUpgrade(card.id); state.screen_ = "game"; rebuild() end } end
-    return UI.Panel { width = "90%", maxWidth = 520, padding = 24, gap = 8, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 19, 30, 58, 250 }, to = { 15, 22, 48, 250 } }, borderRadius = 22, borderWidth = 1, borderColor = { 108, 172, 255, 220 }, children = { label(state.T("game.level_up"), { fontSize = 23, fontWeight = "bold", fontColor = { 255, 230, 137, 255 }, textAlign = "center", marginBottom = 4 }), label(state.T("game.level", state.level_), { fontSize = 14, fontColor = { 177, 196, 231, 255 }, textAlign = "center", marginBottom = 12 }), table.unpack(cards) } }
+    for index, card in ipairs(state.upgradeCards_) do cards[index] = UI.Button { text = card.title .. "\n" .. card.description, variant = index == 1 and "primary" or "secondary", width = "100%", minHeight = 58, marginBottom = 10, fontSize = 12, onClick = function() callbacks.applyUpgrade(card.id); state.screen_ = "game"; rebuild() end } end
+    return UI.Panel { width = "90%", maxWidth = 520, maxHeight = "82%", overflow = "scroll", padding = 24, gap = 8, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 19, 30, 58, 250 }, to = { 15, 22, 48, 250 } }, borderRadius = 22, borderWidth = 1, borderColor = { 108, 172, 255, 220 }, children = { label(state.T("game.level_up"), { fontSize = 23, fontWeight = "bold", fontColor = { 255, 230, 137, 255 }, textAlign = "center", marginBottom = 4 }), label(state.T("game.level", state.level_), { fontSize = 14, fontColor = { 177, 196, 231, 255 }, textAlign = "center", marginBottom = 12 }), table.unpack(cards) } }
 end
 
 local function wave_pause_screen()
@@ -152,7 +149,7 @@ end
 
 local function archive_screen()
     local canCalibrate = state.profile_.calibration > 0
-    return UI.Panel { width = "90%", maxWidth = 440, padding = 26, gap = 12, alignItems = "center", backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 20, 31, 58, 250 }, to = { 16, 24, 48, 250 } }, borderRadius = 22, borderWidth = 1, borderColor = { 146, 225, 191, 200 }, children = { label(state.T("meta.title"), { fontSize = 24, fontWeight = "bold", fontColor = { 146, 225, 191, 255 }, textAlign = "center" }), label(state.T("meta.currency", state.profile_.calibration), { fontSize = 15, fontColor = { 255, 230, 137, 255 } }), label(state.T("meta.fallback"), { fontSize = 11, fontColor = { 177, 196, 231, 255 }, textAlign = "center" }), UI.Button { text = state.T("meta.integrity"), variant = state.profile_.startingIntegrity > 0 and "secondary" or "primary", width = "100%", height = 48, onClick = function() if canCalibrate and state.profile_.startingIntegrity == 0 then state.profile_.startingIntegrity = 1; state.profile_.calibration = state.profile_.calibration - 1; rebuild() end end }, UI.Button { text = state.T("meta.magnet"), variant = state.profile_.magnet > 0 and "secondary" or "primary", width = "100%", height = 48, onClick = function() if canCalibrate and state.profile_.magnet == 0 then state.profile_.magnet = 1; state.profile_.calibration = state.profile_.calibration - 1; rebuild() end end }, UI.Button { text = state.T("meta.close"), variant = "secondary", width = "100%", height = 44, onClick = function() state.screen_ = state.metaScreenReturn_; rebuild() end } } }
+    return UI.Panel { width = "90%", maxWidth = 440, maxHeight = "85%", overflow = "scroll", padding = 26, gap = 12, alignItems = "center", backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 20, 31, 58, 250 }, to = { 16, 24, 48, 250 } }, borderRadius = 22, borderWidth = 1, borderColor = { 146, 225, 191, 200 }, children = { label(state.T("meta.title"), { fontSize = 24, fontWeight = "bold", fontColor = { 146, 225, 191, 255 }, textAlign = "center" }), label(state.T("meta.currency", state.profile_.calibration), { fontSize = 15, fontColor = { 255, 230, 137, 255 } }), label(state.T("meta.fallback"), { fontSize = 11, fontColor = { 177, 196, 231, 255 }, textAlign = "center" }), UI.Button { text = state.T("meta.integrity"), variant = state.profile_.startingIntegrity > 0 and "secondary" or "primary", width = "100%", height = 48, onClick = function() if canCalibrate and state.profile_.startingIntegrity == 0 then state.profile_.startingIntegrity = 1; state.profile_.calibration = state.profile_.calibration - 1; rebuild() end end }, UI.Button { text = state.T("meta.magnet"), variant = state.profile_.magnet > 0 and "secondary" or "primary", width = "100%", height = 48, onClick = function() if canCalibrate and state.profile_.magnet == 0 then state.profile_.magnet = 1; state.profile_.calibration = state.profile_.calibration - 1; rebuild() end end }, UI.Button { text = state.T("meta.close"), variant = "secondary", width = "100%", height = 44, onClick = function() state.screen_ = state.metaScreenReturn_; rebuild() end } } }
 end
 
 local function cosmetics_screen()
@@ -160,7 +157,7 @@ local function cosmetics_screen()
         local preview = UI.Panel { width = 36, height = 36, backgroundGradient = { type = "linear", direction = "to-bottom-right", from = color, to = { color[1] * 0.6, color[2] * 0.6, color[3] * 0.6, 255 } }, borderColor = { color[1], math.min(255, color[2] + 40), math.min(255, color[3] + 40), 255 }, borderWidth = 2, borderRadius = 4, rotate = 45 }
         return UI.Panel { width = "100%", padding = 12, flexDirection = "row", alignItems = "center", gap = 12, backgroundColor = { 12, 22, 45, 200 }, borderRadius = 12, borderWidth = 1, borderColor = { 50, 70, 110, 150 }, children = { preview, label(name, { fontSize = 14, fontWeight = "bold", fontColor = { 220, 235, 255, 255 }, flex = 1 }), label(locked and state.T("cosmetics.locked") or "✓", { fontSize = 12, fontColor = locked and { 150, 160, 190, 255 } or { 146, 225, 191, 255 } }) } }
     end
-    return UI.Panel { width = "90%", maxWidth = 450, padding = 26, gap = 12, alignItems = "center", backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 18, 28, 54, 250 }, to = { 14, 20, 44, 250 } }, borderRadius = 24, borderWidth = 1, borderColor = { 108, 172, 255, 180 }, children = {
+    return UI.Panel { width = "90%", maxWidth = 450, maxHeight = "85%", overflow = "scroll", padding = 26, gap = 12, alignItems = "center", backgroundGradient = { type = "linear", direction = "to-bottom-right", from = { 18, 28, 54, 250 }, to = { 14, 20, 44, 250 } }, borderRadius = 24, borderWidth = 1, borderColor = { 108, 172, 255, 180 }, children = {
         label("◈", { fontSize = 36, fontColor = { 177, 128, 255, 255 } }),
         label(state.T("cosmetics.title"), { fontSize = 24, fontWeight = "bold", fontColor = { 220, 235, 255, 255 }, textAlign = "center" }),
         label(state.T("cosmetics.subtitle"), { fontSize = 13, fontColor = { 177, 196, 231, 255 }, textAlign = "center", marginBottom = 6 }),
@@ -219,11 +216,14 @@ local function stage_select_screen()
         local descColor = unlocked and { 190, 205, 230, 255 } or { 80, 80, 90, 180 }
         local lockIcon = unlocked and "" or " 🔒"
 
-        local levelInfo = {}
-        for lv = 1, stages.totalLevels(i) do
+        local totalLv = stages.totalLevels(i)
+        local summary = state.T("stage.levels", totalLv)
+        local hasBoss = false
+        for lv = 1, totalLv do
             local lvl = stages.level(i, lv)
-            table.insert(levelInfo, label(state.T("stage.level_tag", lv, lvl.totalWaves), { fontSize = 10, fontColor = descColor, textAlign = "center" }))
+            if lvl and lvl.bossWave then hasBoss = true; break end
         end
+        if hasBoss then summary = summary .. " · " .. state.T("stage.boss_tag") end
 
         local stageIdx = i
         local card = UI.Button {
@@ -243,7 +243,9 @@ local function stage_select_screen()
                         label(stages.name(i, state.language_) .. lockIcon, { fontSize = 17, fontWeight = "bold", fontColor = nameColor }),
                         label(state.T("stage.levels", stages.totalLevels(i)), { fontSize = 11, fontColor = descColor }),
                     } },
-                    UI.Panel { flexDirection = "row", gap = 6, children = levelInfo },
+                    UI.Panel { flexDirection = "column", alignItems = "flex-end", gap = 2, children = {
+                        label(summary, { fontSize = 11, fontColor = descColor, textAlign = "right" }),
+                    } },
                 } },
             },
         }
@@ -379,14 +381,7 @@ function M.update_hud()
         if txt ~= state._modCache then state.moduleLabel_:SetText(txt); state._modCache = txt end
     end
 
-    -- Gold label (P4) — only on change
-    if state.goldLabel_ then
-        local gold = state.player_.gold_ or 0
-        if gold ~= state._goldCache then
-            state.goldLabel_:SetText(string.format("G %d", gold))
-            state._goldCache = gold
-        end
-    end
+    -- Gold display is in stats_panel (goldLabel_ removed)
 
     -- Feedback label — only on change
     if state.feedbackLabel_ then

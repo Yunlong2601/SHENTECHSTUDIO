@@ -56,7 +56,7 @@ function M.build()
 
     return UI.Panel {
         position = "absolute",
-        top = 14, right = 16,
+        top = 38, right = 16,
         width = 140, padding = 10, gap = 2,
         backgroundGradient = { type = "linear", direction = "to-bottom-right",
             from = { 8, 20, 45, 200 }, to = { 10, 16, 38, 200 } },

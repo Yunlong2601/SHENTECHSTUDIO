@@ -16,8 +16,7 @@
     "output_dir": "../dist",
     "asset_dirs": [
       "../assets",
-      "../scripts",
-      "../data"
+      "../scripts"
     ],
     "asset_ignores": []
   },

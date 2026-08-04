@@ -180,7 +180,7 @@ function BuildUI()
     if nonGame then
         rootProps.justifyContent = "center"
         rootProps.alignItems = "center"
-        rootProps.padding = 16
+        rootProps.padding = { top = 44, bottom = 16, left = 16, right = 16 }
     end
     state.uiRoot_ = UI.Panel(rootProps)
     UI.SetRoot(state.uiRoot_, true)

@@ -1,0 +1,1205 @@
+{
+  "character.lua": {
+    "mtime": 1785846385,
+    "results": []
+  },
+  "enemies.lua": {
+    "mtime": 1785846384,
+    "results": [
+      {
+        "text": "追猎体",
+        "line": 12,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "掠行体",
+        "line": 26,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "蓄能体",
+        "line": 40,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "分裂体",
+        "line": 54,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "射击体",
+        "line": 68,
+        "rule": "chinese_double_quote",
+        "args": null
+      }
+    ]
+  },
+  "i18n.lua": {
+    "mtime": 1785846385,
+    "results": [
+      {
+        "text": "几何突围",
+        "line": 13,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "选择语言开始游戏",
+        "line": 13,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "简体中文",
+        "line": 14,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "校准台已上线，准备开始突围。",
+        "line": 15,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "开始突围",
+        "line": 15,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "几何突围 · Demo Build",
+        "line": 16,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "完整度：%d / %d",
+        "line": 16,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "突围时间：%ds",
+        "line": 17,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "击破：%d",
+        "line": 17,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "波次：%d / %d",
+        "line": 17,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "模式碎片：%d / %d",
+        "line": 18,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "数据碎片：%d",
+        "line": 18,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "距离下一次升级：%d 个模式碎片",
+        "line": 18,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "当前状态",
+        "line": 18,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "模块：%s Lv.%d",
+        "line": 19,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "未装配",
+        "line": 19,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "敌对几何体",
+        "line": 19,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "精英核心",
+        "line": 20,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "WASD / 方向键移动 · 自动模块锁定目标",
+        "line": 20,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "触摸左侧并拖动移动 · 自动攻击",
+        "line": 20,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "波次校准完成",
+        "line": 22,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "下一波：%d",
+        "line": 22,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "继续突围",
+        "line": 22,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "升级：选择一项校准",
+        "line": 23,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "等级 %d",
+        "line": 23,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Trace Beam · 轨迹光束",
+        "line": 24,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "更快、更强的窄束自动追踪光束",
+        "line": 24,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Orbit Seed · 环轨种子",
+        "line": 25,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "旋转种子持续撞击附近敌人",
+        "line": 25,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Pulse Bloom · 脉冲绽放",
+        "line": 26,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "周期性释放圆形脉冲，击退并伤害敌人",
+        "line": 26,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Shell Lantern · 护壳灯",
+        "line": 27,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "可再生护盾壳体，优先承受完整度伤害",
+        "line": 27,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Anchor Mine · 锚雷",
+        "line": 28,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "周期性部署地雷，敌人靠近时引爆并造成范围伤害",
+        "line": 28,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Vector Hook · 矢量钩",
+        "line": 29,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "留下持续伤害的移动轨迹",
+        "line": 29,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "强化轨迹光束",
+        "line": 30,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "强化环轨种子",
+        "line": 30,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "强化脉冲绽放",
+        "line": 30,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "强化护壳灯",
+        "line": 30,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "强化锚雷",
+        "line": 31,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "强化矢量钩",
+        "line": 31,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "加固完整度",
+        "line": 32,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "扩大磁吸范围",
+        "line": 32,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "获得一项永久运行强化",
+        "line": 32,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "突围失败",
+        "line": 33,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "突围成功",
+        "line": 33,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "运行总结",
+        "line": 33,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "原因：%s",
+        "line": 33,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "最终击破：%d",
+        "line": 34,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "抵达波次：%d",
+        "line": 34,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "最终等级：%d",
+        "line": 34,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "装配模块：%s Lv.%d",
+        "line": 35,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "数据碎片：%d",
+        "line": 35,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "重新开始",
+        "line": 36,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "返回主菜单",
+        "line": 36,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "与敌对几何体发生碰撞",
+        "line": 36,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "击破最终核心，完成全部波次",
+        "line": 36,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "场域：%s",
+        "line": 37,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "压缩：内圈移动边界",
+        "line": 37,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "涌潮：周期性场域脉冲",
+        "line": 37,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "超频：敌人更快，奖励更高",
+        "line": 37,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "追猎体",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "掠行体",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "蓄能体",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "分裂体",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "射击体",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "活动模块：%s",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "武器：%s",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "近战",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "远程",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "警告：场域脉冲",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "护壳：%d / %d",
+        "line": 39,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Laser Gun · 激光炮",
+        "line": 40,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "高伤害穿透激光束，瞄准最近敌人",
+        "line": 40,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Poison Bomb · 毒雾弹",
+        "line": 41,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "部署持续伤害毒云，造成范围伤害",
+        "line": 41,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "强化激光炮",
+        "line": 42,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "强化毒雾弹",
+        "line": 42,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "校准档案",
+        "line": 43,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "校准档案（本次会话）",
+        "line": 43,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "校准片：%d",
+        "line": 43,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "起始完整度 +1",
+        "line": 43,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "磁吸范围 +35",
+        "line": 43,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "校准",
+        "line": 43,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "未验证持久化：仅在本次会话有效",
+        "line": 43,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "返回",
+        "line": 43,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "核心破坏者",
+        "line": 45,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "核心：%d / %d",
+        "line": 45,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "警告：核心脉冲蓄能",
+        "line": 45,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "核心破坏者出现",
+        "line": 45,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "核心破坏者已被击破",
+        "line": 45,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "最终波次：核心战",
+        "line": 46,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "被核心破坏者击破",
+        "line": 46,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "守门者",
+        "line": 47,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "守门者：%d / %d",
+        "line": 47,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "守门者出现",
+        "line": 47,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "守门者已被击破",
+        "line": 47,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "选择竞技场",
+        "line": 49,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "不同阶段的场域配置不同，层层深入",
+        "line": 49,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "%d 个关卡",
+        "line": 49,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "关卡 %d · %d 波",
+        "line": 50,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "⚠ 首领战",
+        "line": 50,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "◆ 精英战",
+        "line": 51,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "准备开始...",
+        "line": 51,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "阶段通关！",
+        "line": 52,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "阶段失败",
+        "line": 52,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "已解锁：%s",
+        "line": 53,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "下一阶段 ▶",
+        "line": 53,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "%s · Lv.%d · %d/%d 波",
+        "line": 54,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "工坊",
+        "line": 56,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "外观定制 · 即将上线",
+        "line": 56,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "矢量三角",
+        "line": 56,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "猩红协议",
+        "line": 56,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "虚空回路",
+        "line": 56,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "日冕引擎",
+        "line": 56,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "未解锁",
+        "line": 56,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "即将上线",
+        "line": 56,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "支持开发者",
+        "line": 56,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "未来可通过 TapTap 支持本项目",
+        "line": 56,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "返回主菜单",
+        "line": 56,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "工坊",
+        "line": 57,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "商店",
+        "line": 60,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "金币：%d",
+        "line": 60,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "重摇 %dg",
+        "line": 61,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "锁定",
+        "line": 61,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "跳过 ▶",
+        "line": 62,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "— 武器 —",
+        "line": 62,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "— 道具 —",
+        "line": 63,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "金币",
+        "line": 64,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "主要属性",
+        "line": 65,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "次要属性",
+        "line": 65,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "生命",
+        "line": 66,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "伤害",
+        "line": 66,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "攻速",
+        "line": 66,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "范围",
+        "line": 67,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "暴击",
+        "line": 67,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "闪避",
+        "line": 67,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "移速",
+        "line": 68,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "幸运",
+        "line": 68,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "生命强化",
+        "line": 69,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "最大生命 +2",
+        "line": 69,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "伤害强化",
+        "line": 70,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "所有武器伤害 +8%",
+        "line": 70,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "攻速强化",
+        "line": 71,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "攻击间隔 -4%",
+        "line": 71,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "范围强化",
+        "line": 72,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "攻击距离 +5%",
+        "line": 72,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "暴击强化",
+        "line": 73,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "暴击率 +4%",
+        "line": 73,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "闪避强化",
+        "line": 74,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "闪避率 +4%",
+        "line": 74,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "移速强化",
+        "line": 75,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "移动速度 +5%",
+        "line": 75,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "幸运强化",
+        "line": 76,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "掉落金币 +15%",
+        "line": 76,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "简体中文",
+        "line": 80,
+        "rule": "chinese_double_quote",
+        "args": null
+      }
+    ]
+  },
+  "main.lua": {
+    "mtime": 1785846385,
+    "results": [
+      {
+        "text": "Geometry Breakout / 几何突围",
+        "line": 560,
+        "rule": "chinese_double_quote",
+        "args": null
+      }
+    ]
+  },
+  "player.lua": {
+    "mtime": 1785846385,
+    "results": []
+  },
+  "shop.lua": {
+    "mtime": 1785846385,
+    "results": []
+  },
+  "stages.lua": {
+    "mtime": 1785846384,
+    "results": [
+      {
+        "text": "赤红竞技场",
+        "line": 12,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.1 · 初试锋芒",
+        "line": 16,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.2 · 暗流涌动",
+        "line": 17,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.3 · 血色黄昏",
+        "line": 18,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.4 · 烈焰回廊",
+        "line": 19,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.5 · 狱火降临",
+        "line": 20,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.6 · 熔岩之心",
+        "line": 21,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.7 · 铁与火",
+        "line": 22,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.8 · 燃烬之路",
+        "line": 23,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.9 · 焚天",
+        "line": 24,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.10· 终焉红莲",
+        "line": 25,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "虚空核心",
+        "line": 39,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.1 · 虚空之门",
+        "line": 43,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.2 · 暗能涌动",
+        "line": 44,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.3 · 深渊低语",
+        "line": 45,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.4 · 扭曲之径",
+        "line": 46,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.5 · 虚空领主",
+        "line": 47,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.6 · 紫色迷障",
+        "line": 48,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.7 · 数据洪流",
+        "line": 49,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.8 · 虚空回声",
+        "line": 50,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.9 · 混沌边缘",
+        "line": 51,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "Lv.10· 绝对虚空",
+        "line": 52,
+        "rule": "chinese_double_quote",
+        "args": null
+      }
+    ]
+  },
+  "state.lua": {
+    "mtime": 1785846385,
+    "results": []
+  },
+  "stats_panel.lua": {
+    "mtime": 1785846385,
+    "results": []
+  },
+  "ui.lua": {
+    "mtime": 1785846385,
+    "results": [
+      {
+        "text": "压缩",
+        "line": 497,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "波动",
+        "line": 497,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "加速",
+        "line": 497,
+        "rule": "chinese_double_quote",
+        "args": null
+      }
+    ]
+  },
+  "vfx.lua": {
+    "mtime": 1785846385,
+    "results": []
+  },
+  "waves.lua": {
+    "mtime": 1785846385,
+    "results": []
+  },
+  "weapons.lua": {
+    "mtime": 1785846385,
+    "results": []
+  },
+  "stat_items.lua": {
+    "mtime": 1785846385,
+    "results": []
+  },
+  "upgrades.lua": {
+    "mtime": 1785846385,
+    "results": []
+  },
+  "settings.json": {
+    "mtime": 1785848638,
+    "results": []
+  }
+}
