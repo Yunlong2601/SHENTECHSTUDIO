@@ -1026,4 +1026,4 @@ Don't ship more than 3 currencies; the cognitive load is too high for solo dev.
 
 ---
 
-*End of strategic plan. Next checkpoint: Friday 2026-08-08, ship Splitter; update PROJECT_CONTEXT.md §12; reconvene on Phase 1 priorities. File path: `C:\Users\ShenYunLong\OneDrive\TAPTAPGAME\deliverables\software-company\geometry-breakout-strategy-2026-08-03.md`*
+*End of strategic plan. Next checkpoint: Friday 2026-08-08, ship Splitter; update PROJECT_CONTEXT.md §12; reconvene on Phase 1 priorities.*

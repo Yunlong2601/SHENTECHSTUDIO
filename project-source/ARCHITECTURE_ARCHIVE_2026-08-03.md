@@ -1256,4 +1256,4 @@ This is a concrete sketch of how `main.lua` shrinks across the 5 split steps. Th
 
 ---
 
-*End of architecture deliverable. Next checkpoint: Engineer (寇豆码) confirms understanding + begins Step 1 of §4.1 (file split). File path: `C:\Users\ShenYunLong\OneDrive\TAPTAPGAME\deliverables\software-company\geometry-breakout-architect-2026-08-03.md`*
+*End of architecture deliverable. Next checkpoint: Engineer (寇豆码) confirms understanding + begins Step 1 of §4.1 (file split).*
