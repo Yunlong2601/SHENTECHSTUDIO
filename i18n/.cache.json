@@ -1,10 +1,14 @@
 {
+  "character.lua": {
+    "mtime": 1785846385,
+    "results": []
+  },
   "enemies.lua": {
-    "mtime": 1785778499,
+    "mtime": 1785846385,
     "results": []
   },
   "i18n.lua": {
-    "mtime": 1785778500,
+    "mtime": 1785846385,
     "results": [
       {
         "text": "几何突围",
@@ -421,6 +425,24 @@
         "args": null
       },
       {
+        "text": "武器：%s",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "近战",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "远程",
+        "line": 38,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
         "text": "警告：场域脉冲",
         "line": 38,
         "rule": "chinese_double_quote",
@@ -727,30 +749,234 @@
         "args": null
       },
       {
-        "text": "简体中文",
+        "text": "商店",
+        "line": 60,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "金币：%d",
+        "line": 60,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "重摇 %dg",
         "line": 61,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "锁定",
+        "line": 61,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "跳过 ▶",
+        "line": 62,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "— 武器 —",
+        "line": 62,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "— 道具 —",
+        "line": 63,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "金币",
+        "line": 64,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "主要属性",
+        "line": 65,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "次要属性",
+        "line": 65,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "生命",
+        "line": 66,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "伤害",
+        "line": 66,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "攻速",
+        "line": 66,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "范围",
+        "line": 67,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "暴击",
+        "line": 67,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "闪避",
+        "line": 67,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "移速",
+        "line": 68,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "幸运",
+        "line": 68,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "生命强化",
+        "line": 69,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "最大生命 +2",
+        "line": 69,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "伤害强化",
+        "line": 70,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "所有武器伤害 +8%",
+        "line": 70,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "攻速强化",
+        "line": 71,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "攻击间隔 -4%",
+        "line": 71,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "范围强化",
+        "line": 72,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "攻击距离 +5%",
+        "line": 72,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "暴击强化",
+        "line": 73,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "暴击率 +4%",
+        "line": 73,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "闪避强化",
+        "line": 74,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "闪避率 +4%",
+        "line": 74,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "移速强化",
+        "line": 75,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "移动速度 +5%",
+        "line": 75,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "幸运强化",
+        "line": 76,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "掉落金币 +15%",
+        "line": 76,
+        "rule": "chinese_double_quote",
+        "args": null
+      },
+      {
+        "text": "简体中文",
+        "line": 80,
         "rule": "chinese_double_quote",
         "args": null
       }
     ]
   },
   "main.lua": {
-    "mtime": 1785778500,
+    "mtime": 1785846385,
     "results": [
       {
         "text": "Geometry Breakout / 几何突围",
-        "line": 480,
+        "line": 560,
         "rule": "chinese_double_quote",
         "args": null
       }
     ]
   },
-  "modules.lua": {
-    "mtime": 1785778500,
+  "player.lua": {
+    "mtime": 1785846385,
     "results": []
   },
-  "player.lua": {
-    "mtime": 1785723708,
+  "shop.lua": {
+    "mtime": 1785846385,
     "results": []
   },
   "stages.lua": {
@@ -891,38 +1117,50 @@
     ]
   },
   "state.lua": {
-    "mtime": 1785778500,
+    "mtime": 1785846385,
+    "results": []
+  },
+  "stats_panel.lua": {
+    "mtime": 1785846385,
     "results": []
   },
   "ui.lua": {
-    "mtime": 1785778500,
+    "mtime": 1785846385,
     "results": [
       {
         "text": "压缩",
-        "line": 481,
+        "line": 497,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
         "text": "波动",
-        "line": 481,
+        "line": 497,
         "rule": "chinese_double_quote",
         "args": null
       },
       {
         "text": "加速",
-        "line": 481,
+        "line": 497,
         "rule": "chinese_double_quote",
         "args": null
       }
     ]
   },
+  "vfx.lua": {
+    "mtime": 1785846385,
+    "results": []
+  },
   "waves.lua": {
-    "mtime": 1785778500,
+    "mtime": 1785846385,
+    "results": []
+  },
+  "weapons.lua": {
+    "mtime": 1785846385,
     "results": []
   },
   "settings.json": {
-    "mtime": 1785770398,
+    "mtime": 1785846384,
     "results": []
   }
 }
