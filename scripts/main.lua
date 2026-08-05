@@ -15,6 +15,7 @@ local ui = require("ui")
 local shop = require("shop")
 local stats_panel = require("stats_panel")
 local stat_items = require("data.stat_items")  -- P5: 8 stat axes
+local AudioManager = require("audio")          -- Audio system (ADR-007)
 local player_ = state.player_
 
 state.T = function(key, ...)
@@ -394,6 +395,8 @@ end
 function HandleUpdate(_eventType, eventData)
     local timeStep = math.min(eventData["TimeStep"]:GetFloat(), 0.05)
 
+    AudioManager.Update(timeStep)
+
     -- ── Deferred UI rebuild (from EndWave / screen changes) ────────────
     if state._needsRebuild then
         state._needsRebuild = false
@@ -565,10 +568,12 @@ function Start()
     graphics.windowTitle = "Geometry Breakout / 几何突围"
     UI.Init({ theme = "default-dark", fonts = { { family = "sans", weights = { normal = "Fonts/MiSans-Regular.ttf" } } }, scale = UI.Scale.DEFAULT })
     input.mouseMode = MM_ABSOLUTE; input.mouseVisible = true
+    AudioManager.Init()
     SubscribeToEvent("Update", "HandleUpdate"); SubscribeToEvent("KeyDown", "HandleKeyDown"); SubscribeToEvent("KeyUp", "HandleKeyUp"); BuildUI()
     print("=== Geometry Breakout Demo Build started ===")
 end
 
 function Stop()
     ClearEntities(); UI.Shutdown()
+    AudioManager.Shutdown()
 end

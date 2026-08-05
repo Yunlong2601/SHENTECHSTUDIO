@@ -1,6 +1,6 @@
 # Project Long-Term Memory — Geometry Breakout / 几何突围
 
-## Current Phase: All Core Systems Complete (P0-P9 + UI Fixes + Published)
+## Current Phase: All Core Systems Complete (P0-P9 + UI Fixes + Published + Phase A)
 
 ### Design Locked
 - Brotato-style: 6 weapon slots, auto-fire, 4-card upgrades, 20 waves × ~30s (~20 min runs)
@@ -10,6 +10,9 @@
 - Neon Vector Geometry visual style preserved
 - Player character: geometric body (diamond) + humanoid features (eyes, face bar, trail) — distinct from monsters
 - Full design: `project-source/GAME_DESIGN.md`
+- Pre-run weapon select: player picks from Bow/Crossbow/Thrown (blade is fallback default)
+- Shop unlock system: 2g reroll unlock + 3g lock unlock (per-run, [PLACEHOLDER pending playtest])
+- Lock max 1 card per shop visit
 
 ### Phase Status
 | Phase | Status |
@@ -26,6 +29,7 @@
 | P9 (playtest tuning) | ✅ Complete |
 | UI Fixes (9 bugs) | ✅ Complete |
 | TapTap Publish | ✅ Published (2026-08-04)
+| Phase A (weapon select + shop unlock + i18n) | ✅ Complete (2026-08-04)
 
 ### Project Facts (unchanged)
 - TapTap Maker project UUID: `5e6c0799-195d-48e4-8bcb-0445b036dcf3`

@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智能日程助手 — 产品需求文档 (PRD)</title>
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 32px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  color: #1a1a2e;
+  background: #f7f8fc;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Hero ===== */
+.hero {
+  position: relative;
+  height: 420px;
+  background: url('https://picsum.photos/1600/900') center/cover no-repeat;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(30,41,59,0.82) 0%, rgba(37,99,235,0.55) 50%, rgba(14,165,233,0.4) 100%);
+  z-index: 1;
+}
+.hero-content {
+  position: relative; z-index: 2;
+  text-align: center; padding: 0 24px; max-width: 720px;
+}
+.hero-badge {
+  display: inline-block; padding: 6px 18px;
+  background: rgba(255,255,255,0.18); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.3); border-radius: 999px;
+  color: #e0f2fe; font-size: 13px; font-weight: 600;
+  letter-spacing: 0.06em; margin-bottom: 20px;
+}
+.hero h1 {
+  font-size: clamp(28px, 5vw, 48px); font-weight: 800;
+  color: #fff; letter-spacing: -0.02em; margin-bottom: 14px;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.25);
+}
+.hero p {
+  font-size: clamp(15px, 2vw, 18px); color: rgba(255,255,255,0.88);
+  line-height: 1.7; max-width: 560px; margin: 0 auto;
+}
+
+/* ===== Layout ===== */
+.page-wrapper {
+  display: flex; max-width: 1280px; margin: 0 auto;
+  position: relative;
+}
+.sidebar {
+  width: 260px; flex-shrink: 0;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+  background: #fff; border-right: 1px solid #e8ecf2;
+  padding: 28px 20px;
+}
+.sidebar-title {
+  font-size: 13px; font-weight: 700; color: #94a3b8;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 16px; padding-left: 12px;
+}
+.sidebar-nav { list-style: none; }
+.sidebar-nav li { margin-bottom: 2px; }
+.sidebar-nav a {
+  display: block; padding: 9px 12px; border-radius: 8px;
+  font-size: 14px; color: #475569; text-decoration: none;
+  transition: all 0.18s ease;
+  border-left: 3px solid transparent;
+}
+.sidebar-nav a:hover { background: #f1f5f9; color: #1e293b; }
+.sidebar-nav a.active {
+  background: #eff6ff; color: #2563eb; font-weight: 600;
+  border-left-color: #2563eb;
+}
+
+.main-content {
+  flex: 1; min-width: 0;
+  padding: 40px 48px 80px;
+}
+.section {
+  margin-bottom: 56px;
+}
+.section:last-child { margin-bottom: 0; }
+
+/* ===== Typography ===== */
+h2.section-heading {
+  font-size: 26px; font-weight: 700; color: #0f172a;
+  margin-bottom: 8px; letter-spacing: -0.01em;
+}
+h3.sub-heading {
+  font-size: 18px; font-weight: 600; color: #334155;
+  margin: 28px 0 12px;
+}
+.divider {
+  width: 48px; height: 4px; background: #2563eb; border-radius: 2px;
+  margin-bottom: 24px;
+}
+
+/* ===== Meta Cards ===== */
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+.meta-card {
+  background: #fff; border-radius: 12px; padding: 20px 22px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  border: 1px solid #e8ecf2;
+}
+.meta-label {
+  font-size: 12px; font-weight: 600; color: #94a3b8;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+.meta-value {
+  font-size: 16px; font-weight: 600; color: #1e293b;
+}
+.meta-value.status-draft { color: #d97706; }
+.meta-value.status-review { color: #2563eb; }
+.meta-value.status-approved { color: #059669; }
+
+/* ===== Card ===== */
+.card {
+  background: #fff; border-radius: 14px; padding: 28px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.04);
+  border: 1px solid #e8ecf2;
+  margin-bottom: 20px;
+}
+.card:last-child { margin-bottom: 0; }
+.card h4 {
+  font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 10px;
+}
+.card p, .card li { font-size: 15px; color: #475569; }
+
+/* ===== Goals / Non-Goals Two-Column ===== */
+.goals-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+}
+.goals-col {
+  background: #fff; border-radius: 14px; padding: 28px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05); border: 1px solid #e8ecf2;
+}
+.goals-col.goals { border-top: 4px solid #059669; }
+.goals-col.non-goals { border-top: 4px solid #ef4444; }
+.goals-col h4 {
+  font-size: 17px; font-weight: 700; margin-bottom: 14px;
+}
+.goals-col.goals h4 { color: #059669; }
+.goals-col.non-goals h4 { color: #ef4444; }
+.goals-col ul { list-style: none; padding: 0; }
+.goals-col li {
+  padding: 8px 0 8px 24px; position: relative;
+  font-size: 15px; color: #475569; border-bottom: 1px solid #f1f5f9;
+}
+.goals-col li:last-child { border-bottom: none; }
+.goals-col.goals li::before {
+  content: '✓'; position: absolute; left: 0; top: 8px;
+  color: #059669; font-weight: 700;
+}
+.goals-col.non-goals li::before {
+  content: '✗'; position: absolute; left: 0; top: 8px;
+  color: #ef4444; font-weight: 700;
+}
+
+/* ===== User Stories ===== */
+.stories-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.story-card {
+  background: #fff; border-radius: 14px; padding: 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05); border: 1px solid #e8ecf2;
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+.story-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-2px); }
+.story-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 18px; color: #fff;
+  margin-bottom: 14px;
+}
+.story-avatar.persona-a { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+.story-avatar.persona-b { background: linear-gradient(135deg, #f59e0b, #f97316); }
+.story-avatar.persona-c { background: linear-gradient(135deg, #06b6d4, #0ea5e9); }
+.story-avatar.persona-d { background: linear-gradient(135deg, #10b981, #059669); }
+.story-role { font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 8px; }
+.story-text { font-size: 15px; color: #334155; line-height: 1.8; }
+.story-text .as { color: #6366f1; font-weight: 600; }
+.story-text .want { color: #f59e0b; font-weight: 600; }
+.story-text .so { color: #10b981; font-weight: 600; }
+
+/* ===== Table ===== */
+.spec-table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  background: #fff; border-radius: 14px; overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05); border: 1px solid #e8ecf2;
+}
+.spec-table thead th {
+  background: #f8fafc; padding: 14px 18px; text-align: left;
+  font-size: 13px; font-weight: 700; color: #475569;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  border-bottom: 2px solid #e2e8f0;
+}
+.spec-table tbody td {
+  padding: 14px 18px; font-size: 14px; color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+.spec-table tbody tr:nth-child(even) { background: #fafbfc; }
+.spec-table tbody tr:last-child td { border-bottom: none; }
+.spec-table tbody tr:hover { background: #f0f7ff; }
+
+/* Priority & Status Badges */
+.badge {
+  display: inline-block; padding: 3px 12px; border-radius: 999px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.badge-p0 { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.badge-p1 { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+.badge-p2 { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+.badge-done { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+.badge-progress { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+.badge-todo { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }
+.badge-blocked { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+/* ===== Checklist ===== */
+.checklist { list-style: none; }
+.checklist li {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px; margin-bottom: 10px;
+  background: #fff; border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid #e8ecf2;
+  transition: background 0.18s;
+}
+.checklist li:hover { background: #fafbfc; }
+.checklist input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none;
+  width: 20px; height: 20px; flex-shrink: 0;
+  border: 2px solid #cbd5e1; border-radius: 5px;
+  cursor: pointer; position: relative; margin-top: 2px;
+  transition: all 0.18s;
+}
+.checklist input[type="checkbox"]:checked {
+  background: #2563eb; border-color: #2563eb;
+}
+.checklist input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute; left: 5px; top: 2px;
+  width: 6px; height: 10px;
+  border: solid #fff; border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.checklist label {
+  font-size: 15px; color: #334155; cursor: pointer;
+  transition: color 0.18s, text-decoration 0.18s;
+  line-height: 1.7;
+}
+.checklist input[type="checkbox"]:checked + label {
+  color: #94a3b8; text-decoration: line-through;
+}
+
+/* ===== Timeline ===== */
+.timeline { position: relative; padding-left: 32px; }
+.timeline::before {
+  content: '';
+  position: absolute; left: 11px; top: 8px; bottom: 8px;
+  width: 2px; background: linear-gradient(to bottom, #2563eb 0%, #e2e8f0 100%);
+}
+.timeline-item {
+  position: relative; margin-bottom: 32px;
+}
+.timeline-item:last-child { margin-bottom: 0; }
+.timeline-dot {
+  position: absolute; left: -25px; top: 4px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; border: 3px solid #2563eb;
+  z-index: 1;
+}
+.timeline-item.done .timeline-dot { background: #2563eb; }
+.timeline-date {
+  font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 4px;
+}
+.timeline-title {
+  font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 6px;
+}
+.timeline-desc {
+  font-size: 14px; color: #64748b; line-height: 1.7;
+}
+.timeline-item.done .timeline-title { color: #059669; }
+
+/* ===== NFR Grid ===== */
+.nfr-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+.nfr-card {
+  background: #fff; border-radius: 14px; padding: 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05); border: 1px solid #e8ecf2;
+}
+.nfr-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 14px;
+}
+.nfr-icon.perf { background: #eff6ff; color: #2563eb; }
+.nfr-icon.security { background: #fef2f2; color: #dc2626; }
+.nfr-icon.compat { background: #ecfdf5; color: #059669; }
+.nfr-card h4 { font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 10px; }
+.nfr-card ul { list-style: none; padding: 0; }
+.nfr-card li {
+  font-size: 14px; color: #475569; padding: 6px 0 6px 18px;
+  border-bottom: 1px solid #f8fafc; position: relative;
+}
+.nfr-card li:last-child { border-bottom: none; }
+.nfr-card li::before {
+  content: '•'; position: absolute; left: 2px; top: 6px;
+  color: #cbd5e1;
+}
+
+/* ===== Issues ===== */
+.issues-list { list-style: none; }
+.issue-item {
+  background: #fff; border-radius: 12px; padding: 20px 24px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid #e8ecf2;
+  border-left: 4px solid #f59e0b;
+}
+.issue-item:last-child { margin-bottom: 0; }
+.issue-q {
+  font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 6px;
+}
+.issue-status {
+  font-size: 13px; color: #94a3b8; display: flex; align-items: center; gap: 8px;
+}
+.issue-status span {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+}
+.issue-status .open { background: #f59e0b; }
+.issue-status .discussing { background: #3b82f6; }
+
+/* ===== Steps ===== */
+.flow-steps { list-style: none; counter-reset: flow-counter; }
+.flow-steps li {
+  counter-increment: flow-counter;
+  position: relative; padding: 18px 20px 18px 56px;
+  background: #fff; border-radius: 12px; margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid #e8ecf2;
+  font-size: 15px; color: #334155; line-height: 1.7;
+}
+.flow-steps li::before {
+  content: counter(flow-counter);
+  position: absolute; left: 16px; top: 18px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.flow-steps li strong { color: #1e293b; }
+
+/* ===== Back to Top ===== */
+.back-to-top {
+  position: fixed; bottom: 32px; right: 32px;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #2563eb; color: #fff; border: none;
+  font-size: 18px; cursor: pointer;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.35);
+  opacity: 0; visibility: hidden; transition: all 0.3s;
+  z-index: 100; display: flex; align-items: center; justify-content: center;
+}
+.back-to-top.visible { opacity: 1; visibility: visible; }
+.back-to-top:hover { background: #1d4ed8; transform: translateY(-2px); }
+
+/* ===== Mobile Toggle ===== */
+.mobile-nav-toggle {
+  display: none;
+  position: fixed; top: 16px; left: 16px; z-index: 200;
+  width: 40px; height: 40px; border-radius: 10px;
+  background: #fff; border: 1px solid #e2e8f0;
+  font-size: 20px; cursor: pointer; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+  z-index: 149;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .hero { height: 320px; }
+  .page-wrapper { flex-direction: column; }
+  .sidebar {
+    position: fixed; left: -280px; top: 0; bottom: 0; z-index: 150;
+    width: 280px; transition: left 0.3s ease;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+  }
+  .sidebar.open { left: 0; }
+  .sidebar-overlay.open { display: block; }
+  .mobile-nav-toggle { display: flex; }
+  .main-content { padding: 24px 20px 60px; }
+  .goals-grid { grid-template-columns: 1fr; }
+  .stories-grid { grid-template-columns: 1fr; }
+  .meta-grid { grid-template-columns: repeat(2, 1fr); }
+  .nfr-grid { grid-template-columns: 1fr; }
+  .spec-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .back-to-top { bottom: 20px; right: 20px; }
+}
+@media (max-width: 480px) {
+  .hero { height: 260px; }
+  .hero h1 { font-size: 24px; }
+  .meta-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Hero ===== -->
+<header class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">PRODUCT REQUIREMENTS DOCUMENT</div>
+    <h1>智能日程助手</h1>
+    <p>AI 驱动的跨平台日程管理工具，自动聚合多源日历、智能冲突检测与一键优化排程，让时间管理回归直觉。</p>
+  </div>
+</header>
+
+<!-- ===== Mobile Nav Toggle ===== -->
+<button class="mobile-nav-toggle" onclick="toggleSidebar()" aria-label="目录">☰</button>
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- ===== Page Layout ===== -->
+<div class="page-wrapper">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-title">文档目录</div>
+    <ul class="sidebar-nav">
+      <li><a href="#meta" data-section="meta">文档元信息</a></li>
+      <li><a href="#background" data-section="background">背景与问题</a></li>
+      <li><a href="#goals" data-section="goals">目标与非目标</a></li>
+      <li><a href="#stories" data-section="stories">用户故事</a></li>
+      <li><a href="#spec" data-section="spec">功能规格表</a></li>
+      <li><a href="#flow" data-section="flow">交互流程说明</a></li>
+      <li><a href="#checklist" data-section="checklist">验收标准</a></li>
+      <li><a href="#nfr" data-section="nfr">非功能需求</a></li>
+      <li><a href="#timeline" data-section="timeline">里程碑时间线</a></li>
+      <li><a href="#issues" data-section="issues">待决问题</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content" id="main-content">
+
+    <!-- 1. 文档元信息 -->
+    <section class="section" id="meta">
+      <h2 class="section-heading">文档元信息</h2>
+      <div class="divider"></div>
+      <div class="meta-grid">
+        <div class="meta-card">
+          <div class="meta-label">版本号</div>
+          <div class="meta-value">v2.1.0</div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">文档负责人</div>
+          <div class="meta-value">张明远（产品总监）</div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">当前状态</div>
+          <div class="meta-value status-review">评审中</div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">目标发布日期</div>
+          <div class="meta-value">2026-10-15</div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">技术负责人</div>
+          <div class="meta-value">李思涵（架构师）</div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">关联文档</div>
+          <div class="meta-value">TECH_SPEC_v2、UX_FLOW_v3</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 背景与问题 -->
+    <section class="section" id="background">
+      <h2 class="section-heading">背景与问题</h2>
+      <div class="divider"></div>
+      <div class="card">
+        <h4>当前痛点</h4>
+        <p>据用户调研数据显示，<strong>78%</strong> 的职场人士同时使用 3 个以上日历工具（企业微信、Google 日历、Outlook、Notion 等），导致以下核心问题：</p>
+        <ul style="margin-top:12px; padding-left:20px;">
+          <li style="margin-bottom:8px;"><strong>信息分散</strong>：日程散落在多个平台，缺乏统一视图，用户需要反复切换工具查看当天安排。</li>
+          <li style="margin-bottom:8px;"><strong>冲突频发</strong>：手动比对多个日历极易遗漏时间冲突，平均每人每月遭遇 3.2 次日程冲突。</li>
+          <li style="margin-bottom:8px;"><strong>排程低效</strong>：调整一次会议往往需要来回检查 3-5 个参与者的空闲时间，沟通成本高。</li>
+          <li><strong>遗忘风险</strong>：42% 的用户曾因未及时同步日程而错过重要会议或截止日期。</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>解决思路</h4>
+        <p>「智能日程助手」通过接入主流日历 API 实现多源聚合，基于 AI 模型自动识别冲突并推荐最优排程方案，让用户在一个界面上完成所有日程管理操作，减少碎片化带来的时间和精力损耗。</p>
+      </div>
+    </section>
+
+    <!-- 3. 目标与非目标 -->
+    <section class="section" id="goals">
+      <h2 class="section-heading">目标与非目标</h2>
+      <div class="divider"></div>
+      <div class="goals-grid">
+        <div class="goals-col goals">
+          <h4>项目目标</h4>
+          <ul>
+            <li>支持至少 5 种主流日历平台的双向同步</li>
+            <li>AI 冲突检测准确率 ≥ 95%</li>
+            <li>首次打开到完成首个日程创建 ≤ 2 分钟</li>
+            <li>用户在单一视图下查看当周全部日程</li>
+            <li>一键智能排程：30 秒内生成最优方案</li>
+            <li>支持团队协同排程（≥ 3 人）</li>
+            <li>iOS / Android / Web 三端同步</li>
+          </ul>
+        </div>
+        <div class="goals-col non-goals">
+          <h4>非目标（v1 不做）</h4>
+          <ul>
+            <li>不实现独立的视频会议系统</li>
+            <li>不包含项目管理看板功能</li>
+            <li>不支持离线模式下的智能排程</li>
+            <li>不处理与财务/报销系统的集成</li>
+            <li>不做企业内部组织架构管理</li>
+            <li>不包含语音助手交互</li>
+            <li>不实现自定义 AI 模型训练</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 用户故事 -->
+    <section class="section" id="stories">
+      <h2 class="section-heading">用户故事</h2>
+      <div class="divider"></div>
+      <div class="stories-grid">
+        <div class="story-card">
+          <div class="story-avatar persona-a">L</div>
+          <div class="story-role">📋 职场白领 — 李明</div>
+          <div class="story-text">
+            <span class="as">As a</span> 每天需要处理大量会议的职场白领，<br>
+            <span class="want">I want</span> 在一个界面上看到我所有平台（企业微信、Google、Outlook）的日程，<br>
+            <span class="so">so that</span> 我不需要在多个 app 间切换，避免遗漏任何安排。
+          </div>
+        </div>
+        <div class="story-card">
+          <div class="story-avatar persona-b">W</div>
+          <div class="story-role">👥 团队负责人 — 王芳</div>
+          <div class="story-text">
+            <span class="as">As a</span> 管理 8 人团队的项目主管，<br>
+            <span class="want">I want</span> 快速找到所有人都有空的会议时间段，<br>
+            <span class="so">so that</span> 我不需要逐个询问成员空闲时间，减少协调成本。
+          </div>
+        </div>
+        <div class="story-card">
+          <div class="story-avatar persona-c">Z</div>
+          <div class="story-role">🎓 自由职业者 — 张悦</div>
+          <div class="story-text">
+            <span class="as">As a</span> 同时接多个项目的自由设计师，<br>
+            <span class="want">I want</span> 智能助手根据我的项目和截止日期自动建议每日排程，<br>
+            <span class="so">so that</span> 我能合理分配精力，不错过任何交付节点。
+          </div>
+        </div>
+        <div class="story-card">
+          <div class="story-avatar persona-d">C</div>
+          <div class="story-role">👔 高管助理 — 陈静</div>
+          <div class="story-text">
+            <span class="as">As a</span> 负责安排高管日程的助理，<br>
+            <span class="want">I want</span> 批量导入并管理他人的日程权限，<br>
+            <span class="so">so that</span> 我能高效协调高管的差旅、会议与私人时间。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. 功能规格表 -->
+    <section class="section" id="spec">
+      <h2 class="section-heading">功能规格表</h2>
+      <div class="divider"></div>
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>功能点</th>
+            <th>描述</th>
+            <th>优先级</th>
+            <th style="min-width:80px">状态</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>多源日历聚合</td>
+            <td>接入 Google、Outlook、Apple、企业微信、飞书 5 种日历，双向同步</td>
+            <td><span class="badge badge-p0">P0</span></td>
+            <td><span class="badge badge-done">已完成</span></td>
+          </tr>
+          <tr>
+            <td>统一日程视图</td>
+            <td>日/周/月三视图，拖拽调整，颜色区分来源</td>
+            <td><span class="badge badge-p0">P0</span></td>
+            <td><span class="badge badge-done">已完成</span></td>
+          </tr>
+          <tr>
+            <td>智能冲突检测</td>
+            <td>自动识别时间重叠，弹窗提醒并提供修改建议</td>
+            <td><span class="badge badge-p0">P0</span></td>
+            <td><span class="badge badge-done">已完成</span></td>
+          </tr>
+          <tr>
+            <td>AI 智能排程</td>
+            <td>输入待办事项，AI 根据优先级、时长、偏好自动生成当日排程方案</td>
+            <td><span class="badge badge-p1">P1</span></td>
+            <td><span class="badge badge-progress">开发中</span></td>
+          </tr>
+          <tr>
+            <td>团队协同排程</td>
+            <td>查看团队成员忙闲状态，一键发起多人会议邀请</td>
+            <td><span class="badge badge-p1">P1</span></td>
+            <td><span class="badge badge-progress">开发中</span></td>
+          </tr>
+          <tr>
+            <td>智能提醒推送</td>
+            <td>基于用户习惯和历史数据预测最佳提醒时机</td>
+            <td><span class="badge badge-p1">P1</span></td>
+            <td><span class="badge badge-todo">待开始</span></td>
+          </tr>
+          <tr>
+            <td>日程模版</td>
+            <td>预设常用日程模版（周会/1:1/复盘），一键创建</td>
+            <td><span class="badge badge-p2">P2</span></td>
+            <td><span class="badge badge-todo">待开始</span></td>
+          </tr>
+          <tr>
+            <td>数据洞察面板</td>
+            <td>周报：时间分配分析、会议统计、效率评分</td>
+            <td><span class="badge badge-p2">P2</span></td>
+            <td><span class="badge badge-todo">待开始</span></td>
+          </tr>
+          <tr>
+            <td>自然语言创建</td>
+            <td>输入「明天下午3点和张三讨论设计方案」，自动解析并创建日程</td>
+            <td><span class="badge badge-p1">P1</span></td>
+            <td><span class="badge badge-blocked">阻塞</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 6. 交互流程说明 -->
+    <section class="section" id="flow">
+      <h2 class="section-heading">交互流程说明</h2>
+      <div class="divider"></div>
+      <p style="font-size:15px; color:#64748b; margin-bottom:20px;">以下为 <strong>核心用户路径</strong>——从首次打开到完成一次智能排程的完整操作流。</p>
+      <ol class="flow-steps">
+        <li>
+          <strong>账户初始化</strong>：用户首次打开 App，进入引导页选择需要接入的日历平台（Google/Outlook/企业微信等），逐一完成 OAuth 授权。系统在后台拉取并合并所有来源日程，<em>预计耗时约 90 秒</em>。
+        </li>
+        <li>
+          <strong>查看统一视图</strong>：授权完成后自动跳转「今日」视图，所有来源的日程以不同颜色圆点标记来源，按时间线排列。用户可左右滑动切换日期、点击顶部标签切换日/周/月视图。
+        </li>
+        <li>
+          <strong>手动创建日程</strong>：点击右下角 FAB「+」按钮，进入创建表单。填写标题、时间、地点、参与人（支持搜索通讯录），点击「创建」后同步至对应日历平台。
+        </li>
+        <li>
+          <strong>冲突检测触发</strong>：当新创建的日程与已有日程时间重叠时，系统即刻弹出红色冲突提示卡片，展示冲突的日程详情并提供「调整时间」「忽略」「取消新日程」三个选项。
+        </li>
+        <li>
+          <strong>AI 智能排程</strong>：用户点击底部「智能排程」Tab，进入待办列表页。勾选当日待处理事项后点击「生成方案」，AI 在 10 秒内返回带时间块的排程建议，用户可直接确认或拖拽微调。
+        </li>
+        <li>
+          <strong>团队协同</strong>：在创建日程时添加多位参与人，系统实时比对参与人忙闲状态。若存在冲突，高亮不可用时段并推荐最近可用时间，一键发送邀请。
+        </li>
+        <li>
+          <strong>提醒与后续</strong>：日程到期前，App 根据用户历史行为（如通常提前 10 分钟查看）智能推送通知。日程结束后自动归档，并在周报面板中计入统计分析。
+        </li>
+      </ol>
+    </section>
+
+    <!-- 7. 验收标准 -->
+    <section class="section" id="checklist">
+      <h2 class="section-heading">验收标准</h2>
+      <div class="divider"></div>
+      <ul class="checklist">
+        <li>
+          <input type="checkbox" id="ac-1"><label for="ac-1">用户可在 2 分钟内完成至少 3 个日历平台的接入与首次同步</label>
+        </li>
+        <li>
+          <input type="checkbox" id="ac-2"><label for="ac-2">所有来源日程在统一视图中正确显示，颜色区分来源且无遗漏</label>
+        </li>
+        <li>
+          <input type="checkbox" id="ac-3"><label for="ac-3">日程冲突检测准确率 ≥ 95%，误报率 ≤ 5%</label>
+        </li>
+        <li>
+          <input type="checkbox" id="ac-4"><label for="ac-4">AI 排程方案从点击「生成」到展示结果 ≤ 10 秒</label>
+        </li>
+        <li>
+          <input type="checkbox" id="ac-5"><label for="ac-5">团队排程支持 ≥ 10 人同时比对，空闲时段查询 ≤ 3 秒</label>
+        </li>
+        <li>
+          <input type="checkbox" id="ac-6"><label for="ac-6">日程变更后 5 秒内同步至源平台，冲突时同步前给出二次确认</label>
+        </li>
+        <li>
+          <input type="checkbox" id="ac-7"><label for="ac-7">移动端与 Web 端数据实时同步，延迟 ≤ 2 秒</label>
+        </li>
+        <li>
+          <input type="checkbox" id="ac-8"><label for="ac-8">所有接口在有网络波动时均有重试机制，单次操作失败不影响整体体验</label>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 8. 非功能需求 -->
+    <section class="section" id="nfr">
+      <h2 class="section-heading">非功能需求</h2>
+      <div class="divider"></div>
+      <div class="nfr-grid">
+        <div class="nfr-card">
+          <div class="nfr-icon perf">⚡</div>
+          <h4>性能</h4>
+          <ul>
+            <li>App 冷启动 ≤ 1.5 秒，热启动 ≤ 0.5 秒</li>
+            <li>日历视图渲染 6 个月数据 ≤ 500ms</li>
+            <li>后台同步资源占用 CPU ≤ 5%，内存 ≤ 80MB</li>
+            <li>支持 ≥ 10 万条日程数据无卡顿</li>
+            <li>API 响应时间 P95 ≤ 200ms</li>
+          </ul>
+        </div>
+        <div class="nfr-card">
+          <div class="nfr-icon security">🔒</div>
+          <h4>安全</h4>
+          <ul>
+            <li>所有日历平台接入使用 OAuth 2.0，不存储明文密码</li>
+            <li>数据传输全程 TLS 1.3 加密</li>
+            <li>日程数据在服务端 AES-256 加密存储</li>
+            <li>符合 GDPR / 个保法对用户数据删除权的要求</li>
+            <li>登录态敏感操作需二次验证（如删除全量日程）</li>
+          </ul>
+        </div>
+        <div class="nfr-card">
+          <div class="nfr-icon compat">📱</div>
+          <h4>兼容性</h4>
+          <ul>
+            <li>iOS 15+ / Android 11+ / Web（Chrome、Safari、Edge 最新 2 个大版本）</li>
+            <li>Apple Watch 独立应用（查看当天日程 + 快速提醒）</li>
+            <li>屏幕尺寸适配：320px – 2560px</li>
+            <li>支持系统级暗色模式</li>
+            <li>VoiceOver / TalkBack 无障碍适配</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. 里程碑时间线 -->
+    <section class="section" id="timeline">
+      <h2 class="section-heading">里程碑时间线</h2>
+      <div class="divider"></div>
+      <div class="timeline">
+        <div class="timeline-item done">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">2026-06-15 — M1 已完成</div>
+          <div class="timeline-title">需求调研与竞品分析</div>
+          <div class="timeline-desc">完成 120 份用户问卷 + 15 次深度访谈，输出竞品分析报告并确定核心差异化方向。</div>
+        </div>
+        <div class="timeline-item done">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">2026-07-20 — M2 已完成</div>
+          <div class="timeline-title">产品原型 & 设计定稿</div>
+          <div class="timeline-desc">Figma 高保真原型交付，完成 2 轮可用性测试（N=12），关键任务完成率 91%。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">2026-08-01 — M3 进行中</div>
+          <div class="timeline-title">P0 功能开发 & 内部 Alpha</div>
+          <div class="timeline-desc">多源日历聚合、统一视图、冲突检测三大 P0 功能进入开发后半段，预计 8-25 交付 Alpha 版本。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">2026-09-10 — M4 计划中</div>
+          <div class="timeline-title">P1 功能开发 & 封闭 Beta</div>
+          <div class="timeline-desc">AI 排程与团队协同功能开发，邀请 200 名种子用户参与 Beta 测试。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">2026-10-01 — M5 计划中</div>
+          <div class="timeline-title">全量测试 & 性能调优</div>
+          <div class="timeline-desc">压力测试（5000 并发）、安全渗透测试、无障碍合规审查。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">2026-10-15 — M6 目标</div>
+          <div class="timeline-title">🎯 v2.1 正式发布</div>
+          <div class="timeline-desc">App Store / Google Play / Web 三端齐发，配合营销推广计划。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. 待决问题 -->
+    <section class="section" id="issues">
+      <h2 class="section-heading">待决问题</h2>
+      <div class="divider"></div>
+      <ul class="issues-list">
+        <li class="issue-item">
+          <div class="issue-q">Q1：自然语言创建日程的 NLP 引擎选型——自研还是接入第三方 API（如 OpenAI）？</div>
+          <div class="issue-status"><span class="discussing"></span> 讨论中 — 需评估成本、延迟与数据隐私权衡</div>
+        </li>
+        <li class="issue-item">
+          <div class="issue-q">Q2：免费版与付费版的功能切分线尚未最终确定，是否将 AI 排程设为付费功能？</div>
+          <div class="issue-status"><span class="open"></span> 待决策 — 依赖商业化团队的定价模型输出</div>
+        </li>
+        <li class="issue-item">
+          <div class="issue-q">Q3：飞书日历 API 的读取权限申请仍在审核中，可能影响集成进度。</div>
+          <div class="issue-status"><span class="open"></span> 待跟进 — 已提交申请，预期 8-15 前获批复</div>
+        </li>
+        <li class="issue-item">
+          <div class="issue-q">Q4：Apple Watch 独立应用是否放入 v2.1，还是推迟到 v2.2？</div>
+          <div class="issue-status"><span class="discussing"></span> 讨论中 — 研发资源评估后决定，倾向推迟</div>
+        </li>
+        <li class="issue-item">
+          <div class="issue-q">Q5：团队协同排程在跨组织场景下（如外部客户）的权限模型尚未定义。</div>
+          <div class="issue-status"><span class="open"></span> 待设计 — 需产品 + 安全团队联合方案</div>
+        </li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部">↑</button>
+
+<script>
+/* ===== Sidebar Toggle (Mobile) ===== */
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.querySelector('.sidebar-overlay').classList.toggle('open');
+}
+
+/* ===== Active Section Highlight ===== */
+(function() {
+  const sections = document.querySelectorAll('.section[id]');
+  const navLinks = document.querySelectorAll('.sidebar-nav a');
+  const observerOptions = { rootMargin: '-80px 0px -60% 0px', threshold: 0 };
+
+  function updateActive() {
+    let current = '';
+    sections.forEach(function(sec) {
+      var top = sec.getBoundingClientRect().top;
+      if (top < 180) current = sec.getAttribute('id');
+    });
+    navLinks.forEach(function(link) {
+      link.classList.toggle('active', link.getAttribute('data-section') === current);
+    });
+  }
+
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+})();
+
+/* ===== Back to Top Visibility ===== */
+(function() {
+  var btn = document.getElementById('backToTop');
+  window.addEventListener('scroll', function() {
+    btn.classList.toggle('visible', window.scrollY > 600);
+  }, { passive: true });
+})();
+
+/* ===== Close sidebar on link click (mobile) ===== */
+document.querySelectorAll('.sidebar-nav a').forEach(function(a) {
+  a.addEventListener('click', function() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.querySelector('.sidebar-overlay').classList.remove('open');
+  });
+});
+
+/* ===== Checklist localStorage persistence ===== */
+(function() {
+  var checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+  checkboxes.forEach(function(cb, i) {
+    var key = 'prd-ac-' + i;
+    cb.checked = localStorage.getItem(key) === 'true';
+    cb.addEventListener('change', function() {
+      localStorage.setItem(key, cb.checked);
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
